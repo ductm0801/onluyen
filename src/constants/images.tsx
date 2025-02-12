@@ -4,4 +4,5 @@ export const IMAGES = {
   earth: "/assets/earth.svg",
   house: "/assets/house.svg",
   school: "/assets/school.svg",
+  waves: "/assets/waves.svg",
 };
