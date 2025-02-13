@@ -5,4 +5,6 @@ export const IMAGES = {
   house: "/assets/house.svg",
   school: "/assets/school.svg",
   waves: "/assets/waves.svg",
+  cuteDuck: "/assets/cuteDuck.gif",
+  hugDuck: "/assets/duckHug.gif",
 };
