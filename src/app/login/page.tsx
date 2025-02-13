@@ -1,24 +1,35 @@
 "use client";
 import { IMAGES } from "@/constants/images";
 import { ILoginRequest } from "@/models";
+import { useLoading } from "@/providers/loadingProvider";
 import { login } from "@/services";
 import { Form } from "antd";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
+import { toast } from "react-toastify";
 
 const Login = () => {
   const [form] = Form.useForm();
   const router = useRouter();
+  const { setLoading } = useLoading();
   const handleSubmit = async (values: ILoginRequest) => {
     try {
+      setLoading(true);
       const res = await login(values);
-      if (res.status === 200) {
+      if (res) {
         router.push("/");
+        toast.success("Đăng nhập thành công!");
+        localStorage.setItem("token", res.data);
       }
     } catch (e) {
+      toast.error("Đăng nhập thất bại!");
+      setLoading(false);
       console.log(e);
+    } finally {
+      setLoading(false);
     }
   };
+
   return (
     <div className="bg-[#2b4182] h-screen w-screen flex items-center justify-center relative overflow-x-hidden">
       <div className="bg-[#5882c14d] w-[390px] rounded-[20px] flex flex-col gap-8 px-[45px] py-[15px]">
