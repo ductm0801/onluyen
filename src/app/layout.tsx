@@ -3,6 +3,8 @@ import localFont from "next/font/local";
 import "./globals.css";
 import Nav from "@/components/Nav";
 import { Fahkwang } from "next/font/google";
+import { LoadingProvider } from "@/providers/loadingProvider";
+import { ToastContainer } from "react-toastify";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -35,8 +37,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${fahwang.variable} antialiased`}>
-        <Nav />
-        {children}
+        <LoadingProvider>
+          <ToastContainer />
+          <Nav />
+          {children}
+        </LoadingProvider>
       </body>
     </html>
   );

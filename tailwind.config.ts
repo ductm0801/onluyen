@@ -1,3 +1,4 @@
+import { transform } from "next/dist/build/swc";
 import type { Config } from "tailwindcss";
 
 const config: Config = {
@@ -11,6 +12,20 @@ const config: Config = {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
+      },
+      keyframes: {
+        shimmer: {
+          "0%": {
+            transform: "scale(1)",
+          },
+          "50%": { transform: "scale(0.5)" },
+          "100%": {
+            transform: "scale(1)",
+          },
+        },
+      },
+      animation: {
+        shimmer: "shimmer 1s infinite linear",
       },
     },
   },
