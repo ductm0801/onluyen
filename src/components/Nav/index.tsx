@@ -13,7 +13,11 @@ const items = [
 const Nav = () => {
   const pathName = usePathname();
   return (
-    <div className={`${pathName === '/login' ? 'hidden' : 'block'} fixed top-0 left-0 bottom-0 bg-[#1244A2] w-[288px] p-8`}>
+    <div
+      className={`${
+        pathName === "/login" || pathName === "/test" ? "hidden" : "block"
+      } fixed top-0 left-0 bottom-0 bg-[#1244A2] w-[288px] p-8`}
+    >
       <div className="flex flex-col gap-6 h-full ">
         <div className="flex items-center gap-4">
           <img src={IMAGES.logo} alt="logo" className="w-12" />
@@ -35,9 +39,10 @@ const Nav = () => {
               <p className="text-base">{item.label}</p>
             </div>
           ))}
-          <Link href="/login" className="text-base text-white mt-auto">Đăng nhập</Link>
+          <Link href="/login" className="text-base text-white mt-auto">
+            Đăng nhập
+          </Link>
         </div>
-
       </div>
     </div>
   );
