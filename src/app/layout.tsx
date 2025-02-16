@@ -5,6 +5,7 @@ import Nav from "@/components/Nav";
 import { Fahkwang } from "next/font/google";
 import { LoadingProvider } from "@/providers/loadingProvider";
 import { ToastContainer } from "react-toastify";
+import DefaultLayout from "@/components/DefaultLayout";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -40,7 +41,7 @@ export default function RootLayout({
         <LoadingProvider>
           <ToastContainer />
           <Nav />
-          {children}
+          <DefaultLayout>{children}</DefaultLayout>
         </LoadingProvider>
       </body>
     </html>

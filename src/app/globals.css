@@ -69,3 +69,18 @@ svg path:nth-child(4) {
     );
   }
 }
+
+.swiper-pagination {
+  position: revert !important;
+}
+
+.swiper-pagination-bullet {
+  background: #fdb022 !important;
+  width: 12px !important;
+  height: 12px !important;
+}
+.swiper-pagination-bullet-active {
+  background: #fdb022 !important;
+  width: 16px !important;
+  height: 16px !important;
+}
