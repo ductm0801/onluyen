@@ -7,4 +7,6 @@ export const IMAGES = {
   waves: "/assets/waves.svg",
   cuteDuck: "/assets/cuteDuck.gif",
   hugDuck: "/assets/duckHug.gif",
+  arrowRight: "/assets/chevron-right.png",
+  searchIcon: "/assets/search.png",
 };
