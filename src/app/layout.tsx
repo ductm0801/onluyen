@@ -6,6 +6,8 @@ import { Fahkwang } from "next/font/google";
 import { LoadingProvider } from "@/providers/loadingProvider";
 import { ToastContainer } from "react-toastify";
 import DefaultLayout from "@/components/DefaultLayout";
+import ProtectedRoute from "@/providers/protectredRoute";
+import { AuthProvider } from "@/providers/authProvider";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -38,11 +40,15 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${fahwang.variable} antialiased`}>
-        <LoadingProvider>
-          <ToastContainer />
-          <Nav />
-          <DefaultLayout>{children}</DefaultLayout>
-        </LoadingProvider>
+        <AuthProvider>
+          <ProtectedRoute>
+            <LoadingProvider>
+              <ToastContainer />
+              <Nav />
+              <DefaultLayout>{children}</DefaultLayout>
+            </LoadingProvider>
+          </ProtectedRoute>
+        </AuthProvider>
       </body>
     </html>
   );

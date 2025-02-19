@@ -2,6 +2,7 @@
 import { IMAGES } from "@/constants/images";
 import { menus } from "@/constants/menu";
 import { ILoginRequest, User } from "@/models";
+import { useAuth } from "@/providers/authProvider";
 import { useLoading } from "@/providers/loadingProvider";
 import { login } from "@/services";
 import { Form } from "antd";
@@ -13,6 +14,7 @@ import { toast } from "react-toastify";
 const Login = () => {
   const [form] = Form.useForm();
   const router = useRouter();
+  const { setUser } = useAuth();
   const { setLoading } = useLoading();
   const handleSubmit = async (values: ILoginRequest) => {
     try {
@@ -22,6 +24,7 @@ const Login = () => {
         toast.success("Đăng nhập thành công!");
         localStorage.setItem("token", res.data);
         const decoded: User = jwtDecode(res.data);
+        setUser(decoded);
         const role = decoded.Role as keyof typeof menus;
         const firstMenuItem = menus[role]?.[0]?.path || "/";
 

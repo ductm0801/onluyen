@@ -13,12 +13,12 @@ const Nav = () => {
   const [menuItems, setMenuItems] = useState<
     { label: string; path: string; icon: string }[]
   >([]);
+  console.log(user);
 
   useEffect(() => {
     if (!user) return;
-
     setMenuItems(menus[user.Role as keyof typeof menus] || []);
-  }, [user]);
+  }, [user, menus]);
 
   return (
     <div
