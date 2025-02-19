@@ -1,17 +1,25 @@
 "use client";
 import { IMAGES } from "@/constants/images";
+import { menus } from "@/constants/menu";
+import { useAuth } from "@/providers/authProvider";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-
-const items = [
-  { label: "Trang chủ", icon: IMAGES.house, href: "/" },
-  { label: "Lớp học trực tuyến", icon: IMAGES.school, href: "/calendar" },
-  { label: "Tự học", icon: IMAGES.book, href: "", subItem: [] },
-  { label: "Ôn luyện plus", icon: IMAGES.earth, href: "/question" },
-];
+import { useEffect, useState } from "react";
 
 const Nav = () => {
   const pathName = usePathname();
+  const { user } = useAuth();
+  const [menuItems, setMenuItems] = useState<
+    { label: string; path: string; icon: string }[]
+  >([]);
+
+  useEffect(() => {
+    if (!user) return;
+
+    setMenuItems(menus[user.Role as keyof typeof menus] || []);
+  }, [user]);
+
   return (
     <div
       className={`${
@@ -26,18 +34,29 @@ const Nav = () => {
           </div>
         </div>
         <div className="flex flex-col gap-3 h-full">
-          {items.map((item) => (
-            <div
-              className={`flex items-center gap-2 py-2 px-[18px] cursor-pointer text-white ${
-                pathName === item.href
+          {menuItems.map((item) => (
+            <Link
+              href={item.path}
+              className={`transition-all duration-300 ease-in-out flex items-center gap-2 py-2 px-[18px] cursor-pointer text-white ${
+                pathName === item.path
                   ? "bg-[#FDB022] rounded-xl "
                   : " bg-transparent"
               }`}
               key={item.label}
             >
-              <img src={item.icon} alt="icon" className="w-6" />
+              <Image
+                src={item.icon}
+                alt={item.label}
+                width={20}
+                height={20}
+                className={`transition-all duration-300 ease-out ${
+                  pathName === item.path
+                    ? "filter brightness-0 invert"
+                    : "opacity-50"
+                }`}
+              />
               <p className="text-base">{item.label}</p>
-            </div>
+            </Link>
           ))}
           <Link href="/login" className="text-base text-white mt-auto">
             Đăng nhập

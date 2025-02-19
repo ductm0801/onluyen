@@ -9,4 +9,8 @@ export const IMAGES = {
   hugDuck: "/assets/duckHug.gif",
   arrowRight: "/assets/chevron-right.png",
   searchIcon: "/assets/search.png",
+  statsitcIcon: "/assets/statistic.svg",
+  courseIcon: "/assets/course.svg",
+  questionIcon: "/assets/question.svg",
+  examIcon: "/assets/exam.svg",
 };
