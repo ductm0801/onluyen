@@ -1,9 +1,11 @@
 "use client";
 import { IMAGES } from "@/constants/images";
-import { ILoginRequest } from "@/models";
+import { menus } from "@/constants/menu";
+import { ILoginRequest, User } from "@/models";
 import { useLoading } from "@/providers/loadingProvider";
 import { login } from "@/services";
 import { Form } from "antd";
+import { jwtDecode } from "jwt-decode";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { toast } from "react-toastify";
@@ -17,13 +19,16 @@ const Login = () => {
       setLoading(true);
       const res = await login(values);
       if (res) {
-        router.push("/");
         toast.success("Đăng nhập thành công!");
         localStorage.setItem("token", res.data);
+        const decoded: User = jwtDecode(res.data);
+        const role = decoded.Role as keyof typeof menus;
+        const firstMenuItem = menus[role]?.[0]?.path || "/";
+
+        router.push(firstMenuItem);
       }
     } catch (e) {
       toast.error("Đăng nhập thất bại!");
-      setLoading(false);
       console.log(e);
     } finally {
       setLoading(false);
