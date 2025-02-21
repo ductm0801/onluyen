@@ -13,4 +13,5 @@ export const IMAGES = {
   courseIcon: "/assets/course.svg",
   questionIcon: "/assets/question.svg",
   examIcon: "/assets/exam.svg",
+  bars: "/assets/bars.svg",
 };
