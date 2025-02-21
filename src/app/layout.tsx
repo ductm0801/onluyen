@@ -44,7 +44,7 @@ export default function RootLayout({
           <ProtectedRoute>
             <LoadingProvider>
               <ToastContainer />
-              <Nav />
+
               <DefaultLayout>{children}</DefaultLayout>
             </LoadingProvider>
           </ProtectedRoute>
