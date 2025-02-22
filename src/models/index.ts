@@ -5,7 +5,24 @@ export type ILoginRequest = {
 
 export type User = {
   UserId: string;
-  UserName: string;
+  FullName: string;
   Role: string;
+  Gender: string;
   exp: number;
+};
+export type Subject = {
+  id: string;
+  subjectName: string;
+  subjectDescription: string;
+};
+
+export type IAccount = {
+  address: string;
+  dateOfBirth: string;
+  email: string;
+  fullName: string;
+  gender: string;
+  imageUrl?: string;
+  phoneNumber: string;
+  role: string;
 };

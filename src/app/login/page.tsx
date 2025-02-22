@@ -72,6 +72,13 @@ const Login = () => {
               placeholder="Mật khẩu"
             />
           </Form.Item>
+          <div className="text-white flex gap-2 justify-end pb-3 items-center">
+            Chưa có tài khoản?{" "}
+            <span className="text-[#ffc022] font-bold cursor-pointer">
+              {" "}
+              Đăng ký ngay{" "}
+            </span>
+          </div>
           <Form.Item>
             <button
               type="submit"

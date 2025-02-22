@@ -1,6 +1,6 @@
 "use client";
 import CircularProgess from "@/components/CircularProgress";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/pagination";
@@ -9,6 +9,7 @@ import { IMAGES } from "@/constants/images";
 import { getSubject } from "@/services";
 import { useLoading } from "@/providers/loadingProvider";
 import { useAuth } from "@/providers/authProvider";
+import { Subject } from "@/models";
 
 const items = [
   {
@@ -53,7 +54,7 @@ const renderBullet = (index: number, className: string) =>
 
 const Home = () => {
   const ref = useRef<any>();
-  const [subjects, setSubjects] = React.useState<any[]>([]);
+  const [subjects, setSubjects] = useState<Subject[]>([]);
   const { setLoading } = useLoading();
   const { user } = useAuth();
   const slideLeft = () => {

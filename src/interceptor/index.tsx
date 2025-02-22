@@ -8,7 +8,7 @@ const axiosClient = axios.create({
 
 axiosClient.interceptors.request.use(
   async (config) => {
-    const accessToken = localStorage.getItem("accessToken");
+    const accessToken = localStorage.getItem("token");
 
     if (!accessToken) return config;
 
@@ -25,7 +25,7 @@ axiosClient.interceptors.response.use(
       (error.response && error.response.status === 401) ||
       (error.response && error.response.status === "username_is_not_existed")
     ) {
-      localStorage.removeItem("accessToken");
+      localStorage.removeItem("token");
       window.location.href = "/";
     }
     return Promise.reject(error);

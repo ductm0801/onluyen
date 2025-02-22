@@ -10,3 +10,15 @@ export const getSubject = async () => {
   const res = await axiosClient.get("/api/subject");
   return res.data;
 };
+export const userRegist = async () => {
+  const res = await axiosClient.post("/api/user-registration/regist");
+  return res.data;
+};
+export const getUser = async () => {
+  const res = await axiosClient.get("/api/users");
+  return res.data;
+};
+export const updateUserStatus = async (id: string) => {
+  const res = await axiosClient.put(`/api/user-registration/status/${id}`);
+  return res.data;
+};
