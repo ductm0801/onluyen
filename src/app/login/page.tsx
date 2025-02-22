@@ -91,7 +91,7 @@ const Login = () => {
       </div>
       <svg
         viewBox="0 0 1320 250"
-        className="fixed bottom-0 left-0 right-0 pointer-events-none"
+        className="waveLogin fixed bottom-0 left-0 right-0 pointer-events-none"
       >
         <path fill="rgba(255,255,255,0.7)" fill-opacity="0.1" />
         <path fill="rgba(255,255,255,0.7)" fill-opacity="0.1" />
