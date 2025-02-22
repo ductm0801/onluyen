@@ -89,7 +89,7 @@ const Home = () => {
   return (
     <div className="flex flex-col gap-6">
       <div className="flex justify-between items-center">
-        <div className="font-bold text-[#0C111D]">Hi, {user?.UserName}!</div>
+        <div className="font-bold text-[#0C111D]">Hi, {user?.FullName}!</div>
         <div className="flex gap-2 items-center border border-[#D0D5DD] rounded-full py-2 px-4">
           <img src={IMAGES.searchIcon} alt="search" className="text-sm" />
           <input
