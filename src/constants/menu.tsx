@@ -6,6 +6,7 @@ export const menus: Record<
 > = {
   Admin: [
     { label: "Thống kê", path: "/admin/dashboard", icon: IMAGES.statsitcIcon },
+    { label: "Tài khoản", path: "/admin/account", icon: IMAGES.account },
     { label: "Môn học", path: "/admin/courses", icon: IMAGES.courseIcon },
   ],
   student: [

@@ -6,8 +6,9 @@ import { createContext, useContext, useEffect, useState } from "react";
 
 interface User {
   UserId: string;
-  UserName: string;
+  FullName: string;
   Role: string;
+  Gender: string;
   exp: number;
 }
 

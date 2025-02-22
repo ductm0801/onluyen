@@ -53,7 +53,7 @@ const DefaultLayout: React.FC<props> = ({ children }) => {
     if (menus[role]) {
       const label = menus[role].find((item) => item.path === pathName)?.label;
       setLabel(label);
-      setOpen(false)
+      setOpen(false);
     }
   }, [pathName, user]);
 
@@ -62,7 +62,9 @@ const DefaultLayout: React.FC<props> = ({ children }) => {
       <Nav sidebarOpen={sidebarOpen} closeSidebar={closeSidebar} />
       <div className={pathName === "/login" ? "" : "xl:ml-[288px]"}>
         <nav
-          className={`flex flex-wrap z-50 items-center justify-between min-h-[84px] top-[10px] px-0 py-2 mx-[10px] xl:mr-[10px] xl:ml-[4px] rounded-2xl lg:flex-nowrap lg:justify-start sticky backdrop-saturate-200 backdrop-blur-2xl bg-[#111c44cc] transform transition-transform duration-300 ease-in-out ${
+          className={`${
+            pathName === "/login" ? "hidden" : "block"
+          } flex flex-wrap z-50 items-center justify-between min-h-[84px] top-[10px] px-0 py-2 mx-[10px] xl:mr-[10px] xl:ml-[4px] rounded-2xl lg:flex-nowrap lg:justify-start sticky backdrop-saturate-200 backdrop-blur-2xl bg-[#111c44cc] transform transition-transform duration-300 ease-in-out ${
             isTopHidden ? "-translate-y-full" : "translate-y-0"
           }`}
         >
@@ -110,7 +112,7 @@ const DefaultLayout: React.FC<props> = ({ children }) => {
                           className="font-semibold text-white text-lg"
                           onClick={() => toggleDropDown()}
                         >
-                          {user?.UserName}
+                          {user?.FullName}
                         </div>
                         {/* {user?.avatar ? (
                           <Avatar
@@ -133,7 +135,10 @@ const DefaultLayout: React.FC<props> = ({ children }) => {
                             Thông tin cá nhân
                           </button>
 
-                          <button className="bg-white rounded-[10px] border border-gray-300 py-2 text-black w-full flex items-center justify-center cursor-pointer" onClick={logout}>
+                          <button
+                            className="bg-white rounded-[10px] border border-gray-300 py-2 text-black w-full flex items-center justify-center cursor-pointer"
+                            onClick={logout}
+                          >
                             Đăng xuất
                           </button>
                         </div>
