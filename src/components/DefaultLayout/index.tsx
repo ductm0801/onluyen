@@ -6,6 +6,8 @@ import React, { useEffect, useState } from "react";
 import Nav from "../Nav";
 import { menus } from "@/constants/menu";
 import { useAuth } from "@/providers/authProvider";
+import { useTheme } from "@/providers/themeProvider";
+import { Moon, Sun } from "lucide-react";
 
 type props = {
   children: React.ReactNode;
@@ -19,6 +21,7 @@ const DefaultLayout: React.FC<props> = ({ children }) => {
   const [label, setLabel] = useState<string | undefined>("");
   const { user, logout } = useAuth();
   const [open, setOpen] = useState(false);
+  const { theme, toggleTheme } = useTheme();
 
   const toggleDropDown = () => {
     setOpen(!open);
@@ -101,7 +104,24 @@ const DefaultLayout: React.FC<props> = ({ children }) => {
                         className="cursor-pointer">
                         <img src={images.wallet} alt="wallet" />
                       </div> */}
-                      <div className="">{/* <NotificationPersonal /> */}</div>
+                      <div className="">
+                        {" "}
+                        <div
+                          onClick={toggleTheme}
+                          className="p-2 rounded-md bg-gray-200 dark:bg-gray-800"
+                        >
+                          {theme === "light" ? (
+                            <Sun
+                              size={20}
+                              className="bg-white text-black rounded-full p-0.5"
+                            />
+                          ) : (
+                            <div className="bg-black text-white rounded-full p-0.5">
+                              <Moon size={20} color="white" />
+                            </div>
+                          )}
+                        </div>
+                      </div>
                       {/* <div>
                         <NotificationMobileComponents />
                       </div> */}

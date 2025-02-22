@@ -13,10 +13,20 @@
     --foreground: #ededed;
   }
 }
+html[data-theme="light"] {
+  --bg-color: #ffffff;
+  --text-color: #000000;
+}
+
+html[data-theme="dark"] {
+  --bg-color: #0a0a0a;
+  --text-color: #ededed;
+}
 
 body {
-  color: var(--foreground);
-  background: var(--background);
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  transition: background-color 0.3s, color 0.3s;
   font-family: var(--font-fahkwang);
 }
 
@@ -25,20 +35,20 @@ body {
     text-wrap: balance;
   }
 }
-svg path {
+.waveLogin path {
   animation: oceanWave 7s;
   animation-timing-function: linear;
   animation-iteration-count: infinite;
   animation-direction: reverse;
 }
 
-svg path:nth-child(2) {
+.waveLogin path:nth-child(2) {
   animation-delay: 1s;
 }
-svg path:nth-child(3) {
+.waveLogin path:nth-child(3) {
   animation-delay: 3s;
 }
-svg path:nth-child(4) {
+.waveLogin path:nth-child(4) {
   animation-play-state: 2s;
 }
 

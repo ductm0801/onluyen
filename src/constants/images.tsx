@@ -5,8 +5,6 @@ export const IMAGES = {
   house: "/assets/house.svg",
   school: "/assets/school.svg",
   waves: "/assets/waves.svg",
-  cuteDuck: "/assets/cuteDuck.gif",
-  hugDuck: "/assets/duckHug.gif",
   arrowRight: "/assets/chevron-right.png",
   searchIcon: "/assets/search.png",
   statsitcIcon: "/assets/statistic.svg",
@@ -15,4 +13,5 @@ export const IMAGES = {
   examIcon: "/assets/exam.svg",
   bars: "/assets/bars.svg",
   account: "/assets/account.svg",
+  defaultMale: "/assets/defautMale.png",
 };

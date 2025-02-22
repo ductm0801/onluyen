@@ -1,5 +1,6 @@
 "use client";
 import Paging from "@/components/Paging";
+import { IMAGES } from "@/constants/images";
 import { IAccount } from "@/models";
 import { useLoading } from "@/providers/loadingProvider";
 import { getUser, updateUserStatus } from "@/services";
@@ -17,13 +18,13 @@ const cols = [
     className:
       "px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white",
   },
+  // {
+  //   name: "Số điện thoại",
+  //   className:
+  //     "px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white",
+  // },
   {
-    name: "Số điện thoại",
-    className:
-      "px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white",
-  },
-  {
-    name: "Email",
+    name: "Trạng thái",
     className:
       "px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white",
   },
@@ -89,8 +90,35 @@ const Account = () => {
   };
   return (
     <div className="relative overflow-x-auto">
+      <div className="flex justify-end  items-center  flex-column flex-wrap md:flex-row space-y-4 md:space-y-0 pb-4">
+        <div className="relative">
+          <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+            <svg
+              className="w-4 h-4 text-gray-500 dark:text-gray-400"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 20 20"
+            >
+              <path
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
+              />
+            </svg>
+          </div>
+          <input
+            type="text"
+            id="table-search-users"
+            className="block p-2 ps-10 text-sm focus:ring-0 focus:outline-none text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white "
+            placeholder="Tìm kiếm"
+          />
+        </div>
+      </div>
       <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-        <thead className="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400">
+        <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
           <tr>
             {cols.map((col, idx) => (
               <th scope="col" className={col.className} key={idx}>
@@ -102,29 +130,46 @@ const Account = () => {
         <tbody>
           {account &&
             account.map((a, idx) => (
-              <tr className="bg-white dark:bg-gray-800" key={idx}>
+              <tr
+                className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600"
+                key={idx}
+              >
                 <th
                   scope="row"
-                  className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                  className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white"
                 >
-                  {a.fullName}
+                  <img
+                    className="w-10 h-10 rounded-full"
+                    src={a.imageUrl || IMAGES.defaultMale}
+                    alt="avatar"
+                  />
+                  <div className="ps-3">
+                    <div className="text-base font-semibold">{a.fullName}</div>
+                    <div className="font-normal text-gray-500">{a.email}</div>
+                  </div>
                 </th>
                 <td className="px-6 py-4">{a.role}</td>
-                <td className="px-6 py-4">{a.phoneNumber}</td>
-                <td className="px-6 py-4">{a.email}</td>
+                {/* <td className="px-6 py-4">{a.phoneNumber}</td> */}
+                <td className="px-6 py-4">
+                  <div className="flex items-center">
+                    <div className="h-2.5 w-2.5 rounded-full bg-green-500 me-2"></div>{" "}
+                    Online
+                  </div>
+                  <div className="flex items-center">
+                    <div className="h-2.5 w-2.5 rounded-full bg-red-500 me-2"></div>{" "}
+                    Offline
+                  </div>
+                </td>
                 <td className="px-6 py-4">{a.address}</td>
-                <td className="flex items-center px-6 py-4">
-                  <a
-                    href="#"
-                    className="font-medium text-blue-600 dark:text-blue-500 hover:underline cursor-pointer"
-                  >
+                <td className="px-6 py-4">
+                  {/* <div className="font-medium text-blue-600 dark:text-blue-500 hover:underline cursor-pointer">
                     Sửa
-                  </a>
+                  </div> */}
                   <div
                     className="font-medium text-red-600 dark:text-red-500 hover:underline cursor-pointer ms-3"
                     // onClick={() => openConfirm(a.id)}
                   >
-                    Xoá
+                    Ẩn người dùng
                   </div>
                 </td>
               </tr>

@@ -8,6 +8,7 @@ import { ToastContainer } from "react-toastify";
 import DefaultLayout from "@/components/DefaultLayout";
 import ProtectedRoute from "@/providers/protectredRoute";
 import { AuthProvider } from "@/providers/authProvider";
+import { ThemeProvider } from "@/providers/themeProvider";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -40,15 +41,17 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${fahwang.variable} antialiased`}>
-        <AuthProvider>
-          <ProtectedRoute>
-            <LoadingProvider>
-              <ToastContainer />
+        <ThemeProvider>
+          <AuthProvider>
+            <ProtectedRoute>
+              <LoadingProvider>
+                <ToastContainer />
 
-              <DefaultLayout>{children}</DefaultLayout>
-            </LoadingProvider>
-          </ProtectedRoute>
-        </AuthProvider>
+                <DefaultLayout>{children}</DefaultLayout>
+              </LoadingProvider>
+            </ProtectedRoute>
+          </AuthProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
