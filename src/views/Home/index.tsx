@@ -95,7 +95,7 @@ const Home = () => {
           <input
             type="text"
             placeholder="Tìm kiếm khóa học..."
-            className="border-none outline-none ring-0"
+            className="border-none outline-none bg-white dark:bg-black ring-0"
           />
         </div>
       </div>
