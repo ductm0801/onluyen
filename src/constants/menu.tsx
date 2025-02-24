@@ -1,7 +1,7 @@
 import { IMAGES } from "./images";
 
 export const menus: Record<
-  "Admin" | "Student" | "instructor",
+  "Admin" | "Student" | "Instructor",
   { label: string; path: string; icon: string }[]
 > = {
   Admin: [
@@ -15,7 +15,7 @@ export const menus: Record<
     { label: "Tự học", icon: IMAGES.book, path: "" },
     { label: "Ôn luyện plus", icon: IMAGES.earth, path: "/question" },
   ],
-  instructor: [
+  Instructor: [
     {
       label: "Câu hỏi",
       path: "/investor/management",

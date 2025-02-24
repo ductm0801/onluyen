@@ -5,6 +5,7 @@ import { ILoginRequest, User } from "@/models";
 import { useAuth } from "@/providers/authProvider";
 import { useLoading } from "@/providers/loadingProvider";
 import { login } from "@/services";
+import Regist from "@/views/Regist";
 import { Form } from "antd";
 import { jwtDecode } from "jwt-decode";
 import { useRouter } from "next/navigation";
@@ -15,6 +16,7 @@ const Login = () => {
   const [form] = Form.useForm();
   const router = useRouter();
   const { setUser } = useAuth();
+  const [isRegist, setIsRegist] = useState(false);
   const { setLoading } = useLoading();
   const handleSubmit = async (values: ILoginRequest) => {
     try {
@@ -47,47 +49,54 @@ const Login = () => {
             Ôn luyện
           </div>
         </div>
-        <Form form={form} onFinish={handleSubmit}>
-          <Form.Item
-            className="flex flex-col gap-3"
-            name="username"
-            label={<b className="text-white">Tài khoản</b>}
-            labelCol={{ span: 24 }}
-          >
-            <input
-              className="w-full p-[10px] rounded-[10px] bg-[#e3eaff] focus:border-[#5882c1] text-[#2b4182] focus:outline-none focus:ring-0"
-              type="text"
-              placeholder="Tài Khoản"
-            />
-          </Form.Item>
-          <Form.Item
-            name="password"
-            className="flex flex-col gap-3"
-            label={<b className="text-white">Mật khẩu</b>}
-            labelCol={{ span: 24 }}
-          >
-            <input
-              className="w-full p-[10px] rounded-[10px] bg-[#e3eaff] focus:border-[#5882c1] text-[#2b4182] focus:outline-none focus:ring-0"
-              type="password"
-              placeholder="Mật khẩu"
-            />
-          </Form.Item>
-          <div className="text-white flex gap-2 justify-end pb-3 items-center">
-            Chưa có tài khoản?{" "}
-            <span className="text-[#ffc022] font-bold cursor-pointer">
-              {" "}
-              Đăng ký ngay{" "}
-            </span>
-          </div>
-          <Form.Item>
-            <button
-              type="submit"
-              className="bg-[#ffc022] rounded-[10px] text-white w-full h-[47px] flex items-center justify-center cursor-pointer"
+        {isRegist ? (
+          <Regist />
+        ) : (
+          <Form form={form} onFinish={handleSubmit}>
+            <Form.Item
+              className="flex flex-col gap-3"
+              name="username"
+              label={<b className="text-white">Tài khoản</b>}
+              labelCol={{ span: 24 }}
             >
-              Đăng nhập
-            </button>
-          </Form.Item>
-        </Form>
+              <input
+                className="w-full p-[10px] rounded-[10px] bg-[#e3eaff] focus:border-[#5882c1] text-[#2b4182] focus:outline-none focus:ring-0"
+                type="text"
+                placeholder="Tài Khoản"
+              />
+            </Form.Item>
+            <Form.Item
+              name="password"
+              className="flex flex-col gap-3"
+              label={<b className="text-white">Mật khẩu</b>}
+              labelCol={{ span: 24 }}
+            >
+              <input
+                className="w-full p-[10px] rounded-[10px] bg-[#e3eaff] focus:border-[#5882c1] text-[#2b4182] focus:outline-none focus:ring-0"
+                type="password"
+                placeholder="Mật khẩu"
+              />
+            </Form.Item>
+            <div className="text-white flex gap-2 justify-end pb-3 items-center">
+              Chưa có tài khoản?{" "}
+              <span
+                className="text-[#ffc022] font-bold cursor-pointer"
+                onClick={() => setIsRegist(true)}
+              >
+                {" "}
+                Đăng ký ngay{" "}
+              </span>
+            </div>
+            <Form.Item>
+              <button
+                type="submit"
+                className="bg-[#ffc022] rounded-[10px] text-white w-full h-[47px] flex items-center justify-center cursor-pointer"
+              >
+                Đăng nhập
+              </button>
+            </Form.Item>
+          </Form>
+        )}
       </div>
       <svg
         viewBox="0 0 1320 250"
