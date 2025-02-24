@@ -148,11 +148,11 @@ const DefaultLayout: React.FC<props> = ({ children }) => {
                       <div
                         className={`${
                           open ? "max-h-[300px]" : "max-h-0"
-                        } transition-all overflow-hidden duration-300 ease-in-out absolute top-10 left-0 w-full`}
+                        } transition-all overflow-hidden min-w-[150px] duration-300 ease-in-out absolute top-10 right-0 w-full`}
                       >
                         <div className="flex flex-col gap-1 bg-white rounded-xl p-2">
                           <button className="bg-white rounded-[10px] border border-gray-300 py-2 text-black w-full flex items-center justify-center cursor-pointer">
-                            Thông tin cá nhân
+                            Hồ sơ
                           </button>
 
                           <button

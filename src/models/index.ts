@@ -26,3 +26,12 @@ export type IAccount = {
   phoneNumber: string;
   role: string;
 };
+export type IRegist = {
+  email: string;
+  fullName: string;
+  password: string;
+  phoneNumber: string;
+  gender: string;
+  username: string;
+  role: string;
+};
