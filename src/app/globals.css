@@ -94,3 +94,8 @@ body {
   width: 16px !important;
   height: 16px !important;
 }
+
+.ant-radio-wrapper {
+  color: #ffffff !important;
+  font-weight: 700;
+}

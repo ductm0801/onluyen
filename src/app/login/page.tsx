@@ -17,6 +17,7 @@ const Login = () => {
   const router = useRouter();
   const { setUser } = useAuth();
   const [isRegist, setIsRegist] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const { setLoading } = useLoading();
   const handleSubmit = async (values: ILoginRequest) => {
     try {
@@ -42,7 +43,19 @@ const Login = () => {
 
   return (
     <div className="bg-[#2b4182] h-screen w-screen flex items-center justify-center relative overflow-x-hidden">
-      <div className="bg-[#5882c14d] w-[390px] rounded-[20px] flex flex-col gap-8 px-[45px] py-[15px]">
+      <div
+        className={`bg-[#5882c14d] ${
+          isRegist ? "w-[600px] " : "w-[390px]"
+        } rounded-[20px] relative flex flex-col gap-8 px-[45px] py-[15px]`}
+      >
+        {isRegist && (
+          <img
+            src={IMAGES.backIcon}
+            alt="back"
+            className="absolute top-8 left-10 cursor-pointer w-[40px]  filter brightness-0 invert"
+            onClick={() => setIsRegist(false)}
+          />
+        )}
         <div className="flex items-center justify-center gap-4">
           <img src={IMAGES.logo} alt="logo" className="w-12" />
           <div className="font-bold text-[30px] leading-[38px] text-white">
@@ -71,11 +84,19 @@ const Login = () => {
               label={<b className="text-white">Mật khẩu</b>}
               labelCol={{ span: 24 }}
             >
-              <input
-                className="w-full p-[10px] rounded-[10px] bg-[#e3eaff] focus:border-[#5882c1] text-[#2b4182] focus:outline-none focus:ring-0"
-                type="password"
-                placeholder="Mật khẩu"
-              />
+              <div className="relative w-full">
+                <input
+                  className="w-full p-[10px] rounded-[10px] bg-[#e3eaff] focus:border-[#5882c1] text-[#2b4182] focus:outline-none focus:ring-0"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Mật khẩu"
+                />
+                <img
+                  src={showPassword ? IMAGES.eyeShow : IMAGES.eyeOff}
+                  alt="eye"
+                  className="absolute top-1/2 right-3 transform -translate-y-1/2 cursor-pointer w-[20px]"
+                  onClick={() => setShowPassword((prev) => !prev)}
+                />
+              </div>
             </Form.Item>
             <div className="text-white flex gap-2 justify-end pb-3 items-center">
               Chưa có tài khoản?{" "}

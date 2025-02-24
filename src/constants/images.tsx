@@ -15,4 +15,7 @@ export const IMAGES = {
   account: "/assets/account.svg",
   defaultMale: "/assets/defautMale.png",
   arrowDown: "/assets/arrowDown.svg",
+  eyeShow: "/assets/eye-show.svg",
+  eyeOff: "/assets/eye-off.svg",
+  backIcon: "/assets/backIcon.svg",
 };
