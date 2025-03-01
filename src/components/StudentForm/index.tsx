@@ -170,7 +170,7 @@ const StudentForm = () => {
             block
             size="large"
             options={options}
-            defaultValue="Male"
+            // defaultValue="Male"
             optionType="button"
             buttonStyle="solid"
           />

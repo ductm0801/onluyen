@@ -8,6 +8,7 @@ import { menus } from "@/constants/menu";
 import { useAuth } from "@/providers/authProvider";
 import { useTheme } from "@/providers/themeProvider";
 import { Moon, Sun } from "lucide-react";
+import path from "path";
 
 type props = {
   children: React.ReactNode;
@@ -63,7 +64,11 @@ const DefaultLayout: React.FC<props> = ({ children }) => {
   return (
     <>
       <Nav sidebarOpen={sidebarOpen} closeSidebar={closeSidebar} />
-      <div className={pathName === "/login" ? "" : "xl:ml-[288px]"}>
+      <div
+        className={
+          pathName === "/login" || pathName === "/" ? "" : "xl:ml-[288px]"
+        }
+      >
         <nav
           className={`${
             pathName === "/login" ? "hidden" : "block"
@@ -126,44 +131,50 @@ const DefaultLayout: React.FC<props> = ({ children }) => {
                         <NotificationMobileComponents />
                       </div> */}
                     </div>
-                    <div className="flex flex-row gap-[8px] items-center relative group cursor-pointer">
-                      <div>
-                        <div
-                          className="font-semibold text-white text-lg"
-                          onClick={() => toggleDropDown()}
-                        >
-                          {user?.FullName}
-                        </div>
-                        {/* {user?.avatar ? (
-                          <Avatar
-                            className="border-2 border-white w-[38px] h-[38px]"
-                            src={user?.avatar}
-                          />
-                        ) : (
-                          <Avatar className="border-2 border-white w-[36px] h-[36px]">
-                            {user?.username?.charAt(0).toUpperCase()}
-                          </Avatar>
-                        )} */}
-                      </div>
-                      <div
-                        className={`${
-                          open ? "max-h-[300px]" : "max-h-0"
-                        } transition-all overflow-hidden min-w-[150px] duration-300 ease-in-out absolute top-10 right-0 w-full`}
-                      >
-                        <div className="flex flex-col gap-1 bg-white rounded-xl p-2">
-                          <button className="bg-white rounded-[10px] border border-gray-300 py-2 text-black w-full flex items-center justify-center cursor-pointer">
-                            Hồ sơ
-                          </button>
-
-                          <button
-                            className="bg-white rounded-[10px] border border-gray-300 py-2 text-black w-full flex items-center justify-center cursor-pointer"
-                            onClick={logout}
+                    {user ? (
+                      <div className="flex flex-row gap-[8px] items-center relative group cursor-pointer">
+                        <div>
+                          <div
+                            className="font-semibold text-white text-lg"
+                            onClick={() => toggleDropDown()}
                           >
-                            Đăng xuất
-                          </button>
+                            {user?.FullName}
+                          </div>
+                          {/* {user?.avatar ? (
+     <Avatar
+       className="border-2 border-white w-[38px] h-[38px]"
+       src={user?.avatar}
+     />
+   ) : (
+     <Avatar className="border-2 border-white w-[36px] h-[36px]">
+       {user?.username?.charAt(0).toUpperCase()}
+     </Avatar>
+   )} */}
+                        </div>
+                        <div
+                          className={`${
+                            open ? "max-h-[300px]" : "max-h-0"
+                          } transition-all overflow-hidden min-w-[150px] duration-300 ease-in-out absolute top-10 right-0 w-full`}
+                        >
+                          <div className="flex flex-col gap-1 bg-white rounded-xl p-2">
+                            <button className="bg-white rounded-[10px] border border-gray-300 py-2 text-black w-full flex items-center justify-center cursor-pointer">
+                              Hồ sơ
+                            </button>
+
+                            <button
+                              className="bg-white rounded-[10px] border border-gray-300 py-2 text-black w-full flex items-center justify-center cursor-pointer"
+                              onClick={logout}
+                            >
+                              Đăng xuất
+                            </button>
+                          </div>
                         </div>
                       </div>
-                    </div>
+                    ) : (
+                      <Link href="/login" className="text-white">
+                        Đăng nhập
+                      </Link>
+                    )}
                   </div>
                 </div>
               </ul>
@@ -172,7 +183,9 @@ const DefaultLayout: React.FC<props> = ({ children }) => {
         </nav>
         <div
           className={
-            pathName === "/login" ? "" : "max-w-[1020px] py-8 px-4 mx-auto"
+            pathName === "/login" || pathName === "/"
+              ? ""
+              : "max-w-[1020px] py-8 px-4 mx-auto"
           }
         >
           {children}

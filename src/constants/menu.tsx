@@ -10,17 +10,21 @@ export const menus: Record<
     { label: "Môn học", path: "/admin/courses", icon: IMAGES.courseIcon },
   ],
   Student: [
-    { label: "Trang chủ", icon: IMAGES.house, path: "/" },
-    { label: "Lớp học trực tuyến", icon: IMAGES.school, path: "/calendar" },
-    { label: "Tự học", icon: IMAGES.book, path: "" },
-    { label: "Ôn luyện plus", icon: IMAGES.earth, path: "/question" },
+    { label: "Trang chủ", icon: IMAGES.house, path: "/student/home" },
+    // { label: "Lớp học trực tuyến", icon: IMAGES.school, path: "/calendar" },
+    // { label: "Tự học", icon: IMAGES.book, path: "" },
+    // { label: "Ôn luyện plus", icon: IMAGES.earth, path: "/question" },
   ],
   Instructor: [
     {
       label: "Câu hỏi",
-      path: "/investor/management",
+      path: "/instructor/question",
       icon: IMAGES.questionIcon,
     },
-    { label: "Đề kiểm tra", path: "/investor/projects", icon: IMAGES.examIcon },
+    {
+      label: "Đề kiểm tra",
+      path: "/instructor/exam",
+      icon: IMAGES.examIcon,
+    },
   ],
 };
