@@ -6,10 +6,12 @@ import "swiper/css";
 import "swiper/css/pagination";
 import { Autoplay, Navigation, Pagination } from "swiper/modules";
 import { IMAGES } from "@/constants/images";
-import { getSubject } from "@/services";
+import { enrollExam, getExamBySubjectId, getSubject } from "@/services";
 import { useLoading } from "@/providers/loadingProvider";
 import { useAuth } from "@/providers/authProvider";
 import { Subject } from "@/models";
+import { toast } from "react-toastify";
+import CustomButton from "@/components/CustomButton";
 
 const items = [
   {
@@ -56,7 +58,21 @@ const Home = () => {
   const ref = useRef<any>();
   const [subjects, setSubjects] = useState<Subject[]>([]);
   const { setLoading } = useLoading();
+  const [active, setActive] = useState("");
   const { user } = useAuth();
+  const subjectRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+  const handleSubjectClick = (id: string, index: number) => {
+    setActive(id);
+
+    if (subjectRefs.current[index]) {
+      subjectRefs.current[index]?.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+        inline: "center",
+      });
+    }
+  };
   const slideLeft = () => {
     if (!ref) {
       return;
@@ -75,6 +91,7 @@ const Home = () => {
       const res = await getSubject();
       if (res) {
         setSubjects(res.data);
+        setActive(res.data[0].id);
       }
     } catch (err) {
       console.error(err);
@@ -86,10 +103,47 @@ const Home = () => {
   useEffect(() => {
     fetchSubject();
   }, []);
+  const [pageIndex, setPageIndex] = useState(0);
+  const [exam, setExam] = useState([]);
+  console.log(exam);
+
+  const fetchExam = async () => {
+    // const pageSize = 10;
+    try {
+      setLoading(true);
+      const res = await getExamBySubjectId(active);
+      if (res) {
+        setExam(res.data);
+      }
+    } catch (err) {
+      console.error(err);
+      setLoading(false);
+    } finally {
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
+    fetchExam();
+  }, [active]);
+  const handleEnrollExam = async (id: string) => {
+    try {
+      setLoading(true);
+      const res = await enrollExam(id);
+      if (res) {
+        toast.success(res.message);
+      }
+    } catch (err: any) {
+      // console.error(err);
+      toast.error(err.response.data.message);
+      setLoading(false);
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex justify-between items-center">
-        <div className="font-bold text-[#0C111D]">Hi, {user?.FullName}!</div>
+      <div className="flex justify-end items-center">
+        {/* <div className="font-bold text-[#0C111D]">Hi, {user?.FullName}!</div> */}
         <div className="flex gap-2 items-center border border-[#D0D5DD] rounded-full py-2 px-4">
           <img src={IMAGES.searchIcon} alt="search" className="text-sm" />
           <input
@@ -155,25 +209,44 @@ const Home = () => {
         />
       </div>
       <div className="flex flex-col gap-6">
-        <div className="text-2xl font-bold">Môn học</div>
-        <div className="flex gap-4 flex-wrap">
+        <div className="text-2xl font-bold">Đề thi</div>
+        <div className="flex gap-4 overflow-scroll">
           {subjects &&
-            subjects.map((s) => (
+            subjects.map((s, index) => (
               <div
+                ref={(el) => {
+                  subjectRefs.current[index] = el;
+                }}
                 key={s.id}
-                className="w-[180px] border border-[#D0D5DD] rounded-xl p-4 shadow-lg"
+                className={`w-[180px] flex-shrink-0 ${
+                  active === s.id
+                    ? "bg-[#FDB022] border-[#FDB022]"
+                    : "border-[#D0D5DD]"
+                } border cursor-pointer transition-all duration-500 ease-in-out rounded-xl p-4 shadow-lg`}
+                onClick={() => handleSubjectClick(s.id, index)}
               >
                 <div className="flex flex-col items-center gap-2">
                   <div>
                     <div className="font-bold text-sm text-center">
                       {s.subjectName}
                     </div>
-                    <p className="line-clamp-2">{s.subjectDescription}</p>
+                    {/* <p className="line-clamp-2">{s.subjectDescription}</p> */}
                   </div>
                 </div>
               </div>
             ))}
         </div>
+        {exam.map((e: any) => (
+          <div className="flex justify-between items-center">
+            <div className="flex flex-col gap-2">
+              <p className="font-bold  text-start">{e.examName}</p>
+              <p className="line-clamp-1 text-sm">
+                {e.price.toLocaleString("vi-VN")}đ
+              </p>
+            </div>
+            <CustomButton text="Đăng ký ngay" textHover="Đừng ngại" />
+          </div>
+        ))}
       </div>
     </div>
   );

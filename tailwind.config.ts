@@ -25,9 +25,48 @@ const config: Config = {
             transform: "scale(1)",
           },
         },
+        butonHover: {
+          "0%": {
+            transform: "translateY(-200%) rotate(20deg)",
+          },
+
+          "100%": {
+            transform: "translateY(0%) rotate(0deg)",
+          },
+        },
+        butonNoHover: {
+          "0%": {
+            transform: "translateY(0%) rotate(0deg)",
+          },
+
+          "100%": {
+            transform: "translateY(-200%) rotate(20deg)",
+          },
+        },
+        butonHover2: {
+          "0%": {
+            transform: "translateY(0%) rotate(20deg)",
+          },
+          "100%": {
+            transform: "translateY(200%) rotate(0deg)",
+          },
+        },
+        butonNoHover2: {
+          "0%": {
+            transform: "translateY(200%) rotate(20deg)",
+          },
+
+          "100%": {
+            transform: "translateY(0%) rotate(0deg)",
+          },
+        },
       },
       animation: {
         shimmer: "shimmer 1s infinite linear",
+        butonHover: "butonHover 1s forwards",
+        buttonHover2: "butonHover2 1s forwards",
+        butonNoHover: "butonNoHover 1s forwards",
+        butonNoHover2: "butonNoHover2 1s forwards",
       },
     },
   },

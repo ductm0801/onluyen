@@ -3,6 +3,7 @@
 import { jwtDecode } from "jwt-decode";
 import { useRouter } from "next/navigation";
 import { createContext, useContext, useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 interface User {
   UserId: string;
@@ -28,7 +29,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const checkToken = () => {
       const token = localStorage.getItem("token");
       if (!token) {
-        router.replace("/login");
+        // router.replace("/login");
         return;
       }
 
@@ -37,7 +38,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         const currentTime = Math.floor(Date.now() / 1000);
 
         if (decoded.exp < currentTime) {
-          console.warn("Token đã hết hạn, chuyển hướng đến đăng nhập.");
+          toast.warn("Token đã hết hạn, chuyển hướng đến đăng nhập.");
           localStorage.removeItem("token");
           setUser(null);
           router.replace("/login");

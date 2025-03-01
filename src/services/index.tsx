@@ -10,6 +10,14 @@ export const getSubject = async () => {
   const res = await axiosClient.get("/api/subject");
   return res.data;
 };
+export const getExamBySubjectId = async (id: string) => {
+  const res = await axiosClient.get(`/api/exam/subject/${id}`);
+  return res.data;
+};
+export const enrollExam = async (id: string) => {
+  const res = await axiosClient.post(`/api/exam/enrollExam/${id}`);
+  return res.data;
+};
 export const studentRegist = async (body: IRegist) => {
   const res = await axiosClient.post("/api/students/regist", body);
   return res.data;

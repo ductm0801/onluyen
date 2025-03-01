@@ -1,6 +1,6 @@
 "use client";
-import Home from "@/views/Home";
+import Intro from "@/views/Intro";
 
-export default function HomePage() {
-  return <Home />;
+export default function IntroPage() {
+  return <Intro />;
 }
