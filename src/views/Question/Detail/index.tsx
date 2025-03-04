@@ -7,6 +7,8 @@ import { Button, Checkbox, Form, Input, Radio, Select } from "antd";
 import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import CombinedEditor from "@/components/CombinedEditor";
+import ReactQuill from "react-quill";
 
 const difficultyOptions = [
   { label: "Cơ bản", value: 0 },
@@ -81,9 +83,7 @@ const QuestionDetail: React.FC<props> = ({
         return (
           <Form
             form={form}
-            initialValues={{
-              answers: question?.answers || [],
-            }}
+            initialValues={question}
             onFinish={(values) => {
               const answers = values.answers || [];
               const hasCorrectAnswer = answers.some(
@@ -103,7 +103,7 @@ const QuestionDetail: React.FC<props> = ({
               labelCol={{ span: 24 }}
               rules={[{ required: true, message: "Vui lòng nhập câu hỏi" }]}
             >
-              <Input placeholder="Câu hỏi" className="w-full" />
+              <ReactQuill />
             </Form.Item>
             <Form.Item
               name="difficulty"
@@ -127,14 +127,17 @@ const QuestionDetail: React.FC<props> = ({
                   <Radio.Group
                     className="w-full"
                     value={selectedValue !== -1 ? selectedValue : null}
-                    onChange={(selectedIndex) => {
+                    onChange={(e) => {
+                      const selectedIndex = e.target.value;
                       const answers = form.getFieldValue("answers") || [];
+
                       const updatedAnswers = answers.map(
-                        (answer: IAnswers, index: any) => ({
+                        (answer: IAnswers, index: number) => ({
                           ...answer,
                           isCorrect: index === selectedIndex,
                         })
                       );
+
                       form.setFieldsValue({ answers: updatedAnswers });
                     }}
                   >
@@ -143,10 +146,7 @@ const QuestionDetail: React.FC<props> = ({
                         <div className="flex w-full items-center gap-8">
                           <Radio value={index} />
                           <Form.Item name={[name, "content"]} noStyle>
-                            <Input
-                              placeholder="Nhập câu trả lời..."
-                              className="w-full"
-                            />
+                            <ReactQuill />
                           </Form.Item>
                           <div
                             style={{ cursor: "pointer", color: "red" }}
@@ -157,7 +157,7 @@ const QuestionDetail: React.FC<props> = ({
                         </div>
                       </Form.Item>
                     ))}
-                    <div className="flex justify-end">
+                    <div className="flex justify-start">
                       <Button
                         type="dashed"
                         onClick={() => add({ content: "", isCorrect: false })}
@@ -169,7 +169,7 @@ const QuestionDetail: React.FC<props> = ({
                 );
               }}
             </Form.List>
-            <div className="flex justify-end">
+            <div className="flex justify-end mt-4">
               <Form.Item>
                 <button
                   type="submit"
@@ -185,9 +185,7 @@ const QuestionDetail: React.FC<props> = ({
         return (
           <Form
             form={form}
-            initialValues={{
-              answers: question?.answers || [],
-            }}
+            initialValues={question}
             onFinish={(values) => {
               const answers = values.answers || [];
               const hasCorrectAnswer = answers.some(
@@ -207,7 +205,7 @@ const QuestionDetail: React.FC<props> = ({
               labelCol={{ span: 24 }}
               rules={[{ required: true, message: "Vui lòng nhập câu hỏi" }]}
             >
-              <Input placeholder="Câu hỏi" className="w-full" />
+              <ReactQuill />
             </Form.Item>
             <Form.Item
               name="difficulty"
@@ -249,10 +247,7 @@ const QuestionDetail: React.FC<props> = ({
                         <div className="flex w-full items-center gap-8">
                           <Checkbox value={index} />
                           <Form.Item name={[name, "content"]} noStyle>
-                            <Input
-                              placeholder="Nhập câu trả lời..."
-                              className="w-full"
-                            />
+                            <ReactQuill />
                           </Form.Item>
                           <div
                             style={{ cursor: "pointer", color: "red" }}
@@ -263,7 +258,7 @@ const QuestionDetail: React.FC<props> = ({
                         </div>
                       </Form.Item>
                     ))}
-                    <div className="flex justify-end">
+                    <div className="flex justify-start">
                       <Button
                         type="dashed"
                         onClick={() => add({ content: "", isCorrect: false })}
@@ -275,7 +270,7 @@ const QuestionDetail: React.FC<props> = ({
                 );
               }}
             </Form.List>
-            <div className="flex justify-end">
+            <div className="flex justify-end mt-4">
               <Form.Item>
                 <button
                   type="submit"
@@ -301,7 +296,7 @@ const QuestionDetail: React.FC<props> = ({
       aria-hidden="true"
       className=" overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full bg-black/70"
     >
-      <div className="relative p-4 w-full max-w-md max-h-full">
+      <div className="relative p-4 w-full max-w-lg max-h-full">
         <div className="relative bg-white rounded-lg shadow-sm dark:bg-gray-700">
           <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white">

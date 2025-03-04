@@ -140,7 +140,12 @@ const BankDetail = () => {
                     scope="row"
                     className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white"
                   >
-                    <div className="text-base font-semibold">{a.title}</div>
+                    <div
+                      className="text-base font-semibold"
+                      dangerouslySetInnerHTML={{
+                        __html: `${a?.title}`,
+                      }}
+                    ></div>
                   </th>
                   {/* <td className="px-6 py-4">{a.testName}</td> */}
                   <td className="px-6 py-4 ">{difficultyEnum[a.difficulty]}</td>
