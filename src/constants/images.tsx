@@ -18,4 +18,5 @@ export const IMAGES = {
   eyeShow: "/assets/eye-show.svg",
   eyeOff: "/assets/eye-off.svg",
   backIcon: "/assets/backIcon.svg",
+  course: "/assets/courseOnline.svg",
 };
