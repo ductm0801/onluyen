@@ -10,6 +10,7 @@ import {
 import { Button, Checkbox, Form, Input, Radio, Select } from "antd";
 import React, { useState } from "react";
 import { toast } from "react-toastify";
+import CombinedEditor from "../CombinedEditor";
 
 type props = {
   onClose: () => void;
@@ -68,7 +69,7 @@ const ModalCreateQuestion: React.FC<props> = ({
               labelCol={{ span: 24 }}
               rules={[{ required: true, message: "Vui lòng nhập câu hỏi" }]}
             >
-              <Input placeholder="Câu hỏi" className="w-full" />
+              <CombinedEditor />
             </Form.Item>
             <Form.Item
               name="difficulty"
@@ -112,10 +113,7 @@ const ModalCreateQuestion: React.FC<props> = ({
                             },
                           ]}
                         >
-                          <Input
-                            placeholder="Nhập câu trả lời..."
-                            className="w-full"
-                          />
+                          <CombinedEditor />
                         </Form.Item>
                         <div
                           style={{ cursor: "pointer", color: "red" }}
@@ -172,7 +170,7 @@ const ModalCreateQuestion: React.FC<props> = ({
               labelCol={{ span: 24 }}
               rules={[{ required: true, message: "Vui lòng nhập câu hỏi" }]}
             >
-              <Input placeholder="Câu hỏi" className="w-full" />
+              <CombinedEditor />
             </Form.Item>
             <Form.Item
               name="difficulty"
@@ -206,10 +204,7 @@ const ModalCreateQuestion: React.FC<props> = ({
                       <div className="flex w-full items-center gap-8">
                         <Checkbox value={index} />
                         <Form.Item name={[name, "content"]} noStyle>
-                          <Input
-                            placeholder="Nhập câu trả lời..."
-                            className="w-full"
-                          />
+                          <CombinedEditor />
                         </Form.Item>
                         <div
                           style={{ cursor: "pointer", color: "red" }}
@@ -272,7 +267,7 @@ const ModalCreateQuestion: React.FC<props> = ({
       aria-hidden="true"
       className=" overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full bg-black/70"
     >
-      <div className="relative p-4 w-full max-w-md max-h-full">
+      <div className="relative p-4 w-full max-w-lg max-h-full">
         <div className="relative bg-white rounded-lg shadow-sm dark:bg-gray-700">
           <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
