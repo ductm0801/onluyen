@@ -14,16 +14,24 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
       return;
     }
 
-    // Chỉ kiểm tra quyền nếu pathname bắt đầu bằng role
+    // Các role cần kiểm tra
     const rolePaths = ["/admin", "/student", "/instructor"];
-    const shouldCheck = rolePaths.some((role) => pathname.startsWith(role));
+
+    // Lấy phần đầu tiên của đường dẫn (bỏ ID nếu có)
+    const basePath = `/${pathname.split("/")[1]}`;
+
+    // Kiểm tra nếu basePath nằm trong rolePaths
+    const shouldCheck = rolePaths.includes(basePath);
 
     if (shouldCheck) {
       const allowedPaths = menus[user.Role as keyof typeof menus].map(
         (item) => item.path
       );
 
-      if (!allowedPaths.includes(pathname)) {
+      // Kiểm tra quyền với cả pathname và pathname có id động
+      const isAllowed = allowedPaths.some((path) => pathname.startsWith(path));
+
+      if (!isAllowed) {
         const redirectPath =
           menus[user.Role as keyof typeof menus][0]?.path || "/";
         router.push(redirectPath);

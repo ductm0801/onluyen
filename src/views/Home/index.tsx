@@ -12,6 +12,7 @@ import { useAuth } from "@/providers/authProvider";
 import { Subject } from "@/models";
 import { toast } from "react-toastify";
 import CustomButton from "@/components/CustomButton";
+import { useRouter } from "next/navigation";
 
 const items = [
   {
@@ -56,6 +57,7 @@ const renderBullet = (index: number, className: string) =>
 
 const Home = () => {
   const ref = useRef<any>();
+  const router = useRouter();
   const [subjects, setSubjects] = useState<Subject[]>([]);
   const { setLoading } = useLoading();
   const [active, setActive] = useState("");
@@ -92,6 +94,7 @@ const Home = () => {
       if (res) {
         setSubjects(res.data);
         setActive(res.data[0].id);
+        // console.log(res.data);
       }
     } catch (err) {
       console.error(err);
@@ -105,15 +108,15 @@ const Home = () => {
   }, []);
   const [pageIndex, setPageIndex] = useState(0);
   const [exam, setExam] = useState([]);
-  console.log(exam);
+  // console.log(exam);
 
   const fetchExam = async () => {
-    // const pageSize = 10;
+    const pageSize = 10;
     try {
       setLoading(true);
-      const res = await getExamBySubjectId(active);
+      const res = await getExamBySubjectId(active, pageIndex, pageSize);
       if (res) {
-        setExam(res.data);
+        setExam(res.data.items);
       }
     } catch (err) {
       console.error(err);
@@ -131,6 +134,7 @@ const Home = () => {
       const res = await enrollExam(id);
       if (res) {
         toast.success(res.message);
+        fetchExam();
       }
     } catch (err: any) {
       // console.error(err);
@@ -210,7 +214,7 @@ const Home = () => {
       </div>
       <div className="flex flex-col gap-6">
         <div className="text-2xl font-bold">Đề thi</div>
-        <div className="flex gap-4 overflow-scroll">
+        <div className="flex border-b overflow-scroll">
           {subjects &&
             subjects.map((s, index) => (
               <div
@@ -218,11 +222,9 @@ const Home = () => {
                   subjectRefs.current[index] = el;
                 }}
                 key={s.id}
-                className={`w-[180px] flex-shrink-0 ${
-                  active === s.id
-                    ? "bg-[#FDB022] border-[#FDB022]"
-                    : "border-[#D0D5DD]"
-                } border cursor-pointer transition-all duration-500 ease-in-out rounded-xl p-4 shadow-lg`}
+                className={`w-fit flex-shrink-0 ${
+                  active === s.id ? "border-b-2 border-[#1244A2]" : ""
+                }  cursor-pointer transition-all duration-500 ease-in-out p-2`}
                 onClick={() => handleSubjectClick(s.id, index)}
               >
                 <div className="flex flex-col items-center gap-2">
@@ -236,17 +238,36 @@ const Home = () => {
               </div>
             ))}
         </div>
-        {exam.map((e: any) => (
-          <div className="flex justify-between items-center">
-            <div className="flex flex-col gap-2">
-              <p className="font-bold  text-start">{e.examName}</p>
-              <p className="line-clamp-1 text-sm">
-                {e.price.toLocaleString("vi-VN")}đ
-              </p>
+        {exam &&
+          exam.map((e: any) => (
+            <div className="flex justify-between items-center">
+              <div className="flex flex-col gap-2">
+                <p className="font-bold  text-start">{e.examName}</p>
+                <p className="line-clamp-1 text-sm">
+                  {e.price.toLocaleString("vi-VN")}đ
+                </p>
+              </div>
+              {e.freeAttempts <= 0 ? (
+                <CustomButton
+                  text="Mua mã thi"
+                  textHover="Mua ngay"
+                  // onClick={() => router.push(`/student/exam/${e.id}`)}
+                />
+              ) : e.isEnrolled ? (
+                <CustomButton
+                  text="Vào thi ngay"
+                  textHover="Đừng ngại"
+                  onClick={() => router.push(`/student/exam/${e.id}`)}
+                />
+              ) : (
+                <CustomButton
+                  text="Đăng ký ngay"
+                  textHover="Đừng ngại"
+                  onClick={() => handleEnrollExam(e.id)}
+                />
+              )}
             </div>
-            <CustomButton text="Đăng ký ngay" textHover="Đừng ngại" />
-          </div>
-        ))}
+          ))}
       </div>
     </div>
   );

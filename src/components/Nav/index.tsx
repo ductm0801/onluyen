@@ -16,12 +16,15 @@ const Nav: React.FC<props> = ({ sidebarOpen, closeSidebar }) => {
   const pathName = usePathname();
   const { user } = useAuth();
   const [menuItems, setMenuItems] = useState<
-    { label: string; path: string; icon: string }[]
+    { label: string; path: string; icon: string; isShow: boolean }[]
   >([]);
 
   useEffect(() => {
     if (!user) return;
-    setMenuItems(menus[user.Role as keyof typeof menus] || []);
+    const filteredMenus = (menus[user.Role as keyof typeof menus] || []).filter(
+      (item) => item.isShow
+    );
+    setMenuItems(filteredMenus);
   }, [user, menus]);
 
   return (
@@ -30,7 +33,7 @@ const Nav: React.FC<props> = ({ sidebarOpen, closeSidebar }) => {
         pathName === "/" || pathName === "/login" || pathName === "/regist"
           ? "hidden"
           : "block"
-      } fixed top-0 left-0 bottom-0 bg-[#1244A2] w-[288px] my-3 rounded-xl p-8 z-[100] transition-all duration-300 ease-in-out ${
+      } fixed top-0 left-0 bottom-0 bg-[#1244A2] w-[288px] my-3 rounded-xl p-8 z-40 transition-all duration-300 ease-in-out ${
         sidebarOpen ? "translate-x-0" : "xl:translate-x-0 -translate-x-[100%]"
       } `}
     >
@@ -52,7 +55,7 @@ const Nav: React.FC<props> = ({ sidebarOpen, closeSidebar }) => {
             <Link
               href={item.path}
               className={`transition-all duration-300 ease-in-out flex items-center gap-2 py-2 px-[18px] cursor-pointer text-white ${
-                pathName === item.path
+                pathName.startsWith(item.path)
                   ? "bg-[#FDB022] rounded-xl "
                   : " bg-transparent"
               }`}
@@ -64,7 +67,7 @@ const Nav: React.FC<props> = ({ sidebarOpen, closeSidebar }) => {
                 width={20}
                 height={20}
                 className={`transition-all duration-300 ease-out ${
-                  pathName === item.path
+                  pathName.startsWith(item.path)
                     ? "filter brightness-0 invert"
                     : "opacity-50"
                 }`}

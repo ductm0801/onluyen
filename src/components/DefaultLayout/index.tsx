@@ -55,7 +55,9 @@ const DefaultLayout: React.FC<props> = ({ children }) => {
 
     const role = user.Role as keyof typeof menus;
     if (menus[role]) {
-      const label = menus[role].find((item) => item.path === pathName)?.label;
+      const label = menus[role].find((item) =>
+        pathName.startsWith(item.path)
+      )?.label;
       setLabel(label);
       setOpen(false);
     }
@@ -72,7 +74,7 @@ const DefaultLayout: React.FC<props> = ({ children }) => {
         <nav
           className={`${
             pathName === "/login" ? "hidden" : "block"
-          } flex flex-wrap z-50 items-center justify-between min-h-[84px] top-[10px] px-0 py-2 mx-[10px] xl:mr-[10px] xl:ml-[4px] rounded-2xl lg:flex-nowrap lg:justify-start sticky backdrop-saturate-200 backdrop-blur-2xl bg-[#111c44cc] transform transition-transform duration-300 ease-in-out ${
+          } flex flex-wrap z-30 items-center justify-between min-h-[84px] top-[10px] px-0 py-2 mx-[10px] xl:mr-[10px] xl:ml-[4px] rounded-2xl lg:flex-nowrap lg:justify-start sticky backdrop-saturate-200 backdrop-blur-2xl bg-[#111c44cc] transform transition-transform duration-300 ease-in-out ${
             isTopHidden ? "-translate-y-full" : "translate-y-0"
           }`}
         >

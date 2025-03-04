@@ -1,7 +1,8 @@
+import Question from "@/views/Question";
 import React from "react";
 
 const QuestionPage = () => {
-  return <div>QuestionPage</div>;
+  return <Question />;
 };
 
 export default QuestionPage;

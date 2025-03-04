@@ -17,7 +17,7 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
       : "light";
   };
 
-  const [theme, setTheme] = useState<Theme>("dark"); // Đặt giá trị mặc định
+  const [theme, setTheme] = useState<Theme>("light"); // Đặt giá trị mặc định
 
   useEffect(() => {
     const storedTheme = localStorage.getItem("theme") as Theme | null;
