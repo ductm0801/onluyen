@@ -1,10 +1,15 @@
 export const difficultyEnum = {
-  CoBan: "Dễ",
-  TrungBinh: "Trung Bình",
-  NangCao: "Nâng Cao",
+  0: "Dễ",
+  1: "Trung Bình",
+  2: "Nâng Cao",
 };
 export const questionEnum = {
-  MotDapAn: "Chọn một",
-  NhieuDapAn: "Chọn nhiều",
-  TuLuan: "Tự Luận",
+  0: "Chọn một",
+  1: "Chọn nhiều",
+  2: "Tự Luận",
+};
+export const examEnum = {
+  0: "Trắc nghiệm",
+  1: "Tự luận",
+  2: "Tổng hợp",
 };

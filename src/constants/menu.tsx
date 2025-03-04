@@ -1,7 +1,7 @@
 import { IMAGES } from "./images";
 
 export const menus: Record<
-  "Admin" | "Student" | "Instructor",
+  "Admin" | "Student" | "Instructor" | "ExamManager",
   { label: string; path: string; icon: string; isShow: boolean }[]
 > = {
   Admin: [
@@ -62,6 +62,14 @@ export const menus: Record<
       label: "Khoá học",
       path: "/instructor/course",
       icon: IMAGES.courseIcon,
+      isShow: true,
+    },
+  ],
+  ExamManager: [
+    {
+      label: "Ngân hàng đề",
+      path: "/exammanager/testBank",
+      icon: IMAGES.questionIcon,
       isShow: true,
     },
   ],

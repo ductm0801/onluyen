@@ -79,7 +79,7 @@ const QuestionDetail: React.FC<props> = ({
   if (!question) return <div></div>;
   const handleTypeQuestion = () => {
     switch (question.type) {
-      case "MotDapAn":
+      case 0:
         return (
           <Form
             form={form}
@@ -181,7 +181,7 @@ const QuestionDetail: React.FC<props> = ({
             </div>
           </Form>
         );
-      case "NhieuDapAn":
+      case 1:
         return (
           <Form
             form={form}
@@ -282,7 +282,7 @@ const QuestionDetail: React.FC<props> = ({
             </div>
           </Form>
         );
-      case "TuLuan":
+      case 2:
         return <></>;
       default:
         return "";

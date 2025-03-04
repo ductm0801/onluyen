@@ -3,11 +3,12 @@ import Paging from "@/components/Paging";
 import { difficultyEnum, questionEnum } from "@/constants/enum";
 import { IQuestion, IQuestionBank } from "@/models";
 import { useLoading } from "@/providers/loadingProvider";
-import { getQuestionBank, getQuestionByBank } from "@/services";
+import { deleteQuestion, getQuestionBank, getQuestionByBank } from "@/services";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import QuestionDetail from "../Question/Detail";
 import ModalCreateQuestion from "@/components/ModalCreateQuestion";
+import { Modal } from "antd";
 
 const cols = [
   {
@@ -54,6 +55,31 @@ const BankDetail = () => {
   const [detail, setDetail] = useState(false);
   const [create, setCreate] = useState(false);
   const qDetail = useRef<IQuestion | null>(null);
+  const [confirm, setConfirm] = useState(false);
+  const [questionId, setQuestionId] = useState("");
+  const handleDeleteQuestion = async () => {
+    try {
+      setLoading(true);
+      await deleteQuestion(questionId);
+      setConfirm(false);
+      setQuestionId("");
+      fetchQuestion();
+    } catch (error) {
+      setLoading(false);
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleOpenConfirm = (id: string) => {
+    setConfirm(true);
+    setQuestionId(id);
+  };
+  const handleCloseConfirm = () => {
+    setConfirm(false);
+    setQuestionId("");
+  };
 
   const handleOpenDetail = (item: IQuestion) => {
     setDetail(true);
@@ -131,35 +157,47 @@ const BankDetail = () => {
           </thead>
           <tbody>
             {question &&
-              question.map((a, idx) => (
-                <tr
-                  className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600"
-                  key={idx}
-                >
-                  <th
-                    scope="row"
-                    className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white"
+              question
+                .filter((a) => !a.isDeleted)
+                .map((a, idx) => (
+                  <tr
+                    className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600"
+                    key={idx}
                   >
-                    <div
-                      className="text-base font-semibold"
-                      dangerouslySetInnerHTML={{
-                        __html: `${a?.title}`,
-                      }}
-                    ></div>
-                  </th>
-                  {/* <td className="px-6 py-4">{a.testName}</td> */}
-                  <td className="px-6 py-4 ">{difficultyEnum[a.difficulty]}</td>
-                  <td className="px-6 py-4">{questionEnum[a.type]}</td>
-                  <td className="px-6 py-4">
-                    <div
-                      className="font-medium text-red-600 dark:text-red-500 hover:underline cursor-pointer ms-3"
-                      onClick={() => handleOpenDetail(a)}
+                    <th
+                      scope="row"
+                      className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white"
                     >
-                      Chi tiết
-                    </div>
-                  </td>
-                </tr>
-              ))}
+                      <div
+                        className="text-base font-semibold"
+                        dangerouslySetInnerHTML={{
+                          __html: `${a?.title}`,
+                        }}
+                      ></div>
+                    </th>
+                    {/* <td className="px-6 py-4">{a.testName}</td> */}
+                    <td className="px-6 py-4 ">
+                      {difficultyEnum[a.difficulty]}
+                    </td>
+                    <td className="px-6 py-4">{questionEnum[a.type]}</td>
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-2">
+                        <div
+                          className="font-medium text-blue-600 dark:text-blue-500 hover:underline cursor-pointer ms-3"
+                          onClick={() => handleOpenDetail(a)}
+                        >
+                          Chi tiết
+                        </div>
+                        <div
+                          className="font-medium text-red-600 dark:text-red-500 hover:underline cursor-pointer ms-3"
+                          onClick={() => handleOpenConfirm(a.id)}
+                        >
+                          Xóa
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
           </tbody>
         </table>
         <Paging
@@ -184,6 +222,18 @@ const BankDetail = () => {
           fetchQuestion={fetchQuestion}
           bankId={params.id}
         />
+      )}
+      {confirm && (
+        <Modal
+          title="Xóa câu hỏi"
+          open={confirm}
+          onOk={handleDeleteQuestion}
+          onCancel={handleCloseConfirm}
+          okText="Đồng ý"
+          cancelText="Hủy"
+        >
+          Bạn có chắc muốn xóa câu hỏi này?
+        </Modal>
       )}
     </>
   );

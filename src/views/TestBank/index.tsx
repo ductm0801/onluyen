@@ -1,42 +1,27 @@
 "use client";
-import ModalCreateExam from "@/components/ModalCreateExam";
+import ModalCreateExamBank from "@/components/ModalCreateExamBank";
 import Paging from "@/components/Paging";
-import { examEnum } from "@/constants/enum";
-import { IMAGES } from "@/constants/images";
-import { IAccount, IExam } from "@/models";
+import { IExamBank } from "@/models";
 import { useLoading } from "@/providers/loadingProvider";
-import { deleteExam, getExam } from "@/services";
+import { deleteExamBank, getExamBank } from "@/services";
 import { Modal } from "antd";
 import React, { useEffect, useState } from "react";
-import { toast } from "react-toastify";
 const cols = [
   {
-    name: "Tiêu đề",
+    name: "Tên",
     className:
       "px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white rounded-s-lg",
   },
   {
-    name: "Thời lượng",
+    name: "Miêu tả",
     className:
       "px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white",
   },
   {
-    name: "Loại Đề",
+    name: "Môn học",
     className:
       "px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white",
   },
-  {
-    name: "Mô tả",
-    className:
-      "px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white",
-  },
-
-  {
-    name: "Tổng Điểm",
-    className:
-      "px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white",
-  },
-
   {
     name: "Hành động",
     className:
@@ -44,24 +29,24 @@ const cols = [
   },
 ];
 
-const Exam = () => {
-  const [exam, setExam] = useState<IExam[]>([]);
-  const { setLoading } = useLoading();
-  const [pageSize, setPageSize] = useState(10);
+const TestBank = () => {
+  const [examBank, setExamBank] = useState<IExamBank[]>([]);
+  const [pageSize, setPageSize] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
   const [totalItems, setTotalItems] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
   const [create, setCreate] = useState(false);
+  const { setLoading } = useLoading();
 
   const [confirm, setConfirm] = useState(false);
-  const [examId, setExamId] = useState("");
-  const handleDeleteExam = async () => {
+  const [examBankId, setExamBankId] = useState("");
+  const handleDeleteExamBank = async () => {
     try {
       setLoading(true);
-      await deleteExam(examId);
+      await deleteExamBank(examBankId);
       setConfirm(false);
-      setExamId("");
-      fetchExam();
+      setExamBankId("");
+      fetchExamBank();
     } catch (error) {
       setLoading(false);
       console.error(error);
@@ -72,37 +57,39 @@ const Exam = () => {
 
   const handleOpenConfirm = (id: string) => {
     setConfirm(true);
-    setExamId(id);
+    setExamBankId(id);
   };
   const handleCloseConfirm = () => {
     setConfirm(false);
-    setExamId("");
+    setExamBankId("");
   };
-  const fetchExam = async () => {
+
+  const fetchExamBank = async () => {
     try {
       setLoading(true);
-      const res = await getExam(currentPage, pageSize);
-      if (res) setExam(res.data.items);
+      const res = await getExamBank(currentPage, pageSize);
+      if (res) setExamBank(res.data.items);
+      setPageSize(res.data.pageSize);
       setTotalItems(res.data.totalItemsCount);
       setTotalPages(res.data.totalPageCount);
-    } catch (err: any) {
+    } catch (error) {
       setLoading(false);
-      toast.error(err.response.data.message);
+      console.error(error);
     } finally {
       setLoading(false);
     }
   };
   useEffect(() => {
-    fetchExam();
+    fetchExamBank();
   }, [currentPage]);
   return (
     <div className="relative overflow-x-auto">
-      <div className="flex justify-between items-center  flex-column flex-wrap md:flex-row space-y-4 md:space-y-0 pb-4">
+      <div className="flex justify-between  items-center  flex-column flex-wrap md:flex-row space-y-4 md:space-y-0 pb-4">
         <div
           className="bg-[#ffc022] rounded-lg px-3 py-2 cursor-pointer"
           onClick={() => setCreate(true)}
         >
-          Tạo đề mới
+          Tạo ngân hàng đề mới
         </div>
         <div className="relative">
           <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
@@ -141,8 +128,8 @@ const Exam = () => {
           </tr>
         </thead>
         <tbody>
-          {exam &&
-            exam
+          {examBank &&
+            examBank
               .filter((a) => !a.isDeleted)
               .map((a, idx) => (
                 <tr
@@ -153,16 +140,24 @@ const Exam = () => {
                     scope="row"
                     className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white"
                   >
-                    <div className="text-base font-semibold">{a.testName}</div>
-                  </th>
-                  <td className="px-6 py-4">{a.length} phút</td>
-                  <td className="px-6 py-4">{examEnum[a.testType]}</td>
-                  <td className="px-6 py-4">{a.description}</td>
-                  <td className="px-6 py-4">{a.totalGrade}</td>
-                  <td className="px-6 py-4 flex items-center">
-                    <div className="font-medium whitespace-nowrap text-blue-600 dark:text-blue-500 hover:underline cursor-pointer">
-                      Chi tiết
+                    {/* <img
+                    className="w-10 h-10 rounded-full"
+                    src={a.imageUrl || IMAGES.defaultMale}
+                    alt="avatar"
+                  /> */}
+
+                    <div className="text-base font-semibold">
+                      {a.testBankName}
                     </div>
+                  </th>
+                  <td className="px-6 py-4">{a.description}</td>
+                  {/* <td className="px-6 py-4">{a.phoneNumber}</td> */}
+                  <td className="px-6 py-4">{a.subjectName}</td>
+
+                  <td className="px-6 py-4">
+                    {/* <div className="font-medium text-blue-600 dark:text-blue-500 hover:underline cursor-pointer">
+                Sửa
+              </div> */}
                     <div
                       className="font-medium text-red-600 dark:text-red-500 hover:underline cursor-pointer ms-3"
                       onClick={() => handleOpenConfirm(a.id)}
@@ -182,25 +177,25 @@ const Exam = () => {
         setCurrentPage={setCurrentPage}
       />
       {create && (
-        <ModalCreateExam
+        <ModalCreateExamBank
           onClose={() => setCreate(false)}
-          fetchExam={fetchExam}
+          fetchExamBank={fetchExamBank}
         />
       )}
       {confirm && (
         <Modal
-          title="Xóa đềđề"
+          title="Xóa câu hỏi"
           open={confirm}
-          onOk={handleDeleteExam}
+          onOk={handleDeleteExamBank}
           onCancel={handleCloseConfirm}
           okText="Đồng ý"
           cancelText="Hủy"
         >
-          Bạn có chắc muốn xóa đề này?
+          Bạn có chắc muốn xóa câu hỏi này?
         </Modal>
       )}
     </div>
   );
 };
 
-export default Exam;
+export default TestBank;
