@@ -1,4 +1,4 @@
-import { difficultyEnum, questionEnum } from "@/constants/enum";
+import { difficultyEnum, examEnum, questionEnum } from "@/constants/enum";
 
 export type ILoginRequest = {
   username: string;
@@ -27,6 +27,7 @@ export type IAccount = {
   imageUrl?: string;
   phoneNumber: string;
   role: string;
+  isDelete: boolean;
 };
 export type IRegist = {
   email: string;
@@ -45,6 +46,7 @@ export type IQuestion = {
   type: keyof typeof questionEnum;
   testId: string;
   testName: string;
+  isDeleted: boolean;
   answers: IAnswers[];
 };
 
@@ -62,4 +64,24 @@ export type IAnswers = {
   imageUrl?: string;
   isCorrect: boolean;
   questionId: string;
+};
+export type IExamBank = {
+  id: string;
+  testBankName: string;
+  description: string;
+  subjectId: string;
+  subjectName: string;
+  isDeleted: boolean;
+};
+export type IExam = {
+  id: string;
+  testName: string;
+  description: string;
+  testDate: Date;
+  length: number;
+  testBankId: string;
+  testBankName: string;
+  testType: keyof typeof examEnum;
+  totalGrade: number;
+  isDeleted: boolean;
 };

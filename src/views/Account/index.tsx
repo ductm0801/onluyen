@@ -151,14 +151,17 @@ const Account = () => {
                 <td className="px-6 py-4">{a.role}</td>
                 {/* <td className="px-6 py-4">{a.phoneNumber}</td> */}
                 <td className="px-6 py-4">
-                  <div className="flex items-center">
-                    <div className="h-2.5 w-2.5 rounded-full bg-green-500 me-2"></div>{" "}
-                    Online
-                  </div>
-                  <div className="flex items-center">
-                    <div className="h-2.5 w-2.5 rounded-full bg-red-500 me-2"></div>{" "}
-                    Offline
-                  </div>
+                  {a.isDelete ? (
+                    <div className="flex items-center">
+                      <div className="h-2.5 w-2.5 rounded-full bg-red-500 me-2"></div>{" "}
+                      Tạm ngưng
+                    </div>
+                  ) : (
+                    <div className="flex items-center">
+                      <div className="h-2.5 w-2.5 rounded-full bg-green-500 me-2"></div>{" "}
+                      Đang hoạt độngđộng
+                    </div>
+                  )}
                 </td>
                 <td className="px-6 py-4">{a.address}</td>
                 <td className="px-6 py-4">

@@ -1,5 +1,5 @@
 import axiosClient from "@/interceptor";
-import { ILoginRequest, IQuestion, IRegist } from "@/models";
+import { IExam, IExamBank, ILoginRequest, IQuestion, IRegist } from "@/models";
 
 export const login = async (body: ILoginRequest) => {
   const res = await axiosClient.post("/api/accounts/login", body);
@@ -74,5 +74,51 @@ export const createQuestion = async (
 
 export const updateQuestion = async (body: IQuestion, questionId: string) => {
   const res = await axiosClient.put(`/api/question/full/${questionId}`, body);
+  return res.data;
+};
+
+export const deleteQuestion = async (questionId: string) => {
+  const res = await axiosClient.delete(`/api/question/${questionId}`);
+  return res.data;
+};
+
+export const getExamBank = async (pageIndex: number, pageSize: number) => {
+  const res = await axiosClient.get(`/api/testBank/paging`, {
+    params: {
+      pageIndex,
+      pageSize,
+    },
+  });
+  return res.data;
+};
+export const getExamBankAll = async () => {
+  const res = await axiosClient.get(`/api/testBank`);
+  return res.data;
+};
+export const createExamBank = async (body: IExamBank) => {
+  const res = await axiosClient.post(`/api/testBank`, body);
+  return res.data;
+};
+
+export const deleteExamBank = async (id: string) => {
+  const res = await axiosClient.delete(`/api/testBank/${id}`);
+  return res.data;
+};
+export const getExam = async (pageIndex: number, pageSize: number) => {
+  const res = await axiosClient.get(`/api/test/paging`, {
+    params: {
+      pageIndex,
+      pageSize,
+    },
+  });
+  return res.data;
+};
+export const createExam = async (body: IExam) => {
+  const res = await axiosClient.post(`/api/test`, body);
+  return res.data;
+};
+
+export const deleteExam = async (id: string) => {
+  const res = await axiosClient.delete(`/api/test/${id}`);
   return res.data;
 };
