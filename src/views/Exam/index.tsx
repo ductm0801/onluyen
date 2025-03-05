@@ -7,6 +7,7 @@ import { IAccount, IExam } from "@/models";
 import { useLoading } from "@/providers/loadingProvider";
 import { deleteExam, getExam } from "@/services";
 import { Modal } from "antd";
+import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 const cols = [
@@ -52,7 +53,7 @@ const Exam = () => {
   const [totalItems, setTotalItems] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
   const [create, setCreate] = useState(false);
-
+  const router = useRouter();
   const [confirm, setConfirm] = useState(false);
   const [examId, setExamId] = useState("");
   const handleDeleteExam = async () => {
@@ -160,7 +161,10 @@ const Exam = () => {
                   <td className="px-6 py-4">{a.description}</td>
                   <td className="px-6 py-4">{a.totalGrade}</td>
                   <td className="px-6 py-4 flex items-center">
-                    <div className="font-medium whitespace-nowrap text-blue-600 dark:text-blue-500 hover:underline cursor-pointer">
+                    <div
+                      className="font-medium whitespace-nowrap text-blue-600 dark:text-blue-500 hover:underline cursor-pointer"
+                      onClick={() => router.push(`/instructor/exam/${a.id}`)}
+                    >
                       Chi tiết
                     </div>
                     <div
