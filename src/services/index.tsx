@@ -117,8 +117,16 @@ export const createExam = async (body: IExam) => {
   const res = await axiosClient.post(`/api/test`, body);
   return res.data;
 };
+export const updateExam = async (id: string | string[], body: IExam) => {
+  const res = await axiosClient.put(`/api/test/${id}`, body);
+  return res.data;
+};
 
 export const deleteExam = async (id: string) => {
   const res = await axiosClient.delete(`/api/test/${id}`);
+  return res.data;
+};
+export const getExamDetail = async (id: string | string[]) => {
+  const res = await axiosClient.get(`/api/test/${id}`);
   return res.data;
 };
