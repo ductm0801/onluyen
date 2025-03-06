@@ -15,11 +15,14 @@ const ExamDetail = () => {
   const [exam, setExam] = useState<IExam>();
   const [form] = Form.useForm();
   const params = useParams();
+  const [pageIndex, setPageIndex] = useState(0);
+  const [totalItems, setTotalItems] = useState(0);
+  const [pageSize, setPageSize] = useState(10);
   const { setLoading } = useLoading();
   const fetchExam = async () => {
     try {
       setLoading(true);
-      const res = await getExamDetail(params.id);
+      const res = await getExamDetail(params.id, pageIndex, pageSize);
       setExam(res.data);
     } catch (err: any) {
       setLoading(false);
@@ -38,7 +41,11 @@ const ExamDetail = () => {
       label: "Thông tin chung",
       children: <FormUpdateInfo exam={exam} id={params.id} />,
     },
-    { value: 1, label: "Câu hỏi", children: <FormUpdateExam /> },
+    {
+      value: 1,
+      label: "Câu hỏi",
+      children: <FormUpdateExam exam={exam} id={params.id} />,
+    },
   ];
 
   //   const renderTab = () => {};

@@ -118,7 +118,7 @@ const FormUpdateInfo = ({
         </Form.Item>
         <Form.Item
           name="testBankId"
-          label="Dạng đề"
+          label="Ngân hàng đề"
           labelCol={{ span: 24 }}
           rules={[
             {

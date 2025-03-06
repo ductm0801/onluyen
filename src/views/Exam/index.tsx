@@ -193,7 +193,7 @@ const Exam = () => {
       )}
       {confirm && (
         <Modal
-          title="Xóa đềđề"
+          title="Xóa đề"
           open={confirm}
           onOk={handleDeleteExam}
           onCancel={handleCloseConfirm}

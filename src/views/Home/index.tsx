@@ -6,13 +6,20 @@ import "swiper/css";
 import "swiper/css/pagination";
 import { Autoplay, Navigation, Pagination } from "swiper/modules";
 import { IMAGES } from "@/constants/images";
-import { enrollExam, getExamBySubjectId, getSubject } from "@/services";
+import {
+  enrollExam,
+  getExamBySubjectId,
+  getSubject,
+  paymentExamCode,
+} from "@/services";
 import { useLoading } from "@/providers/loadingProvider";
 import { useAuth } from "@/providers/authProvider";
-import { Subject } from "@/models";
+import { IExam, Subject } from "@/models";
 import { toast } from "react-toastify";
 import CustomButton from "@/components/CustomButton";
 import { useRouter } from "next/navigation";
+import { Button, Input, Modal } from "antd";
+import ExamDetail from "../ExamDetail";
 
 const items = [
   {
@@ -62,7 +69,9 @@ const Home = () => {
   const { setLoading } = useLoading();
   const [active, setActive] = useState("");
   const { user } = useAuth();
+  const [open, setOpen] = useState(false);
   const subjectRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const examDetail = useRef<any>();
 
   const handleSubjectClick = (id: string, index: number) => {
     setActive(id);
@@ -139,6 +148,38 @@ const Home = () => {
     } catch (err: any) {
       // console.error(err);
       toast.error(err.response.data.message);
+      setLoading(false);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleOpenPopup = (item: any) => {
+    setOpen(true);
+    examDetail.current = item;
+    if (item.isEnrolled) {
+      return;
+    }
+    handleEnrollExam(item.id);
+  };
+  const handleCLose = () => {
+    setOpen(false);
+    examDetail.current = undefined;
+  };
+  const handlePayment = async (amount: number) => {
+    try {
+      setLoading(true);
+      const res = await paymentExamCode({
+        examEnrollmentId: "44310bd2-aace-4bd5-87e2-a805123807ce",
+        buyerName: "string",
+        buyerEmail: "string",
+        buyerPhone: "string",
+        cancelUrl: `${process.env.NEXT_PUBLIC_DOMAIN}/student/home`,
+        returnUrl: `${process.env.NEXT_PUBLIC_DOMAIN}/student/home`,
+        amount: 2000,
+      });
+      if (res) router.push(res.data);
+    } catch (error) {
       setLoading(false);
     } finally {
       setLoading(false);
@@ -247,28 +288,47 @@ const Home = () => {
                   {e.price.toLocaleString("vi-VN")}đ
                 </p>
               </div>
-              {e.freeAttempts <= 0 ? (
-                <CustomButton
-                  text="Mua mã thi"
-                  textHover="Mua ngay"
-                  // onClick={() => router.push(`/student/exam/${e.id}`)}
-                />
-              ) : e.isEnrolled ? (
+              {/* {e.freeAttempts <= 0 ? (
                 <CustomButton
                   text="Vào thi ngay"
-                  textHover="Đừng ngại"
-                  onClick={() => router.push(`/student/exam/${e.id}`)}
+                  textHover="Mua ngay"
+                  onClick={() => handlePayment(e.price)}
                 />
               ) : (
-                <CustomButton
-                  text="Đăng ký ngay"
-                  textHover="Đừng ngại"
-                  onClick={() => handleEnrollExam(e.id)}
-                />
-              )}
+             
+              )} */}
+              <CustomButton
+                text="Vào thi ngay"
+                textHover="Đừng ngại"
+                onClick={() => handleOpenPopup(e)}
+              />
             </div>
           ))}
       </div>
+      {open && (
+        <Modal
+          open={open}
+          onCancel={handleCLose}
+          title="Nhập mã thi"
+          footer={false}
+        >
+          <div className="flex flex-col gap-3">
+            <Input placeholder="mã thi" />
+            <div>
+              Bạn chưa có mã?{" "}
+              <span
+                onClick={() => handlePayment(examDetail.current.amount)}
+                className="text-blue-500 font-bold cursor-pointer"
+              >
+                Mua Ngay!
+              </span>
+            </div>
+            <div className="flex justify-end ">
+              <Button type="primary">Xác nhận</Button>
+            </div>
+          </div>
+        </Modal>
+      )}
     </div>
   );
 };

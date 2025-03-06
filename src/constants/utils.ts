@@ -1,26 +1,4 @@
-export const difficultyEnum = {
-  0: "Dễ",
-  1: "Trung Bình",
-  2: "Nâng Cao",
-};
-export const questionEnum = {
-  0: "Chọn một",
-  1: "Chọn nhiều",
-  2: "Tự Luận",
-};
-export const examEnum = {
-  0: "Trắc nghiệm",
-  1: "Tự luận",
-  2: "Tổng hợp",
-};
-
-export const statusEnum = {
-  0: "Hoạt động",
-  1: "Tạm ngưng",
-  2: "Chờ duyệt",
-  3: "Thành công",
-  4: "Thất bại",
-};
+import { statusEnum } from "./enum";
 
 export const renderBgColorStatus = (status: keyof typeof statusEnum) => {
   switch (status) {
