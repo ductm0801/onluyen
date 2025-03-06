@@ -1,4 +1,9 @@
-import { difficultyEnum, examEnum, questionEnum } from "@/constants/enum";
+import {
+  difficultyEnum,
+  examEnum,
+  questionEnum,
+  statusEnum,
+} from "@/constants/enum";
 
 export type ILoginRequest = {
   username: string;
@@ -84,6 +89,7 @@ export type IExam = {
   testType: keyof typeof examEnum;
   totalGrade: number;
   isDeleted: boolean;
+  questions: IQuestion[];
 };
 
 export type IExamPayment = {
@@ -94,4 +100,14 @@ export type IExamPayment = {
   buyerPhone: string;
   cancelUrl: string;
   returnUrl: string;
+};
+export type IPayment = {
+  paymentType: string;
+  id: string;
+  description: string;
+  orderCode: string;
+  method: string;
+  transactionAmount: number;
+  status: keyof typeof statusEnum;
+  creationDate: Date;
 };
