@@ -2,8 +2,7 @@
 import { Subject } from "@/models";
 import { useLoading } from "@/providers/loadingProvider";
 import { getSubject } from "@/services";
-import { Fanwood_Text } from "next/font/google";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 const cols = [
   {
@@ -27,7 +26,6 @@ const Course = () => {
   const [courses, setCourses] = useState<Subject[]>([]);
   const { setLoading } = useLoading();
 
-  console.log(courses);
   const fetchCourse = async () => {
     try {
       setLoading(true);
@@ -44,6 +42,7 @@ const Course = () => {
   useEffect(() => {
     fetchCourse();
   }, []);
+
   return (
     <div className="relative overflow-x-auto">
       <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">

@@ -6,7 +6,12 @@ import "swiper/css";
 import "swiper/css/pagination";
 import { Autoplay, Navigation, Pagination } from "swiper/modules";
 import { IMAGES } from "@/constants/images";
-import { enrollExam, getExamBySubjectId, getSubject } from "@/services";
+import {
+  enrollExam,
+  getExamBySubjectId,
+  getSubject,
+  paymentExamCode,
+} from "@/services";
 import { useLoading } from "@/providers/loadingProvider";
 import { useAuth } from "@/providers/authProvider";
 import { Subject } from "@/models";
@@ -144,6 +149,25 @@ const Home = () => {
       setLoading(false);
     }
   };
+  const handlePayment = async (amount: number) => {
+    try {
+      setLoading(true);
+      const res = await paymentExamCode({
+        examEnrollmentId: "44310bd2-aace-4bd5-87e2-a805123807ce",
+        buyerName: "string",
+        buyerEmail: "string",
+        buyerPhone: "string",
+        cancelUrl: `${process.env.NEXT_PUBLIC_DOMAIN}/student/home`,
+        returnUrl: `${process.env.NEXT_PUBLIC_DOMAIN}/student/home`,
+        amount: 2000,
+      });
+      if (res) router.push(res.data);
+    } catch (error) {
+      setLoading(false);
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <div className="flex flex-col gap-6">
       <div className="flex justify-end items-center">
@@ -251,7 +275,7 @@ const Home = () => {
                 <CustomButton
                   text="Mua mã thi"
                   textHover="Mua ngay"
-                  // onClick={() => router.push(`/student/exam/${e.id}`)}
+                  onClick={() => handlePayment(e.price)}
                 />
               ) : e.isEnrolled ? (
                 <CustomButton

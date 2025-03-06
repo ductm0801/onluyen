@@ -1,5 +1,12 @@
 import axiosClient from "@/interceptor";
-import { IExam, IExamBank, ILoginRequest, IQuestion, IRegist } from "@/models";
+import {
+  IExam,
+  IExamBank,
+  IExamPayment,
+  ILoginRequest,
+  IQuestion,
+  IRegist,
+} from "@/models";
 
 export const login = async (body: ILoginRequest) => {
   const res = await axiosClient.post("/api/accounts/login", body);
@@ -128,5 +135,10 @@ export const deleteExam = async (id: string) => {
 };
 export const getExamDetail = async (id: string | string[]) => {
   const res = await axiosClient.get(`/api/test/${id}`);
+  return res.data;
+};
+
+export const paymentExamCode = async (body: IExamPayment) => {
+  const res = await axiosClient.post(`/create_exam_payment_link`, body);
   return res.data;
 };

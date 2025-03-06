@@ -85,3 +85,13 @@ export type IExam = {
   totalGrade: number;
   isDeleted: boolean;
 };
+
+export type IExamPayment = {
+  examEnrollmentId: string;
+  amount: number;
+  buyerName: string;
+  buyerEmail: string;
+  buyerPhone: string;
+  cancelUrl: string;
+  returnUrl: string;
+};
