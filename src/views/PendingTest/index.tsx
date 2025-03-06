@@ -1,13 +1,12 @@
 "use client";
-import ModalCreateExamBank from "@/components/ModalCreateExamBank";
 import Paging from "@/components/Paging";
-import { IExamBank } from "@/models";
+import { examEnum, pendingExamEnum } from "@/constants/enum";
+import { IExam } from "@/models";
 import { useLoading } from "@/providers/loadingProvider";
-import { deleteExamBank, getExamBank } from "@/services";
-import { Modal } from "antd";
-import { useRouter } from "next/navigation";
-
+import { getExamPending, updateTestStatus } from "@/services";
+import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 const cols = [
   {
     name: "Tên",
@@ -25,75 +24,59 @@ const cols = [
       "px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white",
   },
   {
+    name: "Trạng thái",
+    className:
+      "px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white",
+  },
+  {
     name: "Hành động",
     className:
       "px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white rounded-e-lg",
   },
 ];
 
-const TestBank = () => {
-  const [examBank, setExamBank] = useState<IExamBank[]>([]);
+const PendingTest = () => {
+  const [exam, setExam] = useState<IExam[]>([]);
   const [pageSize, setPageSize] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
   const [totalItems, setTotalItems] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
-  const [create, setCreate] = useState(false);
+  //   const [create, setCreate] = useState(false);
   const { setLoading } = useLoading();
-  const router = useRouter();
-
-  const [confirm, setConfirm] = useState(false);
-  const [examBankId, setExamBankId] = useState("");
-  const handleDeleteExamBank = async () => {
+  const params = useParams();
+  const fetchExamByBankId = async () => {
     try {
       setLoading(true);
-      await deleteExamBank(examBankId);
-      setConfirm(false);
-      setExamBankId("");
-      fetchExamBank();
-    } catch (error) {
-      setLoading(false);
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleOpenConfirm = (id: string) => {
-    setConfirm(true);
-    setExamBankId(id);
-  };
-  const handleCloseConfirm = () => {
-    setConfirm(false);
-    setExamBankId("");
-  };
-
-  const fetchExamBank = async () => {
-    try {
-      setLoading(true);
-      const res = await getExamBank(currentPage, pageSize);
-      if (res) setExamBank(res.data.items);
+      const res = await getExamPending(currentPage, pageSize);
+      setExam(res.data.items);
       setPageSize(res.data.pageSize);
       setTotalItems(res.data.totalItemsCount);
       setTotalPages(res.data.totalPageCount);
-    } catch (error) {
-      setLoading(false);
+    } catch (error: any) {
       console.error(error);
+      toast.error(error.response.data.message);
     } finally {
       setLoading(false);
     }
   };
   useEffect(() => {
-    fetchExamBank();
-  }, [currentPage]);
+    fetchExamByBankId();
+  }, []);
+  const handleUpdateStatus = async (status: number, id: string) => {
+    try {
+      setLoading(true);
+      await updateTestStatus({ status: status }, id);
+      fetchExamByBankId();
+    } catch (error: any) {
+      console.error(error);
+      toast.error(error.response.data.message);
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <div className="relative overflow-x-auto">
       <div className="flex justify-between  items-center  flex-column flex-wrap md:flex-row space-y-4 md:space-y-0 pb-4">
-        <div
-          className="bg-[#ffc022] rounded-lg px-3 py-2 cursor-pointer"
-          onClick={() => setCreate(true)}
-        >
-          Tạo ngân hàng đề mới
-        </div>
         <div className="relative">
           <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
             <svg
@@ -131,8 +114,8 @@ const TestBank = () => {
           </tr>
         </thead>
         <tbody>
-          {examBank &&
-            examBank
+          {exam &&
+            exam
               .filter((a) => !a.isDeleted)
               .map((a, idx) => (
                 <tr
@@ -144,35 +127,38 @@ const TestBank = () => {
                     className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white"
                   >
                     {/* <img
-                    className="w-10 h-10 rounded-full"
-                    src={a.imageUrl || IMAGES.defaultMale}
-                    alt="avatar"
-                  /> */}
+                className="w-10 h-10 rounded-full"
+                src={a.imageUrl || IMAGES.defaultMale}
+                alt="avatar"
+              /> */}
 
-                    <div className="text-base font-semibold">
-                      {a.testBankName}
-                    </div>
+                    <div className="text-base font-semibold">{a.testName}</div>
                   </th>
                   <td className="px-6 py-4">{a.description}</td>
                   {/* <td className="px-6 py-4">{a.phoneNumber}</td> */}
-                  <td className="px-6 py-4">{a.subjectName}</td>
-
+                  <td className="px-6 py-4">{examEnum[a.testType]}</td>
                   <td className="px-6 py-4">
-                    {/* <div
-                      className="font-medium text-blue-600 dark:text-blue-500 hover:underline cursor-pointer"
-                      onClick={() =>
-                        router.push(`/exammanager/testBank/${a.id}`)
-                      }
-                    >
-                      Chi tiết
-                    </div> */}
-                    <div
-                      className="font-medium text-red-600 dark:text-red-500 hover:underline cursor-pointer ms-3"
-                      onClick={() => handleOpenConfirm(a.id)}
-                    >
-                      Xóa
-                    </div>
+                    {pendingExamEnum[a.testApprovalStatus]}
                   </td>
+
+                  {a.testApprovalStatus === 1 ? (
+                    <td className="px-6 py-4 flex items-center">
+                      <div
+                        className="font-medium text-blue-600 dark:text-blue-500 hover:underline cursor-pointer"
+                        onClick={() => handleUpdateStatus(2, a.id)}
+                      >
+                        Duyệt
+                      </div>
+                      <div
+                        className="font-medium text-red-600 dark:text-red-500 hover:underline cursor-pointer ms-3"
+                        onClick={() => handleUpdateStatus(3, a.id)}
+                      >
+                        Từ chối
+                      </div>
+                    </td>
+                  ) : (
+                    <p className="text-center">{"\u2014"}</p>
+                  )}
                 </tr>
               ))}
         </tbody>
@@ -184,26 +170,26 @@ const TestBank = () => {
         totalPages={totalPages}
         setCurrentPage={setCurrentPage}
       />
-      {create && (
-        <ModalCreateExamBank
-          onClose={() => setCreate(false)}
-          fetchExamBank={fetchExamBank}
-        />
-      )}
-      {confirm && (
-        <Modal
-          title="Xóa câu hỏi"
-          open={confirm}
-          onOk={handleDeleteExamBank}
-          onCancel={handleCloseConfirm}
-          okText="Đồng ý"
-          cancelText="Hủy"
-        >
-          Bạn có chắc muốn xóa câu hỏi này?
-        </Modal>
-      )}
+      {/* {create && (
+    <ModalCreateExamBank
+      onClose={() => setCreate(false)}
+      fetchExamBank={fetchExamBank}
+    />
+  )} */}
+      {/* {confirm && (
+    <Modal
+      title="Xóa câu hỏi"
+      open={confirm}
+      onOk={handleDeleteExamBank}
+      onCancel={handleCloseConfirm}
+      okText="Đồng ý"
+      cancelText="Hủy"
+    >
+      Bạn có chắc muốn xóa câu hỏi này?
+    </Modal>
+  )} */}
     </div>
   );
 };
 
-export default TestBank;
+export default PendingTest;

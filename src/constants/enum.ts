@@ -21,6 +21,12 @@ export const statusEnum = {
   3: "Thành công",
   4: "Thất bại",
 };
+export const pendingExamEnum = {
+  0: "Bản Nháp",
+  1: "Chờ duyệt",
+  2: "Đã Duyệt ",
+  3: "Từ chối ",
+};
 
 export const renderBgColorStatus = (status: keyof typeof statusEnum) => {
   switch (status) {

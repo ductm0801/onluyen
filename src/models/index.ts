@@ -1,6 +1,7 @@
 import {
   difficultyEnum,
   examEnum,
+  pendingExamEnum,
   questionEnum,
   statusEnum,
 } from "@/constants/enum";
@@ -87,6 +88,7 @@ export type IExam = {
   testBankId: string;
   testBankName: string;
   testType: keyof typeof examEnum;
+  testApprovalStatus: keyof typeof pendingExamEnum;
   totalGrade: number;
   isDeleted: boolean;
   questions: IQuestion[];

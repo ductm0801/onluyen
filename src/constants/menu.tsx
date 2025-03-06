@@ -72,5 +72,11 @@ export const menus: Record<
       icon: IMAGES.questionIcon,
       isShow: true,
     },
+    {
+      label: "Đề Chờ duyệt",
+      path: "/exammanager/pending-test",
+      icon: IMAGES.questionIcon,
+      isShow: true,
+    },
   ],
 };

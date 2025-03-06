@@ -77,7 +77,10 @@ const FormUpdateExam: React.FC<Props> = ({ exam, id }) => {
         setDataQuestion(dataQuestion.filter((q) => q.id !== question.id));
       }
     } else {
-      setDataQuestion([...dataQuestion, question]);
+      // Kiểm tra nếu câu hỏi đã có trong danh sách `dataQuestion` thì không thêm lại nữa
+      if (!dataQuestion.some((q) => q.id === question.id)) {
+        setDataQuestion([...dataQuestion, question]);
+      }
       setExamQuestions(examQuestions.filter((q) => q.id !== question.id));
     }
   };
@@ -137,7 +140,12 @@ const FormUpdateExam: React.FC<Props> = ({ exam, id }) => {
         </div>
 
         <div className="w-full flex flex-col gap-2">
-          <p className="text-xl font-bold">Câu hỏi trong đề</p>
+          <div className="flex items-center justify-between">
+            <p className="text-xl font-bold">Câu hỏi trong đề</p>
+            <p>
+              tổng <b>{examQuestions.length}</b> câu hỏi
+            </p>
+          </div>
           <div
             className={`w-full flex flex-col gap-2 border min-h-[500px] rounded-xl p-4 transition-all duration-300 ${
               isDraggingOverExam ? "bg-green-100 border-green-400" : "bg-white"
