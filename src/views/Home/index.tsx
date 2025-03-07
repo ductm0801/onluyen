@@ -11,6 +11,7 @@ import {
   getExamBySubjectId,
   getSubject,
   paymentExamCode,
+  takeExam,
 } from "@/services";
 import { useLoading } from "@/providers/loadingProvider";
 import { useAuth } from "@/providers/authProvider";
@@ -103,7 +104,6 @@ const Home = () => {
       if (res) {
         setSubjects(res.data);
         setActive(res.data[0].id);
-        // console.log(res.data);
       }
     } catch (err) {
       console.error(err);
@@ -117,6 +117,7 @@ const Home = () => {
   }, []);
   const [pageIndex, setPageIndex] = useState(0);
   const [exam, setExam] = useState([]);
+  const [examCode, setExamCode] = useState("");
   // console.log(exam);
 
   const fetchExam = async () => {
@@ -166,19 +167,34 @@ const Home = () => {
     setOpen(false);
     examDetail.current = undefined;
   };
-  const handlePayment = async (amount: number) => {
+  const handlePayment = async () => {
     try {
       setLoading(true);
+      console.log(examDetail.current);
       const res = await paymentExamCode({
-        examEnrollmentId: "44310bd2-aace-4bd5-87e2-a805123807ce",
+        examEnrollmentId: examDetail.current.enrollmentId,
         buyerName: "string",
         buyerEmail: "string",
         buyerPhone: "string",
-        cancelUrl: `${process.env.NEXT_PUBLIC_DOMAIN}/student/home`,
+        cancelUrl: `${process.env.NEXT_PUBLIC_HOST}/payment/cancel`,
         returnUrl: `${process.env.NEXT_PUBLIC_DOMAIN}/student/home`,
-        amount: 2000,
+        amount: examDetail.current.price,
       });
       if (res) router.push(res.data);
+    } catch (error) {
+      setLoading(false);
+    } finally {
+      setLoading(false);
+    }
+  };
+  const handleTakeExam = async () => {
+    try {
+      setLoading(true);
+      const res = await takeExam(examDetail.current.id, 10, 0, examCode);
+      if (res) {
+        toast.success("Bạn đã đăng ký thành công!");
+        router.push(`/student/exam/${examDetail.current.id}`);
+      }
     } catch (error) {
       setLoading(false);
     } finally {
@@ -313,18 +329,23 @@ const Home = () => {
           footer={false}
         >
           <div className="flex flex-col gap-3">
-            <Input placeholder="mã thi" />
+            <Input
+              placeholder="mã thi"
+              onChange={(e) => setExamCode(e.target.value)}
+            />
             <div>
               Bạn chưa có mã?{" "}
               <span
-                onClick={() => handlePayment(examDetail.current.amount)}
+                onClick={() => handlePayment()}
                 className="text-blue-500 font-bold cursor-pointer"
               >
                 Mua Ngay!
               </span>
             </div>
             <div className="flex justify-end ">
-              <Button type="primary">Xác nhận</Button>
+              <Button type="primary" onClick={() => handleTakeExam()}>
+                Xác nhận
+              </Button>
             </div>
           </div>
         </Modal>

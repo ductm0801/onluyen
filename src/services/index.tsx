@@ -180,3 +180,18 @@ export const reviewreviewTestStatus = async (body: any, id: string) => {
   const res = await axiosClient.patch(`/api/test/approveTest/${id}`, body);
   return res.data;
 };
+export const takeExam = async (
+  id: string,
+  pageSize: number,
+  pageIndex: number,
+  examCode: string
+) => {
+  const res = await axiosClient.get(`/api/exam/takeExam/${id}`, {
+    params: {
+      pageIndex,
+      pageSize,
+      examCode,
+    },
+  });
+  return res.data;
+};
