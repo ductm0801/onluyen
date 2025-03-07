@@ -11,6 +11,7 @@ import { Button, Checkbox, Form, Input, Radio, Select } from "antd";
 import React, { useState } from "react";
 import { toast } from "react-toastify";
 import CombinedEditor from "../CombinedEditor";
+import ReactQuill from "react-quill";
 
 type props = {
   onClose: () => void;
@@ -69,7 +70,7 @@ const ModalCreateQuestion: React.FC<props> = ({
               labelCol={{ span: 24 }}
               rules={[{ required: true, message: "Vui lòng nhập câu hỏi" }]}
             >
-              <CombinedEditor />
+              <ReactQuill />
             </Form.Item>
             <Form.Item
               name="difficulty"
@@ -113,7 +114,7 @@ const ModalCreateQuestion: React.FC<props> = ({
                             },
                           ]}
                         >
-                          <CombinedEditor />
+                          <ReactQuill />
                         </Form.Item>
                         <div
                           style={{ cursor: "pointer", color: "red" }}
@@ -170,7 +171,7 @@ const ModalCreateQuestion: React.FC<props> = ({
               labelCol={{ span: 24 }}
               rules={[{ required: true, message: "Vui lòng nhập câu hỏi" }]}
             >
-              <CombinedEditor />
+              <ReactQuill />
             </Form.Item>
             <Form.Item
               name="difficulty"
@@ -204,7 +205,7 @@ const ModalCreateQuestion: React.FC<props> = ({
                       <div className="flex w-full items-center gap-8">
                         <Checkbox value={index} />
                         <Form.Item name={[name, "content"]} noStyle>
-                          <CombinedEditor />
+                          <ReactQuill />
                         </Form.Item>
                         <div
                           style={{ cursor: "pointer", color: "red" }}
@@ -239,7 +240,30 @@ const ModalCreateQuestion: React.FC<props> = ({
           </Form>
         );
       case 2:
-        return <></>;
+        return (
+          <Form>
+            <Form.Item
+              name="title"
+              label="Câu h��i"
+              labelCol={{ span: 24 }}
+              rules={[{ required: true, message: "Vui lòng nhập câu hỏi" }]}
+            >
+              <Input />
+            </Form.Item>
+            <Form.Item
+              name="difficulty"
+              label="Độ khó"
+              labelCol={{ span: 24 }}
+              rules={[{ required: true, message: "Vui lòng chọn độ khó" }]}
+            >
+              <Select
+                options={difficultyOptions}
+                placeholder="Chọn đ�� khó"
+                allowClear
+              />
+            </Form.Item>
+          </Form>
+        );
       default:
         return "";
     }

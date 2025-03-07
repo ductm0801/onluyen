@@ -11,10 +11,6 @@ export const examOptions = [
   { value: 1, label: "Tự luận" },
   { value: 2, label: "Tổng hợp" },
 ];
-const testStatus = [
-  { label: "Bản Nháp", value: 0 },
-  { label: "Chờ duyệt", value: 1 },
-];
 
 const FormUpdateInfo = ({
   exam,

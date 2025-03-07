@@ -103,7 +103,6 @@ const Home = () => {
       if (res) {
         setSubjects(res.data);
         setActive(res.data[0].id);
-        // console.log(res.data);
       }
     } catch (err) {
       console.error(err);
@@ -166,17 +165,18 @@ const Home = () => {
     setOpen(false);
     examDetail.current = undefined;
   };
-  const handlePayment = async (amount: number) => {
+  const handlePayment = async () => {
     try {
       setLoading(true);
+      console.log(examDetail.current);
       const res = await paymentExamCode({
-        examEnrollmentId: "44310bd2-aace-4bd5-87e2-a805123807ce",
+        examEnrollmentId: examDetail.current.enrollmentId,
         buyerName: "string",
         buyerEmail: "string",
         buyerPhone: "string",
-        cancelUrl: `${process.env.NEXT_PUBLIC_DOMAIN}/student/home`,
+        cancelUrl: `${process.env.NEXT_PUBLIC_HOST}/payment/cancel`,
         returnUrl: `${process.env.NEXT_PUBLIC_DOMAIN}/student/home`,
-        amount: 2000,
+        amount: examDetail.current.price,
       });
       if (res) router.push(res.data);
     } catch (error) {
@@ -317,7 +317,7 @@ const Home = () => {
             <div>
               Bạn chưa có mã?{" "}
               <span
-                onClick={() => handlePayment(examDetail.current.amount)}
+                onClick={() => handlePayment()}
                 className="text-blue-500 font-bold cursor-pointer"
               >
                 Mua Ngay!

@@ -13,6 +13,8 @@ import FormUpdateExam from "./FormUpdateExam";
 const testStatus = [
   { label: "Bản Nháp", value: 0 },
   { label: "Chờ duyệt", value: 1 },
+  { label: "Đã Duyệt", value: 2 },
+  { label: "Từ chối", value: 3 },
 ];
 
 const ExamDetail = () => {
