@@ -1,11 +1,11 @@
 "use client";
+import ModaReviewTest from "@/components/ModalReviewExam";
 import Paging from "@/components/Paging";
 import { examEnum, pendingExamEnum } from "@/constants/enum";
 import { IExam } from "@/models";
 import { useLoading } from "@/providers/loadingProvider";
 import { getExamPending, updateTestStatus } from "@/services";
-import { useParams } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 const cols = [
   {
@@ -41,9 +41,19 @@ const PendingTest = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const [totalItems, setTotalItems] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
-  //   const [create, setCreate] = useState(false);
+  const [open, setOpen] = useState(false);
   const { setLoading } = useLoading();
-  const params = useParams();
+  const detail = useRef<IExam>();
+
+  const handleOpen = (item: IExam) => {
+    setOpen(true);
+    detail.current = item;
+  };
+  const handleClose = () => {
+    setOpen(false);
+    detail.current = undefined;
+  };
+
   const fetchExamByBankId = async () => {
     try {
       setLoading(true);
@@ -62,18 +72,7 @@ const PendingTest = () => {
   useEffect(() => {
     fetchExamByBankId();
   }, []);
-  const handleUpdateStatus = async (status: number, id: string) => {
-    try {
-      setLoading(true);
-      await updateTestStatus({ status: status }, id);
-      fetchExamByBankId();
-    } catch (error: any) {
-      console.error(error);
-      toast.error(error.response.data.message);
-    } finally {
-      setLoading(false);
-    }
-  };
+
   return (
     <div className="relative overflow-x-auto">
       <div className="flex justify-between  items-center  flex-column flex-wrap md:flex-row space-y-4 md:space-y-0 pb-4">
@@ -141,24 +140,14 @@ const PendingTest = () => {
                     {pendingExamEnum[a.testApprovalStatus]}
                   </td>
 
-                  {a.testApprovalStatus === 1 ? (
-                    <td className="px-6 py-4 flex items-center">
-                      <div
-                        className="font-medium text-blue-600 dark:text-blue-500 hover:underline cursor-pointer"
-                        onClick={() => handleUpdateStatus(2, a.id)}
-                      >
-                        Duyệt
-                      </div>
-                      <div
-                        className="font-medium text-red-600 dark:text-red-500 hover:underline cursor-pointer ms-3"
-                        onClick={() => handleUpdateStatus(3, a.id)}
-                      >
-                        Từ chối
-                      </div>
-                    </td>
-                  ) : (
-                    <p className="text-center">{"\u2014"}</p>
-                  )}
+                  <td className="px-6 py-4 flex items-center">
+                    <div
+                      className="font-medium text-blue-600 dark:text-blue-500 hover:underline cursor-pointer"
+                      onClick={() => handleOpen(a)}
+                    >
+                      Chi tiết
+                    </div>
+                  </td>
                 </tr>
               ))}
         </tbody>
@@ -170,24 +159,13 @@ const PendingTest = () => {
         totalPages={totalPages}
         setCurrentPage={setCurrentPage}
       />
-      {/* {create && (
-    <ModalCreateExamBank
-      onClose={() => setCreate(false)}
-      fetchExamBank={fetchExamBank}
-    />
-  )} */}
-      {/* {confirm && (
-    <Modal
-      title="Xóa câu hỏi"
-      open={confirm}
-      onOk={handleDeleteExamBank}
-      onCancel={handleCloseConfirm}
-      okText="Đồng ý"
-      cancelText="Hủy"
-    >
-      Bạn có chắc muốn xóa câu hỏi này?
-    </Modal>
-  )} */}
+      {open && detail.current && (
+        <ModaReviewTest
+          onClose={handleClose}
+          data={detail.current}
+          fetchExamByBankId={fetchExamByBankId}
+        />
+      )}
     </div>
   );
 };

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import localFont from "next/font/local";
+
 import "./globals.css";
 import Nav from "@/components/Nav";
 import { Fahkwang } from "next/font/google";
@@ -10,16 +10,6 @@ import ProtectedRoute from "@/providers/protectredRoute";
 import { AuthProvider } from "@/providers/authProvider";
 import { ThemeProvider } from "@/providers/themeProvider";
 
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
-});
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
-});
 const fahwang = Fahkwang({
   weight: ["200", "300", "400", "500", "600", "700"],
   subsets: ["latin"],

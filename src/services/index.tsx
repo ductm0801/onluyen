@@ -172,7 +172,11 @@ export const getExamPending = async (pageIndex: number, pageSize: number) => {
   return res.data;
 };
 
-export const updateTestStatus = async (body: any, id: string) => {
+export const updateTestStatus = async (body: any, id: string | string[]) => {
   const res = await axiosClient.patch(`/api/test/updateTestStatus/${id}`, body);
+  return res.data;
+};
+export const reviewreviewTestStatus = async (body: any, id: string) => {
+  const res = await axiosClient.patch(`/api/test/approveTest/${id}`, body);
   return res.data;
 };

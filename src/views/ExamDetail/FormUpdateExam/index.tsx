@@ -175,7 +175,7 @@ const FormUpdateExam: React.FC<Props> = ({ exam, id }) => {
       </div>
       <div className="flex justify-end">
         <Button onClick={() => handleUpdateExam()} type="primary" size="large">
-          Lưu lại
+          Cập nhật
         </Button>
       </div>
     </div>
