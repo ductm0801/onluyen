@@ -11,6 +11,7 @@ import {
   getExamBySubjectId,
   getSubject,
   paymentExamCode,
+  takeExam,
 } from "@/services";
 import { useLoading } from "@/providers/loadingProvider";
 import { useAuth } from "@/providers/authProvider";
@@ -116,6 +117,7 @@ const Home = () => {
   }, []);
   const [pageIndex, setPageIndex] = useState(0);
   const [exam, setExam] = useState([]);
+  const [examCode, setExamCode] = useState("");
   // console.log(exam);
 
   const fetchExam = async () => {
@@ -179,6 +181,20 @@ const Home = () => {
         amount: examDetail.current.price,
       });
       if (res) router.push(res.data);
+    } catch (error) {
+      setLoading(false);
+    } finally {
+      setLoading(false);
+    }
+  };
+  const handleTakeExam = async () => {
+    try {
+      setLoading(true);
+      const res = await takeExam(examDetail.current.id, 10, 0, examCode);
+      if (res) {
+        toast.success("Bạn đã đăng ký thành công!");
+        router.push(`/student/exam/${examDetail.current.id}`);
+      }
     } catch (error) {
       setLoading(false);
     } finally {
@@ -313,7 +329,10 @@ const Home = () => {
           footer={false}
         >
           <div className="flex flex-col gap-3">
-            <Input placeholder="mã thi" />
+            <Input
+              placeholder="mã thi"
+              onChange={(e) => setExamCode(e.target.value)}
+            />
             <div>
               Bạn chưa có mã?{" "}
               <span
@@ -324,7 +343,9 @@ const Home = () => {
               </span>
             </div>
             <div className="flex justify-end ">
-              <Button type="primary">Xác nhận</Button>
+              <Button type="primary" onClick={() => handleTakeExam()}>
+                Xác nhận
+              </Button>
             </div>
           </div>
         </Modal>
