@@ -11,6 +11,10 @@ export const examOptions = [
   { value: 1, label: "Tự luận" },
   { value: 2, label: "Tổng hợp" },
 ];
+const testStatus = [
+  { label: "Bản Nháp", value: 0 },
+  { label: "Chờ duyệt", value: 1 },
+];
 
 const FormUpdateInfo = ({
   exam,
@@ -26,6 +30,7 @@ const FormUpdateInfo = ({
     try {
       setLoading(true);
       await updateExam(id, values);
+      toast.success("Cập nhật thành công");
     } catch (err: any) {
       setLoading(false);
       toast.error(err.response.data.message);
