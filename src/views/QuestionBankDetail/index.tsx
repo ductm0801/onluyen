@@ -5,10 +5,11 @@ import { IQuestion, IQuestionBank } from "@/models";
 import { useLoading } from "@/providers/loadingProvider";
 import { deleteQuestion, getQuestionBank, getQuestionByBank } from "@/services";
 import { useParams, useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import QuestionDetail from "../Question/Detail";
 import ModalCreateQuestion from "@/components/ModalCreateQuestion";
-import { Modal } from "antd";
+import { Modal, Select } from "antd";
+import _ from "lodash";
 
 const cols = [
   {
@@ -42,6 +43,18 @@ const cols = [
       "px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white rounded-e-lg",
   },
 ];
+const type = [
+  { label: "Chọn một", value: 0 },
+  { label: "Chọn nhiều", value: 1 },
+  { label: "Tự luận", value: 2 },
+];
+const difficulty = [
+  { label: "Cơ bản", value: 0 },
+  { label: "Trung bình", value: 1 },
+  { label: "Nâng cao", value: 2 },
+  { label: "chuyên gia", value: 3 },
+  { label: "Học thuật", value: 4 },
+];
 
 const BankDetail = () => {
   const [question, setQuestion] = useState<IQuestion[]>([]);
@@ -57,6 +70,11 @@ const BankDetail = () => {
   const qDetail = useRef<IQuestion | null>(null);
   const [confirm, setConfirm] = useState(false);
   const [questionId, setQuestionId] = useState("");
+  const [filter, setFilter] = useState({
+    type: "",
+    difficulty: "",
+    search: "",
+  });
   const handleDeleteQuestion = async () => {
     try {
       setLoading(true);
@@ -92,7 +110,12 @@ const BankDetail = () => {
   const fetchQuestion = async () => {
     try {
       setLoading(true);
-      const res = await getQuestionByBank(params.id, currentPage, pageSize);
+      const res = await getQuestionByBank(
+        params.id,
+        currentPage,
+        pageSize,
+        filter
+      );
       if (res) {
         setQuestion(res.data.items);
         setTotalItems(res.data.totalItemsCount);
@@ -107,7 +130,14 @@ const BankDetail = () => {
   };
   useEffect(() => {
     fetchQuestion();
-  }, [currentPage]);
+  }, [currentPage, filter]);
+
+  const handleSearch = useCallback(
+    _.debounce((value) => {
+      setFilter((prev) => ({ ...prev, search: value }));
+    }, 1000),
+    []
+  );
 
   return (
     <>
@@ -119,30 +149,55 @@ const BankDetail = () => {
           >
             Tạo câu hỏi mới
           </div>
-          <div className="relative">
-            <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-              <svg
-                className="w-4 h-4 text-gray-500 dark:text-gray-400"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 20 20"
-              >
-                <path
-                  stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
-                />
-              </svg>
-            </div>
-            <input
-              type="text"
-              id="table-search-users"
-              className="block p-2 ps-10 text-sm focus:ring-0 focus:outline-none text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white "
-              placeholder="Tìm kiếm"
+          <div className="flex items-center gap-2">
+            <Select
+              placeholder="Độ khó"
+              options={difficulty}
+              allowClear
+              onChange={(value) =>
+                setFilter({
+                  ...filter,
+                  difficulty: value,
+                })
+              }
             />
+            <Select
+              placeholder="Dạng câu hỏi"
+              options={type}
+              allowClear
+              onChange={(value) =>
+                setFilter({
+                  ...filter,
+                  type: value,
+                })
+              }
+            />
+            <div className="relative">
+              <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                <svg
+                  className="w-4 h-4 text-gray-500 dark:text-gray-400"
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
+                  />
+                </svg>
+              </div>
+              <input
+                type="text"
+                id="table-search-users"
+                className="block p-2 ps-10 text-sm focus:ring-0 focus:outline-none text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white "
+                placeholder="Tìm kiếm"
+                onChange={(e) => handleSearch(e.target.value)}
+              />
+            </div>
           </div>
         </div>
         <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">

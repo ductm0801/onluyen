@@ -1,7 +1,9 @@
 export const difficultyEnum = {
-  0: "Dễ",
+  0: "Cơ bản",
   1: "Trung Bình",
   2: "Nâng Cao",
+  3: "Chuyên gia",
+  4: "Học thuật",
 };
 export const questionEnum = {
   0: "Chọn một",
