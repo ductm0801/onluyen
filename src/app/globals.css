@@ -107,3 +107,11 @@ body {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+ul {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+ul::-webkit-scrollbar {
+  display: none;
+}

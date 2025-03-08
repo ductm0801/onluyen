@@ -1,11 +1,12 @@
 import React from "react";
 interface CircularProgressBarProps {
   max: number;
-  value: number;
+  value?: number;
   min: number;
   gaugePrimaryColor: string;
   gaugeSecondaryColor: string;
   className?: string;
+  isPercent?: boolean;
 }
 
 const CircularProgess = ({
@@ -15,10 +16,12 @@ const CircularProgess = ({
   gaugePrimaryColor,
   gaugeSecondaryColor,
   className,
+  isPercent = true,
 }: CircularProgressBarProps) => {
   const circumference = 2 * Math.PI * 45;
   const percentPx = circumference / 100;
   const currentPercent = Math.round(((value - min) / (max - min)) * 100);
+
   return (
     <div
       className={`relative size-40 text-2xl font-semibold ${className}`}
@@ -99,7 +102,13 @@ const CircularProgess = ({
         data-current-value={currentPercent}
         className="duration-[var(--transition-length)] delay-[var(--delay)] absolute inset-0 m-auto size-fit ease-linear animate-in fade-in"
       >
-        {currentPercent}%
+        {isPercent ? (
+          <>{currentPercent}%</>
+        ) : (
+          <>
+            {value}/{max}
+          </>
+        )}
       </span>
     </div>
   );
