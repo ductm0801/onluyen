@@ -1,7 +1,8 @@
+import TakeExam from "@/views/TakeExam";
 import React from "react";
 
 const Exam = () => {
-  return <div>Exam</div>;
+  return <TakeExam />;
 };
 
 export default Exam;

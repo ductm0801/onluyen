@@ -193,7 +193,9 @@ const Home = () => {
       const res = await takeExam(examDetail.current.id, 10, 0, examCode);
       if (res) {
         toast.success("Bạn đã đăng ký thành công!");
-        router.push(`/student/exam/${examDetail.current.id}`);
+        router.push(
+          `/student/exam/${examDetail.current.id}?id=${res.data.testAttemptId}`
+        );
       }
     } catch (error) {
       setLoading(false);

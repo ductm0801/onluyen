@@ -181,7 +181,7 @@ export const reviewreviewTestStatus = async (body: any, id: string) => {
   return res.data;
 };
 export const takeExam = async (
-  id: string,
+  id: string | string[],
   pageSize: number,
   pageIndex: number,
   examCode: string
