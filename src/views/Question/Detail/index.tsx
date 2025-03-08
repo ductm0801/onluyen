@@ -191,6 +191,7 @@ const QuestionDetail: React.FC<props> = ({
               const hasCorrectAnswer = answers.some(
                 (answer: IAnswers) => answer.isCorrect
               );
+              console.log(hasCorrectAnswer);
               if (!hasCorrectAnswer) {
                 toast.error("Vui lòng chọn ít nhất một câu trả lời đúng.");
                 return;
@@ -206,6 +207,9 @@ const QuestionDetail: React.FC<props> = ({
               rules={[{ required: true, message: "Vui lòng nhập câu hỏi" }]}
             >
               <Input />
+            </Form.Item>
+            <Form.Item name="type" initialValue={1} hidden>
+              <Input type="hidden" />
             </Form.Item>
             <Form.Item
               name="difficulty"
@@ -305,28 +309,44 @@ const QuestionDetail: React.FC<props> = ({
                 allowClear
               />
             </Form.Item>
+            <Form.Item name="type" initialValue={2} hidden>
+              <Input type="hidden" />
+            </Form.Item>
             <Form.List name="answers">
               {(fields, { add, remove }) => (
                 <>
-                  <Form.Item
-                    name="content"
-                    label="Câu trả lời mẫu"
-                    labelCol={{ span: 24 }}
-                    rules={[
-                      {
-                        required: true,
-                        message: "Vui lòng nhập câu trả lời mẫu",
-                      },
-                    ]}
-                  >
-                    <Input />
-                  </Form.Item>
-                  <Form.Item name="isCorrect" initialValue={true} hidden>
-                    <Input type="hidden" />
-                  </Form.Item>
+                  {fields.map(({ key, name, ...restField }) => (
+                    <div key={key} className="flex gap-2 items-center w-full">
+                      <Form.Item
+                        {...restField}
+                        className="w-full"
+                        name={[name, "content"]}
+                        label="Câu trả lời"
+                        labelCol={{ span: 24 }}
+                        rules={[
+                          {
+                            required: true,
+                            message: "Vui lòng nhập câu trả lời",
+                          },
+                        ]}
+                      >
+                        <Input />
+                      </Form.Item>
+                      <Form.Item
+                        {...restField}
+                        name={[name, "isCorrect"]}
+                        // initialValue={false}
+                        valuePropName="checked"
+                        hidden
+                      >
+                        <Input type="hidden" />
+                      </Form.Item>
+                    </div>
+                  ))}
                 </>
               )}
             </Form.List>
+
             <div className="flex justify-end">
               <Form.Item>
                 <button

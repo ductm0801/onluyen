@@ -257,7 +257,19 @@ const ModalCreateQuestion: React.FC<props> = ({
         );
       case 2:
         return (
-          <Form className="p-4" form={form} onFinish={onFinish}>
+          <Form
+            className="p-4"
+            form={form}
+            onFinish={(values) => {
+              const formattedValues = {
+                ...values,
+                answers: Array.isArray(values.answers)
+                  ? values.answers
+                  : [values.answers],
+              };
+              onFinish(formattedValues);
+            }}
+          >
             <Form.Item
               name="title"
               label="Câu hỏi"
