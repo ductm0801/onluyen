@@ -53,7 +53,8 @@ export const getQuestionBank = async () => {
 export const getQuestionByBank = async (
   questionBankId: string | string[],
   pageIndex: number,
-  pageSize: number
+  pageSize: number,
+  filter: any
 ) => {
   const res = await axiosClient.get(
     `/api/question/questionBank/${questionBankId}`,
@@ -61,6 +62,9 @@ export const getQuestionByBank = async (
       params: {
         pageIndex,
         pageSize,
+        difficulty: filter.difficulty,
+        type: filter.type,
+        searchTerm: filter.search,
       },
     }
   );
