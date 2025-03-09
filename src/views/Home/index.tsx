@@ -190,12 +190,10 @@ const Home = () => {
   const handleTakeExam = async () => {
     try {
       setLoading(true);
-      const res = await takeExam(examDetail.current.id, 10, 0, examCode);
+      const res = await takeExam(examDetail.current.id, examCode);
       if (res) {
         toast.success("Bạn đã đăng ký thành công!");
-        router.push(
-          `/student/exam/${examDetail.current.id}?id=${res.data.testAttemptId}`
-        );
+        router.push(`/student/exam/${res.data}`);
       }
     } catch (error) {
       setLoading(false);

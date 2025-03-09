@@ -19,4 +19,12 @@ export const IMAGES = {
   eyeOff: "/assets/eye-off.svg",
   backIcon: "/assets/backIcon.svg",
   course: "/assets/courseOnline.svg",
+  object: "/assets/OBJECTS.png",
+  courseBg: "/assets/courseBg.webp",
+  about1: "/assets/about1.png",
+  about2: "/assets/about2.png",
+  about3: "/assets/about3.png",
+  about4: "/assets/about4.png",
+  about5: "/assets/about5.png",
+  about6: "/assets/about6.png",
 };

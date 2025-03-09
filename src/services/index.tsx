@@ -1,5 +1,6 @@
 import axiosClient from "@/interceptor";
 import {
+  ICourse,
   IExam,
   IExamBank,
   IExamPayment,
@@ -184,18 +185,25 @@ export const reviewreviewTestStatus = async (body: any, id: string) => {
   const res = await axiosClient.patch(`/api/test/approveTest/${id}`, body);
   return res.data;
 };
-export const takeExam = async (
-  id: string | string[],
-  pageSize: number,
-  pageIndex: number,
-  examCode: string
-) => {
-  const res = await axiosClient.get(`/api/exam/takeExam/${id}`, {
+export const takeExam = async (id: string | string[], examCode: string) => {
+  const res = await axiosClient.post(`/api/exam/takeExam/${id}`, {
     params: {
-      pageIndex,
-      pageSize,
       examCode,
     },
   });
+  return res.data;
+};
+
+export const uploadImg = async (formData: FormData) => {
+  const res = await axiosClient.post(`/api/image/upload`, formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+  return res.data;
+};
+
+export const createCourse = async (body: ICourse) => {
+  const res = await axiosClient.post(`/api/courses`, body);
   return res.data;
 };
