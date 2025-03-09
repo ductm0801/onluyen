@@ -73,7 +73,7 @@ const DefaultLayout: React.FC<props> = ({ children }) => {
       >
         <nav
           className={`${
-            pathName === "/login" ? "hidden" : "block"
+            pathName === "/login" || pathName === "/" ? "hidden" : "block"
           } flex flex-wrap z-30 items-center justify-between min-h-[84px] top-[10px] px-0 py-2 mx-[10px] xl:mr-[10px] xl:ml-[4px] rounded-2xl lg:flex-nowrap lg:justify-start sticky backdrop-saturate-200 backdrop-blur-2xl bg-[#111c44cc] transform transition-transform duration-300 ease-in-out ${
             isTopHidden ? "-translate-y-full" : "translate-y-0"
           }`}

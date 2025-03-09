@@ -1,13 +1,29 @@
 import { Form, Upload } from "antd";
 import React, { useState } from "react";
 import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
+import { useLoading } from "@/providers/loadingProvider";
+import { createCourse, uploadImg } from "@/services";
+import { set } from "lodash";
+import { toast } from "react-toastify";
 
 const ModalCreateCourse = ({ onClose }: { onClose: () => void }) => {
   const [form] = Form.useForm();
   const [loadingImg, setLoadingImg] = useState(false);
   const [imageUrl, setImageUrl] = useState<string>();
+  const { setLoading } = useLoading();
   const onFinish = async (values: any) => {
     console.log(values);
+    try {
+      setLoading(true);
+      await createCourse(values);
+      onClose();
+      toast.success("Tạo khóa học thành công!");
+    } catch (err: any) {
+      toast.error(err.response.data.message);
+    } finally {
+      setLoading(false);
+      onClose();
+    }
   };
   const uploadButton = (
     <button style={{ border: 0, background: "none" }} type="button">
@@ -15,24 +31,25 @@ const ModalCreateCourse = ({ onClose }: { onClose: () => void }) => {
       <div style={{ marginTop: 8 }}>Thêm ảnh mới</div>
     </button>
   );
-  const handleChange = async (values: any) => {
-    setLoadingImg(true);
-    const { file } = values.image;
+  const handleChangeImage = async ({ file }: { file: any }) => {
+    setLoading(true);
     const formData = new FormData();
-    formData.append("image", file);
+    formData.append("file", file.originFileObj);
     try {
-      //   const response = await fetch("http://localhost:3000/upload", {
-      //     method: "POST",
-      //     body: formData,
-      //   });
-      //   const data = await response.json();
-      //   setImageUrl(data.url);
-    } catch (error) {
-      console.error(error);
+      const res = await uploadImg(formData);
+
+      form.setFieldValue("imageUrl", res.url);
+
+      setLoading(false);
+    } catch (error: any) {
+      setLoading(false);
+      toast.error(error.response.data.message);
     } finally {
-      setLoadingImg(false);
+      setLoading(false);
     }
   };
+  console.log(imageUrl);
+
   return (
     <div
       id="crud-modal"
@@ -73,12 +90,19 @@ const ModalCreateCourse = ({ onClose }: { onClose: () => void }) => {
 
           <Form className="p-4 md:p-5" form={form} onFinish={onFinish}>
             <div className="grid gap-4 mb-4 grid-cols-2">
-              <Form.Item className="col-span-2 mb-0" name="imageUrl">
-                <Upload
-                  listType="picture-card"
-                  className="text-white"
-                  onChange={handleChange}
-                >
+              <Form.Item
+                className="col-span-2 mb-0"
+                name="imageUrl"
+                label="Hình ảnh"
+                labelCol={{ span: 24 }}
+                rules={[
+                  {
+                    required: true,
+                    message: "Vui lòng chọn ảnh",
+                  },
+                ]}
+              >
+                <Upload listType="picture-card" onChange={handleChangeImage}>
                   {imageUrl ? (
                     <img
                       src={imageUrl}
@@ -90,7 +114,18 @@ const ModalCreateCourse = ({ onClose }: { onClose: () => void }) => {
                   )}
                 </Upload>
               </Form.Item>
-              <Form.Item className="col-span-2 mb-0" name="title">
+              <Form.Item
+                className="col-span-2 mb-0"
+                name="title"
+                label="Tên khoá học"
+                labelCol={{ span: 24 }}
+                rules={[
+                  {
+                    required: true,
+                    message: "Vui lòng nhập tên khoá học",
+                  },
+                ]}
+              >
                 <input
                   type="text"
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
@@ -99,18 +134,16 @@ const ModalCreateCourse = ({ onClose }: { onClose: () => void }) => {
               </Form.Item>
 
               <Form.Item
-                className="col-span-2 sm:col-span-1 mb-0"
-                name="description"
-              >
-                <input
-                  type="text"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                  placeholder="Mô tả khoá học"
-                />
-              </Form.Item>
-              <Form.Item
-                className="col-span-2 sm:col-span-1 mb-0"
+                className="col-span-2 mb-0"
                 name="coursePrice"
+                label="Giá khoá học"
+                labelCol={{ span: 24 }}
+                rules={[
+                  {
+                    required: true,
+                    message: "Vui lòng nhập giá khoá học",
+                  },
+                ]}
               >
                 <input
                   type="number"
@@ -118,7 +151,18 @@ const ModalCreateCourse = ({ onClose }: { onClose: () => void }) => {
                   placeholder="Giá khoá học"
                 />
               </Form.Item>
-              <Form.Item className="col-span-2 mb-0" name="description">
+              <Form.Item
+                className="col-span-2 mb-0"
+                name="description"
+                label="Mô tả khoá học"
+                labelCol={{ span: 24 }}
+                rules={[
+                  {
+                    required: true,
+                    message: "Vui lòng nhập mô tả khoá học",
+                  },
+                ]}
+              >
                 <textarea
                   className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   placeholder="Mô tả khoá học"

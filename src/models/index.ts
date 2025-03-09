@@ -113,3 +113,10 @@ export type IPayment = {
   status: keyof typeof statusEnum;
   creationDate: Date;
 };
+export type ICourse = {
+  id: string;
+  imageUrl: string;
+  title: string;
+  coursePrice: number;
+  description: string;
+};

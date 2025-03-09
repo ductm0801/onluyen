@@ -11,6 +11,10 @@ const config: Config = {
   darkMode: ["class", '[data-theme="dark"]'],
   theme: {
     extend: {
+      backgroundImage: {
+        welcome: "url(/assets/Welcome.webp)",
+        aboutus: "url(/assets/aboutus.webp)",
+      },
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
@@ -59,6 +63,10 @@ const config: Config = {
           "100%": {
             transform: "translateY(0%) rotate(0deg)",
           },
+        },
+        spin: {
+          "0%": { transform: "rotate(0deg)" },
+          "100%": { transform: "rotate(360deg)" },
         },
       },
       animation: {
