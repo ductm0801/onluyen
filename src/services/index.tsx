@@ -14,7 +14,9 @@ export const login = async (body: ILoginRequest) => {
   return res.data;
 };
 export const getSubject = async () => {
-  const res = await axiosClient.get("/api/subject");
+  const res = await axiosClient.get("/api/subject", {
+    params: { isSortByCourse: false },
+  });
   return res.data;
 };
 export const getExamBySubjectId = async (
@@ -162,8 +164,16 @@ export const updateExamQuestion = async (
   return res.data;
 };
 
-export const getTransactionHistory = async () => {
-  const res = await axiosClient.get(`/api/payment/payment_history`);
+export const getTransactionHistory = async (
+  pageIndex: number,
+  pageSize: number
+) => {
+  const res = await axiosClient.get(`/api/payment/payment_history/paging`, {
+    params: {
+      pageIndex,
+      pageSize,
+    },
+  });
   return res.data;
 };
 
@@ -197,12 +207,15 @@ export const getTest = async (
   pageIndex: number,
   pageSize: number
 ) => {
-  const res = await axiosClient.get(`/api/exam/studentTestAttempt/${id}`, {
-    params: {
-      pageIndex,
-      pageSize,
-    },
-  });
+  const res = await axiosClient.get(
+    `/api/exam/studentOnGoingTestAttempt/${id}`,
+    {
+      params: {
+        pageIndex,
+        pageSize,
+      },
+    }
+  );
   return res.data;
 };
 
@@ -226,5 +239,30 @@ export const saveExam = async (body: any, id: string | string[]) => {
 };
 export const submitExam = async (id: string | string[]) => {
   const res = await axiosClient.post(`/api/exam/submitExam/${id}`);
+  return res.data;
+};
+export const examResult = async (
+  id: string | string[],
+  pageIndex: number,
+  pageSize: number
+) => {
+  const res = await axiosClient.get(
+    `/api/exam/studentFinishedTestAttempt/${id}`,
+    {
+      params: {
+        pageIndex,
+        pageSize,
+      },
+    }
+  );
+  return res.data;
+};
+export const getExamCode = async (pageIndex: number, pageSize: number) => {
+  const res = await axiosClient.get(`/api/examcode/get_list_examcode`, {
+    params: {
+      pageIndex,
+      pageSize,
+    },
+  });
   return res.data;
 };

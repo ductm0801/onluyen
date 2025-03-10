@@ -43,7 +43,12 @@ export const menus: Record<
       path: "/student/transaction-history",
       isShow: true,
     },
-    // { label: "Ôn luyện plus", icon: IMAGES.earth, path: "/question" },
+    {
+      label: "Mã thi của tôi",
+      icon: IMAGES.examCode,
+      path: "/student/exam-code",
+      isShow: true,
+    },
   ],
   Instructor: [
     {

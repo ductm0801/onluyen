@@ -4,7 +4,8 @@ import { examEnum, questionEnum } from "@/constants/enum";
 import { IExam } from "@/models";
 import { useLoading } from "@/providers/loadingProvider";
 import { getTest, saveExam, submitExam } from "@/services";
-import { useParams } from "next/navigation";
+import { Modal } from "antd";
+import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
@@ -12,11 +13,12 @@ const TakeExam = () => {
   const { setLoading } = useLoading();
   const params = useParams();
   const [exam, setExam] = useState<IExam | null>(null);
-  const [timeLeft, setTimeLeft] = useState<number>(-1);
+  const [timeLeft, setTimeLeft] = useState<number | null>(null);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswers, setSelectedAnswers] = useState<
     Record<string, { ids: string[]; text: string }>
   >({});
+  const router = useRouter();
 
   useEffect(() => {
     const fetchExam = async () => {
@@ -41,17 +43,17 @@ const TakeExam = () => {
   }, [params.id, setLoading]);
 
   useEffect(() => {
-    if (timeLeft > 0) {
+    if (timeLeft !== null && timeLeft > 0) {
       const timer = setInterval(() => {
         setTimeLeft((prev) => {
-          const newTime = prev - 1;
+          const newTime = (prev ?? 0) - 1;
           localStorage.setItem(`timeLeft_${params.id}`, newTime.toString());
           return newTime;
         });
       }, 1000);
       return () => clearInterval(timer);
     }
-    if (timeLeft === 0) {
+    if (timeLeft !== null && timeLeft <= 0) {
       onSubmit();
     }
   }, [timeLeft]);
@@ -89,6 +91,25 @@ const TakeExam = () => {
     return `${minutes}:${secs < 10 ? "0" : ""}${secs}`;
   };
   const onSubmit = async () => {
+    const totalQuestions = exam?.questions.length ?? 0;
+    const answeredQuestions = Object.keys(selectedAnswers).length;
+
+    if (answeredQuestions < totalQuestions) {
+      Modal.confirm({
+        title: "Xác nhận nộp bài",
+        content: `Bạn mới làm ${answeredQuestions}/${totalQuestions} câu. Bạn có chắc chắn muốn nộp bài không?`,
+        okText: "Nộp bài",
+        cancelText: "Hủy",
+        onOk: async () => {
+          await submitExamHandler();
+        },
+      });
+      return;
+    }
+    await submitExamHandler();
+  };
+
+  const submitExamHandler = async () => {
     const formattedAnswers = Object.entries(selectedAnswers).map(
       ([questionId, answer]) => ({
         questionId,
@@ -96,6 +117,7 @@ const TakeExam = () => {
         answerText: answer.text || "",
       })
     );
+
     try {
       setLoading(true);
       const res = await saveExam(
@@ -106,9 +128,10 @@ const TakeExam = () => {
       localStorage.removeItem(`exam-${params.id}`);
       localStorage.removeItem(`timeLeft_${params.id}`);
       toast.success("Bạn đã nộp bài thành công!");
+      router.push(`/student/exam/result/${params.id}`);
     } catch (err: any) {
       setLoading(false);
-      toast.error(err.response.data.message);
+      toast.error(err.response?.data?.message || "Lỗi khi nộp bài");
     } finally {
       setLoading(false);
     }
@@ -125,7 +148,9 @@ const TakeExam = () => {
           <i className="fa-regular fa-clock"></i>
           <div className="flex flex-col font-bold">
             <span className="text-base text-[#333333a1]">Thời gian</span>
-            <p className="tracking-[3px]">{formatTime(timeLeft)}</p>
+            <p className="tracking-[3px]">
+              {timeLeft !== null ? formatTime(timeLeft) : "0:00"}
+            </p>
           </div>
         </div>
         <button
@@ -157,7 +182,7 @@ const TakeExam = () => {
                     answer.id
                   )
                 }
-                className={`w-[40%] py-4 px-8 shadow-[0px_0px_3px_rgba(0,0,0,0.3)] rounded-xl cursor-pointer 
+                className={`w-[40%] py-4 px-8 shadow-[0px_0px_3px_rgba(0,0,0,0.3)] rounded-xl cursor-pointer  flex items-center 
         ${
           selectedAnswers[currentQuestion.id]?.ids?.includes(answer.id)
             ? "bg-blue-300"
@@ -165,7 +190,10 @@ const TakeExam = () => {
         }`}
               >
                 <span>{String.fromCharCode(65 + index)}.</span>
-                <span className="ml-4">{answer.content}</span>
+                <span
+                  className="ml-4"
+                  dangerouslySetInnerHTML={{ __html: answer.content }}
+                ></span>
               </li>
             ))}
           </ul>

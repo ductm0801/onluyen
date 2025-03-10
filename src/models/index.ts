@@ -92,6 +92,8 @@ export type IExam = {
   totalGrade: number;
   isDeleted: boolean;
   questions: IQuestion[];
+  studentGrade: number;
+  studentCorrectAnswers: number;
 };
 
 export type IExamPayment = {
