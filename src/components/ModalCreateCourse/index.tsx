@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
 import { useLoading } from "@/providers/loadingProvider";
 import { createCourse, uploadImg } from "@/services";
-import { set } from "lodash";
+
 import { toast } from "react-toastify";
 
 const ModalCreateCourse = ({ onClose }: { onClose: () => void }) => {
