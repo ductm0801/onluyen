@@ -187,6 +187,7 @@ const Home = () => {
       setLoading(false);
     }
   };
+
   const handleTakeExam = async () => {
     try {
       setLoading(true);
@@ -195,7 +196,8 @@ const Home = () => {
         toast.success("Bạn đã đăng ký thành công!");
         router.push(`/student/exam/${res.data}`);
       }
-    } catch (error) {
+    } catch (error: any) {
+      toast.error(error.response.data.message);
       setLoading(false);
     } finally {
       setLoading(false);
@@ -204,7 +206,6 @@ const Home = () => {
   return (
     <div className="flex flex-col gap-6">
       <div className="flex justify-end items-center">
-        {/* <div className="font-bold text-[#0C111D]">Hi, {user?.FullName}!</div> */}
         <div className="flex gap-2 items-center border border-[#D0D5DD] rounded-full py-2 px-4">
           <img src={IMAGES.searchIcon} alt="search" className="text-sm" />
           <input

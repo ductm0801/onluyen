@@ -186,9 +186,21 @@ export const reviewreviewTestStatus = async (body: any, id: string) => {
   return res.data;
 };
 export const takeExam = async (id: string | string[], examCode: string) => {
-  const res = await axiosClient.post(`/api/exam/takeExam/${id}`, {
+  const res = await axiosClient.post(
+    `/api/exam/takeExam/${id}?examCode=${examCode}`
+  );
+
+  return res.data;
+};
+export const getTest = async (
+  id: string | string[],
+  pageIndex: number,
+  pageSize: number
+) => {
+  const res = await axiosClient.get(`/api/exam/studentTestAttempt/${id}`, {
     params: {
-      examCode,
+      pageIndex,
+      pageSize,
     },
   });
   return res.data;
@@ -205,5 +217,14 @@ export const uploadImg = async (formData: FormData) => {
 
 export const createCourse = async (body: ICourse) => {
   const res = await axiosClient.post(`/api/courses`, body);
+  return res.data;
+};
+
+export const saveExam = async (body: any, id: string | string[]) => {
+  const res = await axiosClient.put(`/api/exam/saveExam/${id}`, body);
+  return res.data;
+};
+export const submitExam = async (id: string | string[]) => {
+  const res = await axiosClient.post(`/api/exam/submitExam/${id}`);
   return res.data;
 };
