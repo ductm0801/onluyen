@@ -1,31 +1,123 @@
 "use client";
 import CircularProgess from "@/components/CircularProgress";
+import { examEnum, questionEnum } from "@/constants/enum";
+import { IExam } from "@/models";
 import { useLoading } from "@/providers/loadingProvider";
-import { takeExam } from "@/services";
+import { getTest, saveExam, submitExam } from "@/services";
 import { useParams } from "next/navigation";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 const TakeExam = () => {
   const { setLoading } = useLoading();
   const params = useParams();
-  console.log(params);
+  const [exam, setExam] = useState<IExam | null>(null);
+  const [timeLeft, setTimeLeft] = useState<number>(-1);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [selectedAnswers, setSelectedAnswers] = useState<
+    Record<string, { ids: string[]; text: string }>
+  >({});
 
-  // const handleTakeExam = async () => {
-  //   try {
-  //     setLoading(true);
-  //     const res = await takeExam(params.id, 10, 0, examCode);
-  //     if (res) {
-  //       toast.success("Bạn đã đăng ký thành công!");
-  //       router.push(
-  //         `/student/exam/${examDetail.current.id}?id=${res.data.testAttemptId}`
-  //       );
-  //     }
-  //   } catch (error) {
-  //     setLoading(false);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
+  useEffect(() => {
+    const fetchExam = async () => {
+      try {
+        setLoading(true);
+        const res = await getTest(params.id, 0, 60);
+        setExam(res.data);
+
+        const storedAnswers = localStorage.getItem(`exam-${params.id}`);
+        const savedTime = localStorage.getItem(`timeLeft_${params.id}`);
+        setTimeLeft(savedTime ? parseInt(savedTime) : res.data.length * 60);
+        if (storedAnswers) {
+          setSelectedAnswers(JSON.parse(storedAnswers));
+        }
+      } catch (error) {
+        console.error("Error fetching exam:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchExam();
+  }, [params.id, setLoading]);
+
+  useEffect(() => {
+    if (timeLeft > 0) {
+      const timer = setInterval(() => {
+        setTimeLeft((prev) => {
+          const newTime = prev - 1;
+          localStorage.setItem(`timeLeft_${params.id}`, newTime.toString());
+          return newTime;
+        });
+      }, 1000);
+      return () => clearInterval(timer);
+    }
+    if (timeLeft === 0) {
+      onSubmit();
+    }
+  }, [timeLeft]);
+
+  const handleSelectAnswer = (
+    questionId: string,
+    type: number,
+    answerId: string,
+    answerText?: string
+  ) => {
+    setSelectedAnswers((prev) => {
+      let updatedAnswers = { ...prev };
+
+      if (type === 0) {
+        updatedAnswers[questionId] = { ids: [answerId], text: "" };
+      } else if (type === 1) {
+        const prevAnswers = updatedAnswers[questionId]?.ids || [];
+        const newAnswers = prevAnswers.includes(answerId)
+          ? prevAnswers.filter((id) => id !== answerId)
+          : [...prevAnswers, answerId];
+
+        updatedAnswers[questionId] = { ids: newAnswers, text: "" };
+      } else if (type === 2) {
+        updatedAnswers[questionId] = { ids: [], text: answerText || "" };
+      }
+
+      localStorage.setItem(`exam-${params.id}`, JSON.stringify(updatedAnswers));
+      return updatedAnswers;
+    });
+  };
+
+  const formatTime = (seconds: number) => {
+    const minutes = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${minutes}:${secs < 10 ? "0" : ""}${secs}`;
+  };
+  const onSubmit = async () => {
+    const formattedAnswers = Object.entries(selectedAnswers).map(
+      ([questionId, answer]) => ({
+        questionId,
+        answerIds: answer.ids || [],
+        answerText: answer.text || "",
+      })
+    );
+    try {
+      setLoading(true);
+      const res = await saveExam(
+        { studentAnswers: formattedAnswers },
+        params.id
+      );
+      if (res) await submitExam(params.id);
+      localStorage.removeItem(`exam-${params.id}`);
+      localStorage.removeItem(`timeLeft_${params.id}`);
+      toast.success("Bạn đã nộp bài thành công!");
+    } catch (err: any) {
+      setLoading(false);
+      toast.error(err.response.data.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (!exam) return <></>;
+
+  const currentQuestion = exam.questions[currentQuestionIndex];
+
   return (
     <div className="bg-white min-h-[50rem] w-full rounded-[10px] shadow-[0px_0px_5px_rgba(0, 0, 0, 0.1)]">
       <div className="flex justify-between items-center pb-16">
@@ -33,95 +125,114 @@ const TakeExam = () => {
           <i className="fa-regular fa-clock"></i>
           <div className="flex flex-col font-bold">
             <span className="text-base text-[#333333a1]">Thời gian</span>
-            <p className="tracking-[3px]">14:00:00</p>
+            <p className="tracking-[3px]">{formatTime(timeLeft)}</p>
           </div>
         </div>
-        <button id="quiz_submit">Nộp bài</button>
+        <button
+          className="bg-[#1244A2] px-3 py-2 rounded-xl text-white"
+          onClick={() => onSubmit()}
+        >
+          Nộp bài
+        </button>
       </div>
+
       <div className="flex">
         <div className="flex-1 flex flex-col gap-4">
-          <h5>Câu hỏi 1 trên 10</h5>
-          <p className="text-2xl font-bold">He _ to school every day</p>
+          <h5>
+            Câu hỏi {currentQuestionIndex + 1} trên {exam.questions.length}
+          </h5>
+          <p
+            className="text-2xl font-bold"
+            dangerouslySetInnerHTML={{ __html: currentQuestion.title }}
+          ></p>{" "}
+          <span>{questionEnum[currentQuestion.type]}</span>
           <ul className="flex flex-wrap gap-8 mt-4">
-            <li className="w-[40%] py-4 px-8 shadow-[0px_0px_3px_rgba(0,0,0,0.3)] rounded-xl">
-              <span>A.</span>
-              <span className="ml-4">go</span>
-            </li>
-            <li className="w-[40%] py-4 px-8 shadow-[0px_0px_3px_rgba(0,0,0,0.3)] rounded-xl">
-              <span>B.</span>
-              <span className="ml-4">goes</span>
-            </li>
-            <li className="w-[40%] py-4 px-8 shadow-[0px_0px_3px_rgba(0,0,0,0.3)] rounded-xl">
-              <span>C.</span>
-              <span className="ml-4">went</span>
-            </li>
-            <li className="w-[40%] py-4 px-8 shadow-[0px_0px_3px_rgba(0,0,0,0.3)] rounded-xl">
-              <span>D.</span>
-              <span className="ml-4">geos</span>
-            </li>
+            {currentQuestion.answers.map((answer, index) => (
+              <li
+                key={answer.id}
+                onClick={() =>
+                  handleSelectAnswer(
+                    currentQuestion.id,
+                    currentQuestion.type,
+                    answer.id
+                  )
+                }
+                className={`w-[40%] py-4 px-8 shadow-[0px_0px_3px_rgba(0,0,0,0.3)] rounded-xl cursor-pointer 
+        ${
+          selectedAnswers[currentQuestion.id]?.ids?.includes(answer.id)
+            ? "bg-blue-300"
+            : ""
+        }`}
+              >
+                <span>{String.fromCharCode(65 + index)}.</span>
+                <span className="ml-4">{answer.content}</span>
+              </li>
+            ))}
           </ul>
+          {currentQuestion.type === 2 && (
+            <textarea
+              className="w-[80%] p-4 border rounded-md"
+              placeholder="Nhập câu trả lời của bạn..."
+              value={selectedAnswers[currentQuestion.id]?.text || ""}
+              onChange={(e) =>
+                handleSelectAnswer(currentQuestion.id, 2, "", e.target.value)
+              }
+            />
+          )}
         </div>
         <div className="relative mt-12">
           <CircularProgess
             className="flex-shrink-0 w-[120px] aspect-square"
             gaugePrimaryColor="#FDB022"
             gaugeSecondaryColor="#1244A2"
-            max={60}
+            max={exam.questions.length}
             min={0}
-            value={10}
+            value={Object.keys(selectedAnswers).length}
             isPercent={false}
           />
         </div>
       </div>
+
       <div className="flex gap-6 mt-20">
-        <button className="py-1 px-4 text-sm flex-shrink-0  border border-[#273d30] text-[#273d30] rounded-xl">
+        <button
+          className="py-1 px-4 text-sm flex-shrink-0 border border-[#273d30] text-[#273d30] rounded-xl"
+          disabled={currentQuestionIndex === 0}
+          onClick={() =>
+            setCurrentQuestionIndex((prev) => Math.max(prev - 1, 0))
+          }
+        >
           Câu trước
         </button>
         <ul className="flex items-center gap-6 w-[75%] overflow-x-auto p-[1px]">
-          <li className="border-2 border-[#273d30] w-4  py-1 text-sm px-4 flex items-center justify-center  rounded-lg aspect-square text-center shadow-[0px_0px_3px_rgba(0,0,0,0.3)]  cursor-pointer">
-            1
-          </li>
-          <li className=" w-4  py-1 px-4 flex items-center justify-center  rounded-lg aspect-square text-center shadow-[0px_0px_3px_rgba(0,0,0,0.3)]  cursor-pointer">
-            2
-          </li>
-          <li className=" w-4  py-1 text-sm px-4 flex items-center justify-center rounded-lg aspect-square text-center shadow-[0px_0px_3px_rgba(0,0,0,0.3)]  cursor-pointer">
-            3
-          </li>
-          <li className=" w-4  py-1 text-sm px-4 flex items-center justify-center rounded-lg aspect-square text-center shadow-[0px_0px_3px_rgba(0,0,0,0.3)]  cursor-pointer">
-            4
-          </li>
-          <li className=" w-4  py-1 text-sm px-4 flex items-center justify-center rounded-lg aspect-square text-center shadow-[0px_0px_3px_rgba(0,0,0,0.3)]  cursor-pointer">
-            5
-          </li>
-          <li className=" w-4  py-1 text-sm px-4 flex items-center justify-center  rounded-lg aspect-square text-center shadow-[0px_0px_3px_rgba(0,0,0,0.3)]  cursor-pointer">
-            6
-          </li>
-          <li className=" w-4  py-1 text-sm px-4 flex items-center justify-center rounded-lg aspect-square text-center shadow-[0px_0px_3px_rgba(0,0,0,0.3)]  cursor-pointer">
-            7
-          </li>
-          <li className=" w-4  py-1 text-sm px-4 flex items-center justify-center rounded-lg aspect-square text-center shadow-[0px_0px_3px_rgba(0,0,0,0.3)]  cursor-pointer">
-            8
-          </li>
-          <li className=" w-4  py-1 text-sm px-4 flex items-center justify-center rounded-lg aspect-square text-center shadow-[0px_0px_3px_rgba(0,0,0,0.3)]  cursor-pointer">
-            9
-          </li>
-          <li className=" w-4  py-1 text-sm px-4 flex items-center justify-center rounded-lg aspect-square text-center shadow-[0px_0px_3px_rgba(0,0,0,0.3)]  cursor-pointer">
-            10
-          </li>
-          <li className=" w-4  py-1 text-sm px-4 flex items-center justify-center rounded-lg aspect-square text-center shadow-[0px_0px_3px_rgba(0,0,0,0.3)]  cursor-pointer">
-            9
-          </li>
-          <li className=" w-4  py-1 text-sm px-4 flex items-center justify-center rounded-lg aspect-square text-center shadow-[0px_0px_3px_rgba(0,0,0,0.3)]  cursor-pointer">
-            9
-          </li>
-          <li className=" w-4  py-1 text-sm px-4 flex items-center justify-center rounded-lg aspect-square text-center shadow-[0px_0px_3px_rgba(0,0,0,0.3)]  cursor-pointer">
-            9
-          </li>
-          <li className=" w-4  py-1 text-sm px-4 flex items-center justify-center rounded-lg aspect-square text-center shadow-[0px_0px_3px_rgba(0,0,0,0.3)]  cursor-pointer">
-            9
-          </li>
+          {exam.questions.map((q, index) => (
+            <li
+              key={q.id}
+              className={`w-8 h-8 flex items-center justify-center rounded-lg text-center shadow-[0px_0px_3px_rgba(0,0,0,0.3)] cursor-pointer 
+                ${
+                  index === currentQuestionIndex
+                    ? "border-2 border-[#273d30]"
+                    : ""
+                }
+                ${
+                  selectedAnswers[q.id]
+                    ? "bg-[#1244A2] text-white"
+                    : "bg-white text-black"
+                }`}
+              onClick={() => setCurrentQuestionIndex(index)}
+            >
+              {index + 1}
+            </li>
+          ))}
         </ul>
-        <button className="py-1 px-4 flex-shrink-0 text-sm border border-[#273d30] text-[#273d30] rounded-xl">
+        <button
+          className="py-1 px-4 flex-shrink-0 text-sm border border-[#273d30] text-[#273d30] rounded-xl"
+          disabled={currentQuestionIndex === exam.questions.length - 1}
+          onClick={() =>
+            setCurrentQuestionIndex((prev) =>
+              Math.min(prev + 1, exam.questions.length - 1)
+            )
+          }
+        >
           Câu sau
         </button>
       </div>
