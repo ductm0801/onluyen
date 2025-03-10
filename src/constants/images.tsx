@@ -27,4 +27,6 @@ export const IMAGES = {
   about4: "/assets/about4.png",
   about5: "/assets/about5.png",
   about6: "/assets/about6.png",
+  examCode: "/assets/examCode.svg",
+  copyIcon: "/assets/copyIcon.svg",
 };

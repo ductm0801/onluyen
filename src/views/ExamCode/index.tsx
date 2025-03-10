@@ -1,107 +1,64 @@
 "use client";
 import Paging from "@/components/Paging";
-import { IPayment } from "@/models";
-import React, { useEffect, useState } from "react";
-import dayjs from "dayjs";
-import { useLoading } from "@/providers/loadingProvider";
-import { toast } from "react-toastify";
-import { getTransactionHistory } from "@/services";
 import { statusEnum } from "@/constants/enum";
+import { IMAGES } from "@/constants/images";
+import { useLoading } from "@/providers/loadingProvider";
+import { getExamCode } from "@/services";
+import dayjs from "dayjs";
+import React, { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 const cols = [
   {
-    name: "Mã giao dịch",
+    name: "Mã thi",
     className:
       "px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white rounded-s-lg",
   },
   {
-    name: "Sẩn phẩm",
+    name: "Tên bài thi",
     className:
-      "px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white",
+      "px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white text-center",
   },
   {
-    name: "thanh toán qua",
+    name: "Lượt sử dụng",
     className:
-      "px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white",
+      "px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white text-center",
   },
   {
-    name: "Tổng tiền",
+    name: "Ngày hết hạn ",
     className:
-      "px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white",
-  },
-  {
-    name: "Ngày giao dịch ",
-    className:
-      "px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white",
-  },
-  {
-    name: "Trạng thái",
-    className: "px-6 py-4 font-medium  whitespace-nowrap  rounded-e-lg",
+      "px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white text-center",
   },
 ];
-export const renderBgColorStatus = (status: keyof typeof statusEnum) => {
-  switch (status) {
-    case 2:
-      return "from-orange-600 to-orange-300";
-    case 3:
-      return "from-emerald-600 to-emerald-400";
-    case 4:
-      return "from-red-600 to-red-300";
-    case 0:
-      return "from-emerald-600 to-teal-400";
-    case 1:
-      return "from-slate-600 to-slate-300";
-    default:
-      return "from-emerald-500 to-teal-400";
-  }
-};
 
-export const renderColorStatus = (status: keyof typeof statusEnum) => {
-  switch (status) {
-    case 0:
-      return "text-green-500";
-    case 1:
-      return "text-red-500";
-    case 2:
-      return "text-[#d3c718]";
-    case 3:
-      return "text-green-500";
-    case 4:
-      return "text-red-500";
-    default:
-      return "text-[#d3c718]";
-  }
-};
-
-const TranSactionHistory = () => {
-  const [transaction, setTransaction] = useState<IPayment[]>([]);
+const ExamCode = () => {
+  const [examCode, setExamCode] = useState<any[]>([]);
   const { setLoading } = useLoading();
   const [pageSize, setPageSize] = useState(5);
   const [currentPage, setCurrentPage] = useState(0);
   const [totalItems, setTotalItems] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
 
-  const fetchHistory = async () => {
+  const fetchExamCode = async () => {
     try {
       setLoading(true);
-      const res = await getTransactionHistory(currentPage, pageSize);
-      if (res) {
-        setTransaction(res.data.items);
-        setTotalItems(res.data.totalItemsCount);
-
-        setTotalPages(res.data.totalPageCount);
-      }
-    } catch (err: any) {
-      setLoading(false);
-      toast.error(err.response.data.message);
+      const res = await getExamCode(currentPage, pageSize);
+      setExamCode(res.data.items);
+      setTotalItems(res.data.totalItemsCount);
+      setTotalPages(res.data.totalPageCount);
+    } catch (error) {
+      console.error("Error fetching exam code:", error);
     } finally {
       setLoading(false);
     }
   };
   useEffect(() => {
-    fetchHistory();
+    fetchExamCode();
   }, [currentPage]);
-
+  const handleCopy = (code: string) => {
+    navigator.clipboard.writeText(code);
+    toast.success("Đã sao chép mã thi");
+  };
   return (
     <div className="relative overflow-x-auto">
       <div className="flex justify-between  items-center  flex-column flex-wrap md:flex-row space-y-4 md:space-y-0 pb-4">
@@ -142,8 +99,8 @@ const TranSactionHistory = () => {
           </tr>
         </thead>
         <tbody>
-          {transaction &&
-            transaction.map((a, idx) => (
+          {examCode &&
+            examCode.map((a, idx) => (
               <tr
                 className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600"
                 key={idx}
@@ -152,33 +109,23 @@ const TranSactionHistory = () => {
                   scope="row"
                   className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white"
                 >
-                  <div className="text-base font-semibold">{a.description}</div>
+                  <div className="text-base font-semibold flex items-start gap-3">
+                    {a.code}
+                    <img
+                      src={IMAGES.copyIcon}
+                      className="w-4 cursor-pointer"
+                      alt="copy"
+                      onClick={() => handleCopy(a.code)}
+                    />
+                  </div>
                 </th>
-                <td className="px-6 py-4">
-                  {a.paymentType === "Exam" ? "Mã kiểm tra" : ""}
-                </td>
-                <td className="px-6 py-4">{a.method}</td>
-                <td className="px-6 py-4">
-                  {a.transactionAmount.toLocaleString("vi-VN")}đ
-                </td>
+                <td className="px-6 py-4 text-center">{a.examName}</td>
+                <td className="px-6 py-4 text-center">{a.maxUsage} lần</td>
                 <td className="px-6 py-4 flex flex-col items-center">
                   <p>{dayjs(a.creationDate).format("DD/MM/YYYY")}</p>
                   <p className="text-xs">
                     {dayjs(a.creationDate).format("HH:mm:ss")}
                   </p>
-                </td>
-                <td
-                  className={`p-2 text-sm leading-normal text-center align-middle shadow-transparent ${renderColorStatus(
-                    a.status
-                  )}`}
-                >
-                  <span
-                    className={`px-2 text-sm rounded-lg py-1 font-bold text-white bg-gradient-to-tl ${renderBgColorStatus(
-                      a.status
-                    )}`}
-                  >
-                    {statusEnum[a.status]}
-                  </span>
                 </td>
               </tr>
             ))}
@@ -195,4 +142,4 @@ const TranSactionHistory = () => {
   );
 };
 
-export default TranSactionHistory;
+export default ExamCode;

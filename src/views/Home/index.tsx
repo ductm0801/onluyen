@@ -193,7 +193,7 @@ const Home = () => {
       setLoading(true);
       const res = await takeExam(examDetail.current.id, examCode);
       if (res) {
-        toast.success("Bạn đã đăng ký thành công!");
+        // toast.success("Bạn đã đăng ký thành công!");
         router.push(`/student/exam/${res.data}`);
       }
     } catch (error: any) {
@@ -272,7 +272,7 @@ const Home = () => {
       </div>
       <div className="flex flex-col gap-6">
         <div className="text-2xl font-bold">Đề thi</div>
-        <div className="flex border-b overflow-scroll">
+        <div className="flex border-b overflow-auto">
           {subjects &&
             subjects.map((s, index) => (
               <div

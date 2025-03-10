@@ -24,7 +24,7 @@ const Regist = () => {
   return (
     <div className="flex flex-col gap-4">
       <div className="relative flex flex-col gap-2">
-        Chọn loại tài khoản
+        <p className="text-white font-bold"> Bạn là</p>
         <div
           className="bg-[#e3eaff] border text-gray-700 border-gray-400 rounded-xl px-3 py-2 flex justify-between items-center"
           onClick={() => setOpen((prev) => !prev)}
