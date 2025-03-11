@@ -172,6 +172,8 @@ export const getTransactionHistory = async (
     params: {
       pageIndex,
       pageSize,
+      SortAscending: false,
+      SortBy: "string",
     },
   });
   return res.data;
@@ -262,6 +264,8 @@ export const getExamCode = async (pageIndex: number, pageSize: number) => {
     params: {
       pageIndex,
       pageSize,
+      SortAscending: false,
+      SortBy: "string",
     },
   });
   return res.data;
