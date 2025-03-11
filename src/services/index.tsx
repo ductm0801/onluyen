@@ -172,7 +172,8 @@ export const getTransactionHistory = async (
     params: {
       pageIndex,
       pageSize,
-      SortAscending: true,
+      SortAscending: false,
+      SortBy: "string",
     },
   });
   return res.data;
