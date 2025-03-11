@@ -25,6 +25,11 @@ const FormUpdateExam: React.FC<Props> = ({ exam, id }) => {
   );
   const [isDraggingOverExam, setIsDraggingOverExam] = useState(false);
   const [isDraggingOverBank, setIsDraggingOverBank] = useState(false);
+  const [filter, setFilter] = useState({
+    type: "",
+    difficulty: "",
+    search: "",
+  });
 
   useEffect(() => {
     const fetchQuestionBank = async () => {
@@ -34,8 +39,12 @@ const FormUpdateExam: React.FC<Props> = ({ exam, id }) => {
         if (res) {
           setQuestionBank(res.data);
           setActiveQuestionBank(res.data[0]);
-
-          const response = await getQuestionByBank(res.data[0].id, 0, 10);
+          const response = await getQuestionByBank(
+            res.data[0].id,
+            0,
+            10,
+            filter
+          );
           if (response) {
             setDataQuestion(response.data.items);
           }
@@ -77,7 +86,6 @@ const FormUpdateExam: React.FC<Props> = ({ exam, id }) => {
         setDataQuestion(dataQuestion.filter((q) => q.id !== question.id));
       }
     } else {
-      // Kiểm tra nếu câu hỏi đã có trong danh sách `dataQuestion` thì không thêm lại nữa
       if (!dataQuestion.some((q) => q.id === question.id)) {
         setDataQuestion([...dataQuestion, question]);
       }

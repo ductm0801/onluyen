@@ -118,7 +118,6 @@ const Home = () => {
   const [pageIndex, setPageIndex] = useState(0);
   const [exam, setExam] = useState([]);
   const [examCode, setExamCode] = useState("");
-  // console.log(exam);
 
   const fetchExam = async () => {
     const pageSize = 10;
@@ -138,30 +137,27 @@ const Home = () => {
   useEffect(() => {
     fetchExam();
   }, [active]);
-  const handleEnrollExam = async (id: string) => {
-    try {
-      setLoading(true);
-      const res = await enrollExam(id);
-      if (res) {
-        toast.success(res.message);
-        fetchExam();
-      }
-    } catch (err: any) {
-      // console.error(err);
-      toast.error(err.response.data.message);
-      setLoading(false);
-    } finally {
-      setLoading(false);
-    }
-  };
 
-  const handleOpenPopup = (item: any) => {
+  const handleOpenPopup = async (item: any) => {
+    if (!item.enrollmentId) {
+      try {
+        setLoading(true);
+        const res = await enrollExam(item.id);
+        if (res) {
+          toast.success(res.message);
+          await fetchExam();
+        }
+      } catch (err: any) {
+        toast.error(err.response?.data?.message || "Có lỗi xảy ra");
+        setLoading(false);
+        return;
+      } finally {
+        setLoading(false);
+      }
+    }
+
     setOpen(true);
     examDetail.current = item;
-    if (item.isEnrolled) {
-      return;
-    }
-    handleEnrollExam(item.id);
   };
   const handleCLose = () => {
     setOpen(false);
