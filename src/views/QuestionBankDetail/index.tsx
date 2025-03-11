@@ -13,9 +13,9 @@ import _ from "lodash";
 
 const cols = [
   {
-    name: "Đề kiểm tra",
+    name: "Câu hỏi",
     className:
-      "px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white rounded-s-lg",
+      "px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white rounded-s-lg ",
   },
   //   {
   //     name: "Mô tả",
@@ -221,10 +221,10 @@ const BankDetail = () => {
                   >
                     <th
                       scope="row"
-                      className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white"
+                      className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white max-w-[300px]"
                     >
                       <div
-                        className="text-base font-semibold"
+                        className="text-base font-semibold truncate"
                         dangerouslySetInnerHTML={{
                           __html: `${a?.title}`,
                         }}

@@ -29,4 +29,5 @@ export const IMAGES = {
   about6: "/assets/about6.png",
   examCode: "/assets/examCode.svg",
   copyIcon: "/assets/copyIcon.svg",
+  editIcon: "/assets/editIcon.svg",
 };

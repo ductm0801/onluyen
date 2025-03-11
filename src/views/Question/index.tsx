@@ -10,7 +10,7 @@ import QuestionDetail from "./Detail";
 import { Select } from "antd";
 const cols = [
   {
-    name: "Đề kiểm tra",
+    name: "Tên bộ câu hỏi",
     className:
       "px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white rounded-s-lg",
   },
