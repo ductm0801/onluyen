@@ -122,9 +122,9 @@ const ExamCode = () => {
                 <td className="px-6 py-4 text-center">{a.examName}</td>
                 <td className="px-6 py-4 text-center">{a.maxUsage} lần</td>
                 <td className="px-6 py-4 flex flex-col items-center">
-                  <p>{dayjs(a.creationDate).format("DD/MM/YYYY")}</p>
+                  <p>{dayjs(a.expiredDate).format("DD/MM/YYYY")}</p>
                   <p className="text-xs">
-                    {dayjs(a.creationDate).format("HH:mm:ss")}
+                    {dayjs(a.expiredDate).format("HH:mm:ss")}
                   </p>
                 </td>
               </tr>
