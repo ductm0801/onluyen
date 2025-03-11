@@ -1,5 +1,8 @@
 "use client";
 import { IMAGES } from "@/constants/images";
+import { ICourse } from "@/models";
+import { useLoading } from "@/providers/loadingProvider";
+import { getCourse } from "@/services";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 
@@ -29,6 +32,25 @@ const items = [
 const Intro = () => {
   const [positions, setPositions] = useState<number[]>(items.map((_, i) => i));
   const [isActive, setIsActive] = useState(false);
+  const { setLoading } = useLoading();
+  const [course, setCourse] = useState<ICourse[]>([]);
+
+  const fetchCourse = async () => {
+    try {
+      setLoading(true);
+      const res = await getCourse(0, 3);
+      if (res) {
+        setCourse(res.data.items);
+      }
+    } catch (error) {
+      setLoading(false);
+    } finally {
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
+    fetchCourse();
+  }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -45,7 +67,7 @@ const Intro = () => {
     return () => clearInterval(interval);
   }, []);
   return (
-    <div>
+    <div className="pb-10">
       <div className="fixed top-0 left-0 right-0 border-b border-[#A4A4A4] bg-white z-20">
         <div className="flex justify-between items-center max-w-[1300px] py-8 mx-auto">
           <div className="flex items-center gap-2">
@@ -140,9 +162,9 @@ const Intro = () => {
             </div>
           </div>
         </div>
-        <div id="course" className="max-w-[1300px] mx-auto">
+        <div id="khoa-hoc" className="max-w-[1300px] mx-auto">
           <p className="text-[#2E90FA] font-bold text-[60px]">Các khoá học</p>
-          <div className="flex items-end justify-between">
+          <div className="flex items-center justify-between">
             <p className="max-w-xl text-start">
               {" "}
               Với giao diện trực quan, lộ trình học tập cá nhân hóa và sự hỗ trợ
@@ -168,6 +190,26 @@ const Intro = () => {
                 />
               </svg>
             </div>
+          </div>
+          <div className="grid grid-cols-3 pt-12 gap-8">
+            {course.map((c, index) => (
+              <div
+                key={index}
+                className="bg-white p-4 border  rounded-[20px] shadow-md overflow-hidden"
+              >
+                <img
+                  src={c.imageUrl}
+                  alt="course"
+                  className="w-full aspect-[352/384] object-cover"
+                />
+                <div className="p-4">
+                  <p className="text-[#2E90FA] font-bold text-lg">{c.title}</p>
+                </div>
+                <div className="bg-[#1244A2] text-white rounded-lg text-center py-3">
+                  Chi tiết khóa học
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </div>

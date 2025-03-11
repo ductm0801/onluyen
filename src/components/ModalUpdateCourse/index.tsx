@@ -1,29 +1,41 @@
-import { Form, InputNumber, Upload } from "antd";
-import React, { useState } from "react";
-import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
+import { ICourse } from "@/models";
 import { useLoading } from "@/providers/loadingProvider";
-import { createCourse, uploadImg } from "@/services";
-
+import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
+import { updateCourse, uploadImg } from "@/services";
+import { Form, InputNumber, Upload } from "antd";
+import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
-const ModalCreateCourse = ({
+const ModalUpdateCourse = ({
   onClose,
   fetchCourse,
+  data,
 }: {
   onClose: () => void;
   fetchCourse: () => Promise<void>;
+  data: ICourse | null;
 }) => {
   const [form] = Form.useForm();
   const [loadingImg, setLoadingImg] = useState(false);
-  const [imageUrl, setImageUrl] = useState<string>();
+  const [imageUrl, setImageUrl] = useState<
+    | {
+        uid: string;
+        name: string;
+        status: "uploading" | "done" | "error" | "removed";
+        url: string;
+      }
+    | undefined
+  >();
   const { setLoading } = useLoading();
-  const onFinish = async (values: any) => {
+  const onFinish = async (values: ICourse) => {
+    if (!data) return;
+    console.log(values);
     try {
       setLoading(true);
-      await createCourse(values);
+      await updateCourse(values, data.courseId);
       onClose();
       fetchCourse();
-      toast.success("Tạo khóa học thành công!");
+      toast.success("Sửa khóa học thành công!");
     } catch (err: any) {
       toast.error(err.response.data.message);
     } finally {
@@ -31,16 +43,12 @@ const ModalCreateCourse = ({
       onClose();
     }
   };
-  const uploadButton = (
-    <button style={{ border: 0, background: "none" }} type="button">
-      {loadingImg ? <LoadingOutlined /> : <PlusOutlined />}
-      <div style={{ marginTop: 8 }}>Thêm ảnh mới</div>
-    </button>
-  );
+
   const handleChangeImage = async ({ file }: { file: any }) => {
     setLoading(true);
     const formData = new FormData();
     formData.append("file", file.originFileObj);
+    setImageUrl(file);
     try {
       const res = await uploadImg(formData);
 
@@ -54,7 +62,19 @@ const ModalCreateCourse = ({
       setLoading(false);
     }
   };
-  console.log(imageUrl);
+  useEffect(() => {
+    if (data) {
+      const initialImg = {
+        uid: `-${data.courseId}`,
+        name: `image${data.courseId}.png`,
+        status: "done" as const,
+        url: data.imageUrl,
+      };
+      // const bannerMerge = initialBanner.at(0);
+      setImageUrl(initialImg);
+      //   setImageUrl(data.imageUrl);
+    }
+  }, []);
 
   return (
     <div
@@ -67,7 +87,7 @@ const ModalCreateCourse = ({
         <div className="relative bg-white rounded-lg shadow-sm dark:bg-gray-700">
           <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-              Tạo khoá học mới
+              Sửa khóa học
             </h3>
             <button
               type="button"
@@ -94,7 +114,12 @@ const ModalCreateCourse = ({
             </button>
           </div>
 
-          <Form className="p-4 md:p-5" form={form} onFinish={onFinish}>
+          <Form
+            className="p-4 md:p-5"
+            form={form}
+            onFinish={onFinish}
+            initialValues={data || {}}
+          >
             <div className="grid gap-4 mb-4 grid-cols-2">
               <Form.Item
                 className="col-span-2 mb-0"
@@ -108,16 +133,15 @@ const ModalCreateCourse = ({
                   },
                 ]}
               >
-                <Upload listType="picture-card" onChange={handleChangeImage}>
-                  {imageUrl ? (
-                    <img
-                      src={imageUrl}
-                      alt="avatar"
-                      style={{ width: "100%" }}
-                    />
-                  ) : (
-                    uploadButton
-                  )}
+                <Upload
+                  listType="picture-card"
+                  onChange={handleChangeImage}
+                  maxCount={1}
+                  fileList={imageUrl ? [imageUrl] : []}
+                >
+                  {typeof form.getFieldValue(["imageUrl"]) === "string"
+                    ? "Đổi hình"
+                    : "Thêm hình"}
                 </Upload>
               </Form.Item>
               <Form.Item
@@ -183,19 +207,7 @@ const ModalCreateCourse = ({
               type="submit"
               className="text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
             >
-              <svg
-                className="me-1 -ms-1 w-5 h-5"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  fill-rule="evenodd"
-                  d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
-                  clip-rule="evenodd"
-                ></path>
-              </svg>
-              Tạo mới
+              Cập nhật
             </button>
           </Form>
         </div>
@@ -204,4 +216,4 @@ const ModalCreateCourse = ({
   );
 };
 
-export default ModalCreateCourse;
+export default ModalUpdateCourse;
