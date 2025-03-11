@@ -1,8 +1,14 @@
 "use client";
 import ModalCreateCourse from "@/components/ModalCreateCourse";
+import ModalUpdateCourse from "@/components/ModalUpdateCourse";
 import Paging from "@/components/Paging";
 import { IMAGES } from "@/constants/images";
-import React, { useState } from "react";
+import { ICourse } from "@/models";
+import { useLoading } from "@/providers/loadingProvider";
+import { getCourse } from "@/services";
+import { Image } from "antd";
+import { useRouter } from "next/navigation";
+import React, { useEffect, useRef, useState } from "react";
 
 const cols = [
   {
@@ -20,11 +26,11 @@ const cols = [
     className:
       "px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white",
   },
-  //   {
-  //     name: "Trạng thái",
-  //     className:
-  //       "px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white",
-  //   },
+  {
+    name: "Trạng thái",
+    className:
+      "px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white",
+  },
   //   {
   //     name: "Ngày tạo",
   //     className:
@@ -38,12 +44,44 @@ const cols = [
 ];
 
 const InstructorCourse = () => {
-  const [course, setCourse] = useState([]);
-  const [pageSize, setPageSize] = useState(0);
+  const [course, setCourse] = useState<ICourse[]>([]);
+  const [pageSize, setPageSize] = useState(10);
   const [currentPage, setCurrentPage] = useState(0);
   const [totalItems, setTotalItems] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
   const [create, setCreate] = useState(false);
+  const { setLoading } = useLoading();
+  const [update, setUpdate] = useState(false);
+  const detail = useRef<ICourse | null>(null);
+  const router = useRouter();
+
+  const fetchCourse = async () => {
+    try {
+      setLoading(true);
+      const res = await getCourse(currentPage, pageSize);
+      if (res) {
+        setCourse(res.data.items);
+        setTotalItems(res.data.totalItemsCount);
+        setTotalPages(res.data.totalPageCount);
+      }
+    } catch (error) {
+      setLoading(false);
+    } finally {
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
+    fetchCourse();
+  }, [currentPage]);
+
+  const handleOpenUpdate = (item: ICourse) => {
+    setUpdate(true);
+    detail.current = item;
+  };
+  const handleCloseUpdate = () => {
+    setUpdate(false);
+    detail.current = null;
+  };
   return (
     <>
       <div className="relative overflow-x-auto">
@@ -92,7 +130,7 @@ const InstructorCourse = () => {
           </thead>
           <tbody>
             {course &&
-              course.map((a: any, idx) => (
+              course.map((a, idx) => (
                 <tr
                   className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600"
                   key={idx}
@@ -101,40 +139,43 @@ const InstructorCourse = () => {
                     scope="row"
                     className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white"
                   >
-                    <img
-                      className="w-10 h-10 rounded-full"
+                    <Image
+                      width={100}
+                      height={100}
                       src={a.imageUrl || IMAGES.defaultMale}
                       alt="avatar"
                     />
                     <div className="ps-3">
-                      <div className="text-base font-semibold">
-                        {a.fullName}
+                      <div
+                        className="text-base font-semibold hover:text-green-500 cursor-pointer"
+                        onClick={() =>
+                          router.push(`/instructor/course/${a.courseId}`)
+                        }
+                      >
+                        {a.title}
                       </div>
-                      <div className="font-normal text-gray-500">{a.email}</div>
                     </div>
                   </th>
-                  <td className="px-6 py-4">{a.role}</td>
-                  {/* <td className="px-6 py-4">{a.phoneNumber}</td> */}
+                  <td className="px-6 py-4">{a.description}</td>
                   <td className="px-6 py-4">
-                    <div className="flex items-center">
-                      <div className="h-2.5 w-2.5 rounded-full bg-green-500 me-2"></div>{" "}
-                      Online
-                    </div>
-                    <div className="flex items-center">
-                      <div className="h-2.5 w-2.5 rounded-full bg-red-500 me-2"></div>{" "}
-                      Offline
-                    </div>
+                    {a.coursePrice.toLocaleString("vi-VN")}đ
                   </td>
-                  <td className="px-6 py-4">{a.address}</td>
+                  <td className="px-6 py-4">{a.courseStatus}</td>
+
                   <td className="px-6 py-4">
-                    {/* <div className="font-medium text-blue-600 dark:text-blue-500 hover:underline cursor-pointer">
-                  Sửa
-                </div> */}
-                    <div
-                      className="font-medium text-red-600 dark:text-red-500 hover:underline cursor-pointer ms-3"
-                      // onClick={() => openConfirm(a.id)}
-                    >
-                      Ẩn người dùng
+                    <div className="flex items-center gap-2">
+                      <div
+                        className="font-medium text-blue-600 dark:text-blue-500 hover:underline cursor-pointer"
+                        onClick={() => handleOpenUpdate(a)}
+                      >
+                        Sửa
+                      </div>
+                      <div
+                        className="font-medium whitespace-nowrap text-red-600 dark:text-red-500 hover:underline cursor-pointer ms-3"
+                        // onClick={() => openConfirm(a.id)}
+                      >
+                        Ẩn khóa học
+                      </div>
                     </div>
                   </td>
                 </tr>
@@ -149,7 +190,19 @@ const InstructorCourse = () => {
           setCurrentPage={setCurrentPage}
         />
       </div>
-      {create && <ModalCreateCourse onClose={() => setCreate(false)} />}
+      {create && (
+        <ModalCreateCourse
+          onClose={() => setCreate(false)}
+          fetchCourse={fetchCourse}
+        />
+      )}
+      {update && (
+        <ModalUpdateCourse
+          onClose={() => handleCloseUpdate()}
+          fetchCourse={fetchCourse}
+          data={detail.current}
+        />
+      )}
     </>
   );
 };

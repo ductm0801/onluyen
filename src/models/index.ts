@@ -116,9 +116,14 @@ export type IPayment = {
   creationDate: Date;
 };
 export type ICourse = {
-  id: string;
-  imageUrl: string;
+  courseId: string;
   title: string;
-  coursePrice: number;
   description: string;
+  subjectId: string;
+  subjectName: string;
+  imageUrl: string;
+  coursePrice: number;
+  courseStatus: string;
+  instructorId: string;
+  instructorName: string;
 };

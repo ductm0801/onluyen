@@ -270,3 +270,37 @@ export const getExamCode = async (pageIndex: number, pageSize: number) => {
   });
   return res.data;
 };
+export const getCourse = async (pageIndex: number, pageSize: number) => {
+  const res = await axiosClient.get(`/api/courses`, {
+    params: {
+      pageIndex,
+      pageSize,
+    },
+  });
+  return res.data;
+};
+export const getQuestionNotInExam = async (
+  questionBankId: string,
+  testId: string | string[],
+  pageIndex: number,
+  pageSize: number,
+  filter?: any
+) => {
+  const res = await axiosClient.get(
+    `/api/question/questionBank/${questionBankId}/${testId}`,
+    {
+      params: {
+        pageIndex,
+        pageSize,
+        difficulty: filter.difficulty,
+        type: filter.type,
+        searchTerm: filter.search,
+      },
+    }
+  );
+  return res.data;
+};
+export const updateCourse = async (body: ICourse, id: string) => {
+  const res = await axiosClient.put(`/api/courses/${id}`, body);
+  return res.data;
+};

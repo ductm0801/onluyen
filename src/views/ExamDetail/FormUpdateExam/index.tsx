@@ -5,11 +5,13 @@ import { useLoading } from "@/providers/loadingProvider";
 import {
   getQuestionBank,
   getQuestionByBank,
+  getQuestionNotInExam,
   updateExamQuestion,
 } from "@/services";
 import QuestionDetail from "@/views/Question/Detail";
 import { Button, Select } from "antd";
 import _ from "lodash";
+import { useParams } from "next/navigation";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 
@@ -55,6 +57,7 @@ const FormUpdateExam: React.FC<Props> = ({ exam, id }) => {
   const [currentPage, setCurrentPage] = useState(0);
   const [totalItems, setTotalItems] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
+  const params = useParams();
 
   const fetchQuestionBank = async () => {
     try {
@@ -80,8 +83,9 @@ const FormUpdateExam: React.FC<Props> = ({ exam, id }) => {
     const fetchQuestion = async () => {
       try {
         setLoading(true);
-        const response = await getQuestionByBank(
+        const response = await getQuestionNotInExam(
           activeQuestionBank.value,
+          params.id,
           currentPage,
           pageSize,
           filter
