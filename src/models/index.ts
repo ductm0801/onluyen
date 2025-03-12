@@ -127,3 +127,20 @@ export type ICourse = {
   instructorId: string;
   instructorName: string;
 };
+export type ITest = {
+  id: string;
+  examName: string;
+  description: string;
+  freeAttempts: number;
+  price: number;
+  subjectId: string;
+  subjectName: string;
+  testBankId: string;
+  testBankName: string;
+  testSkills: number;
+  examDate: Date;
+  isDeleted: boolean;
+  isEnrolled: boolean;
+  enrollmentId: string;
+  hasOngoingAttempt: boolean;
+};

@@ -31,4 +31,6 @@ export const IMAGES = {
   copyIcon: "/assets/copyIcon.svg",
   editIcon: "/assets/editIcon.svg",
   trashIcon: "/assets/trash.svg",
+  examList: "/assets/examList.svg",
+  pendingExam: "/assets/pendingExam.svg",
 };

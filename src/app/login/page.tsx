@@ -63,7 +63,7 @@ const Login = () => {
           </div>
         </div>
         {isRegist ? (
-          <Regist />
+          <Regist setIsRegist={setIsRegist} />
         ) : (
           <Form form={form} onFinish={handleSubmit}>
             <Form.Item

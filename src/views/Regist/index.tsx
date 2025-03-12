@@ -8,17 +8,21 @@ const items = [
   { label: "Giáo viên", value: "Instructor" },
 ];
 
-const Regist = () => {
+const Regist = ({
+  setIsRegist,
+}: {
+  setIsRegist: React.Dispatch<React.SetStateAction<boolean>>;
+}) => {
   const [role, setRole] = useState({ label: "Học sinh", value: "Student" });
   const [open, setOpen] = useState(false);
   const renderContent = () => {
     switch (role.value) {
       case "Student":
-        return <StudentForm />;
+        return <StudentForm setIsRegist={setIsRegist} />;
       case "Instructor":
         return <InstructorForm />;
       default:
-        return <StudentForm />;
+        return <StudentForm setIsRegist={setIsRegist} />;
     }
   };
   return (
