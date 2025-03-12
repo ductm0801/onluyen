@@ -72,6 +72,12 @@ export const menus: Record<
   ],
   ExamManager: [
     {
+      label: "Kì thi",
+      path: "/exammanager/exam",
+      icon: IMAGES.examList,
+      isShow: true,
+    },
+    {
       label: "Ngân hàng đề",
       path: "/exammanager/testBank",
       icon: IMAGES.questionIcon,
@@ -80,7 +86,7 @@ export const menus: Record<
     {
       label: "Đề Chờ duyệt",
       path: "/exammanager/pending-test",
-      icon: IMAGES.questionIcon,
+      icon: IMAGES.pendingExam,
       isShow: true,
     },
   ],

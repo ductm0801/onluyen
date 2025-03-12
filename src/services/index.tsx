@@ -304,3 +304,22 @@ export const updateCourse = async (body: ICourse, id: string) => {
   const res = await axiosClient.put(`/api/courses/${id}`, body);
   return res.data;
 };
+export const instructorRegist = async (body: ICourse) => {
+  const res = await axiosClient.post(`/api/instructors/regist`, body);
+  return res.data;
+};
+export const getExamList = async (
+  pageIndex: number,
+  pageSize: number,
+  filter: any
+) => {
+  const res = await axiosClient.get(`/api/exam/paging`, {
+    params: {
+      pageIndex,
+      pageSize,
+      searchTerm: filter.searchTerm,
+      // haveFreeAttempts: filter.haveFreeAttempts,
+    },
+  });
+  return res.data;
+};
