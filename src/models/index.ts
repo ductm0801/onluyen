@@ -53,6 +53,7 @@ export type IQuestion = {
   testId: string;
   testName: string;
   isDeleted: boolean;
+  answerText?: string;
   answers: IAnswers[];
 };
 
@@ -70,6 +71,7 @@ export type IAnswers = {
   imageUrl?: string;
   isCorrect: boolean;
   questionId: string;
+  isSelected: boolean;
 };
 export type IExamBank = {
   id: string;

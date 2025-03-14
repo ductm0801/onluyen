@@ -21,6 +21,8 @@ import CustomButton from "@/components/CustomButton";
 import { useRouter } from "next/navigation";
 import { Button, Input, Modal } from "antd";
 import ExamDetail from "../ExamDetail";
+import { db } from "@/firebase/config";
+import { collection, onSnapshot } from "firebase/firestore";
 
 const items = [
   {
@@ -64,7 +66,7 @@ const renderBullet = (index: number, className: string) =>
   `<div class="${className}"></div>`;
 
 const Home = () => {
-  const ref = useRef<any>();
+  const sliderRef = useRef<any>();
   const router = useRouter();
   const [subjects, setSubjects] = useState<Subject[]>([]);
   const { setLoading } = useLoading();
@@ -86,16 +88,16 @@ const Home = () => {
     }
   };
   const slideLeft = () => {
-    if (!ref) {
+    if (!sliderRef) {
       return;
     }
-    ref.current.swiper.slidePrev();
+    sliderRef.current.swiper.slidePrev();
   };
   const slideRight = () => {
-    if (!ref) {
+    if (!sliderRef) {
       return;
     }
-    ref.current.swiper.slideNext();
+    sliderRef.current.swiper.slideNext();
   };
   const fetchSubject = async () => {
     try {
@@ -199,6 +201,14 @@ const Home = () => {
       setLoading(false);
     }
   };
+  // const [messages, setMessages] = useState<any[]>([]);
+
+  // useEffect(() => {
+  //   onSnapshot(collection(db, "chats"), (snapshot) => {
+  //     setMessages(snapshot.docs.map((doc) => doc.data()));
+  //   });
+  // }, []);
+
   return (
     <div className="flex flex-col gap-6">
       <div className="flex justify-end items-center">
@@ -222,7 +232,7 @@ const Home = () => {
           }}
           modules={[Autoplay, Pagination, Navigation]}
           slidesPerGroup={3}
-          ref={ref}
+          ref={sliderRef}
         >
           {items.map((item, index) => (
             <SwiperSlide key={index} className="pb-4">
@@ -293,8 +303,8 @@ const Home = () => {
             ))}
         </div>
         {exam &&
-          exam.map((e: any) => (
-            <div className="flex justify-between items-center">
+          exam.map((e: any, index) => (
+            <div className="flex justify-between items-center" key={index}>
               <div className="flex flex-col gap-2">
                 <p className="font-bold  text-start">{e.examName}</p>
                 <p className="line-clamp-1 text-sm">
@@ -318,6 +328,14 @@ const Home = () => {
             </div>
           ))}
       </div>
+      {/* <div>
+        {messages.map((message, index) => (
+          <div key={index} className="flex gap-2">
+            <div className="font-bold">{message.name}</div>
+            <div>{message.message}</div>
+          </div>
+        ))}
+      </div> */}
       {open && (
         <Modal
           open={open}

@@ -1,61 +1,56 @@
-import { Form, InputNumber, Upload } from "antd";
-import React, { useState } from "react";
-import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
+import { Subject } from "@/models";
 import { useLoading } from "@/providers/loadingProvider";
-import { createCourse, uploadImg } from "@/services";
-
+import { createQuestionBank, getSubject } from "@/services";
+import { Form, Select } from "antd";
+import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-
-const ModalCreateCourse = ({
-  onClose,
-  fetchCourse,
-}: {
+type props = {
   onClose: () => void;
-  fetchCourse: () => Promise<void>;
+  fetchQuestion: () => Promise<void>;
+};
+
+const ModalCreateQuestionBank: React.FC<props> = ({
+  onClose,
+  fetchQuestion,
 }) => {
   const [form] = Form.useForm();
-  const [loadingImg, setLoadingImg] = useState(false);
-  const [imageUrl, setImageUrl] = useState<string>();
   const { setLoading } = useLoading();
+  const [subjects, setSubjects] = useState<Subject[]>([]);
   const onFinish = async (values: any) => {
     try {
       setLoading(true);
-      await createCourse(values);
-      onClose();
-      fetchCourse();
-      toast.success("Tạo khóa học thành công!");
+      await createQuestionBank(values);
+      toast.success("Tạo bộ câu hỏi thành công");
     } catch (err: any) {
+      setLoading(false);
       toast.error(err.response.data.message);
     } finally {
-      setLoading(false);
       onClose();
+      fetchQuestion();
     }
   };
-  const uploadButton = (
-    <button style={{ border: 0, background: "none" }} type="button">
-      {loadingImg ? <LoadingOutlined /> : <PlusOutlined />}
-      <div style={{ marginTop: 8 }}>Thêm ảnh mới</div>
-    </button>
-  );
-  const handleChangeImage = async ({ file }: { file: any }) => {
-    setLoading(true);
-    const formData = new FormData();
-    formData.append("file", file.originFileObj);
+  const fetchSubject = async () => {
     try {
-      const res = await uploadImg(formData);
-
-      form.setFieldValue("imageUrl", res.url);
-
+      setLoading(true);
+      const res = await getSubject();
+      if (res) {
+        setSubjects(res.data);
+      }
+    } catch (err) {
+      console.error(err);
       setLoading(false);
-    } catch (error: any) {
-      setLoading(false);
-      toast.error(error.response.data.message);
     } finally {
       setLoading(false);
     }
   };
-  console.log(imageUrl);
+  useEffect(() => {
+    fetchSubject();
+  }, []);
 
+  if (!subjects) return <></>;
+  const subjectOptions = subjects.map((subject: Subject) => {
+    return { label: subject.subjectName, value: subject.id };
+  });
   return (
     <div
       id="crud-modal"
@@ -67,7 +62,7 @@ const ModalCreateCourse = ({
         <div className="relative bg-white rounded-lg shadow-sm dark:bg-gray-700">
           <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-              Tạo khoá học mới
+              Tạo bộ câu hỏi mới
             </h3>
             <button
               type="button"
@@ -98,86 +93,58 @@ const ModalCreateCourse = ({
             <div className="grid gap-4 mb-4 grid-cols-2">
               <Form.Item
                 className="col-span-2 mb-0"
-                name="imageUrl"
-                label="Hình ảnh"
+                name="questionBankName"
+                label="Tên bộ câu hỏi"
                 labelCol={{ span: 24 }}
                 rules={[
                   {
                     required: true,
-                    message: "Vui lòng chọn ảnh",
-                  },
-                ]}
-              >
-                <Upload listType="picture-card" onChange={handleChangeImage}>
-                  {imageUrl ? (
-                    <img
-                      src={imageUrl}
-                      alt="avatar"
-                      style={{ width: "100%" }}
-                    />
-                  ) : (
-                    uploadButton
-                  )}
-                </Upload>
-              </Form.Item>
-              <Form.Item
-                className="col-span-2 mb-0"
-                name="title"
-                label="Tên khoá học"
-                labelCol={{ span: 24 }}
-                rules={[
-                  {
-                    required: true,
-                    message: "Vui lòng nhập tên khoá học",
+                    message: "Vui lòng nhập Tên bộ câu hỏi",
                   },
                 ]}
               >
                 <input
                   type="text"
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                  placeholder="Tên khoá học"
+                  placeholder="Tên bộ câu hỏi"
                 />
               </Form.Item>
 
               <Form.Item
-                className="col-span-2 mb-0"
-                name="coursePrice"
-                label="Giá khoá học"
+                className="col-span-2  mb-0"
+                name="subjectId"
+                label="Môn học"
                 labelCol={{ span: 24 }}
                 rules={[
                   {
                     required: true,
-                    message: "Vui lòng nhập giá khoá học",
+                    message: "Vui lòng chọn Môn học",
                   },
                 ]}
               >
-                <InputNumber
-                  min={0}
-                  formatter={(value: any) => {
-                    return `${value}đ`.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                  }}
-                  parser={(value: any) => {
-                    return value.replace(/\$\s?|(,*)/g, "").replace("đ", "");
-                  }}
-                  className="rounded-md w-full bg-white"
+                <Select
+                  size="large"
+                  options={subjectOptions}
+                  className=" text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full  dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                  placeholder="Môn học"
                 />
               </Form.Item>
               <Form.Item
                 className="col-span-2 mb-0"
                 name="description"
-                label="Mô tả khoá học"
+                label="Mô tả"
                 labelCol={{ span: 24 }}
                 rules={[
                   {
                     required: true,
-                    message: "Vui lòng nhập mô tả khoá học",
+                    message: "Vui lòng nhập Mô tả",
                   },
                 ]}
               >
                 <textarea
-                  className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  placeholder="Mô tả khoá học"
-                ></textarea>
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                  placeholder="Mô tả"
+                />
               </Form.Item>
             </div>
             <button
@@ -205,4 +172,4 @@ const ModalCreateCourse = ({
   );
 };
 
-export default ModalCreateCourse;
+export default ModalCreateQuestionBank;

@@ -1,4 +1,5 @@
 "use client";
+import ModalCreateTest from "@/components/ModalCreateTest";
 import Paging from "@/components/Paging";
 import { statusEnum } from "@/constants/enum";
 import { ITest } from "@/models";
@@ -57,7 +58,7 @@ const ExamManager = () => {
       if (res) {
         setExam(res.data.items);
         setTotalItems(res.data.totalItemsCount);
-        setTotalPages(res.data.totalPagesCount);
+        setTotalPages(res.data.totalPageCount);
       }
     } catch (err: any) {
       toast.error(err.response.data.message);
@@ -158,6 +159,12 @@ const ExamManager = () => {
         totalPages={totalPages}
         setCurrentPage={setCurrentPage}
       />
+      {create && (
+        <ModalCreateTest
+          onClose={() => setCreate(false)}
+          fetchExam={fetchExam}
+        />
+      )}
     </div>
   );
 };

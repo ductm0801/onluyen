@@ -49,6 +49,12 @@ export const menus: Record<
       path: "/student/exam-code",
       isShow: true,
     },
+    {
+      label: "Kết quả",
+      icon: IMAGES.examCode,
+      path: "/student/result-detail/",
+      isShow: false,
+    },
   ],
   Instructor: [
     {
