@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import QuestionDetail from "./Detail";
 import { Select } from "antd";
+import ModalCreateQuestionBank from "@/components/ModalCreateQuestionBank";
 const cols = [
   {
     name: "Tên bộ câu hỏi",
@@ -167,6 +168,12 @@ const Question = () => {
           setCurrentPage={setCurrentPage}
         />
       </div>
+      {create && (
+        <ModalCreateQuestionBank
+          onClose={() => setCreate(false)}
+          fetchQuestion={fetchQuestion}
+        />
+      )}
       {/* {detail && (
         <QuestionDetail
           data={qDetail.current}

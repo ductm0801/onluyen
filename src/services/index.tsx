@@ -6,6 +6,7 @@ import {
   IExamPayment,
   ILoginRequest,
   IQuestion,
+  IQuestionBank,
   IRegist,
 } from "@/models";
 
@@ -321,5 +322,22 @@ export const getExamList = async (
       // haveFreeAttempts: filter.haveFreeAttempts,
     },
   });
+  return res.data;
+};
+export const getChat = async () => {
+  const res = await axiosClient.get(`/api/chat/messages`, {
+    params: {
+      user1: "1",
+      user2: "2",
+    },
+  });
+  return res.data;
+};
+export const createQuestionBank = async (body: IQuestionBank) => {
+  const res = await axiosClient.post(`/api/questionBank`, body);
+  return res.data;
+};
+export const createTest = async (body: any) => {
+  const res = await axiosClient.post(`/api/exam`, body);
   return res.data;
 };
