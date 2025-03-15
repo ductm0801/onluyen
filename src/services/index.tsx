@@ -106,8 +106,8 @@ export const getExamBank = async (pageIndex: number, pageSize: number) => {
   });
   return res.data;
 };
-export const getExamBankAll = async () => {
-  const res = await axiosClient.get(`/api/testBank`);
+export const getExamBankAll = async (subjectId?: string) => {
+  const res = await axiosClient.get(`/api/testBank`, { params: { subjectId } });
   return res.data;
 };
 export const createExamBank = async (body: IExamBank) => {
