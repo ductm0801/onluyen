@@ -79,31 +79,31 @@ const FormUpdateExam: React.FC<Props> = ({ exam, id }) => {
   useEffect(() => {
     fetchQuestionBank();
   }, []);
-  useEffect(() => {
-    const fetchQuestion = async () => {
-      try {
-        setLoading(true);
-        const response = await getQuestionNotInExam(
-          activeQuestionBank.value,
-          params.id,
-          currentPage,
-          pageSize,
-          filter
-        );
-        if (response) {
-          setDataQuestion(response.data.items);
-          setTotalItems(response.data.totalItemsCount);
-          setTotalPages(response.data.totalPageCount);
-        }
-        if (response) {
-          setDataQuestion(response.data.items);
-        }
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setLoading(false);
+  const fetchQuestion = async () => {
+    try {
+      setLoading(true);
+      const response = await getQuestionNotInExam(
+        activeQuestionBank.value,
+        params.id,
+        currentPage,
+        pageSize,
+        filter
+      );
+      if (response) {
+        setDataQuestion(response.data.items);
+        setTotalItems(response.data.totalItemsCount);
+        setTotalPages(response.data.totalPageCount);
       }
-    };
+      if (response) {
+        setDataQuestion(response.data.items);
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
     fetchQuestion();
   }, [activeQuestionBank, filter, currentPage]);
   if (!exam) return null;
@@ -145,6 +145,7 @@ const FormUpdateExam: React.FC<Props> = ({ exam, id }) => {
       const dataQuestionId = examQuestions.map((q) => q.id);
       setLoading(true);
       await updateExamQuestion(id, dataQuestionId);
+      fetchQuestion();
       toast.success("Cập nhật thành công!");
     } catch (error: any) {
       console.error(error);
@@ -181,7 +182,13 @@ const FormUpdateExam: React.FC<Props> = ({ exam, id }) => {
       <div className="flex items-stretch justify-between gap-4">
         <div className="w-full flex flex-col gap-2">
           <p className="text-xl font-bold">Câu hỏi</p>
-          <Select options={bankOptions} value={activeQuestionBank} />
+          <Select
+            options={bankOptions}
+            value={activeQuestionBank.value}
+            onChange={(value) =>
+              setActiveQuestionBank({ ...activeQuestionBank, value: value })
+            }
+          />
           <div className="flex items-center gap-2">
             <Select
               placeholder="Độ khó"
@@ -233,7 +240,7 @@ const FormUpdateExam: React.FC<Props> = ({ exam, id }) => {
             </div>
           </div>
           <div
-            className={`border h-full  overflow-auto  min-h-[500px] rounded-xl p-4 flex flex-col gap-2 transition-all duration-300 ${
+            className={`border h-full  overflow-auto max-h-[500px] min-h-[500px] rounded-xl p-4 flex flex-col gap-2 transition-all duration-300 ${
               isDraggingOverBank ? "bg-blue-100 border-blue-400" : "bg-white"
             }`}
             onDragOver={(e) => {
