@@ -14,6 +14,7 @@ const ModalCreateTest: React.FC<props> = ({ onClose, fetchExam }) => {
   const { setLoading } = useLoading();
   const [examBank, setExamBank] = useState<IExamBank[]>([]);
   const [subject, setSubject] = useState<Subject[]>([]);
+  const [subjectId, setSubjectId] = useState<string>("");
 
   const fetchSubject = async () => {
     try {
@@ -36,7 +37,7 @@ const ModalCreateTest: React.FC<props> = ({ onClose, fetchExam }) => {
   const fetchExamBank = async () => {
     try {
       setLoading(true);
-      const res = await getExamBankAll();
+      const res = await getExamBankAll(subjectId);
       if (res) setExamBank(res.data);
     } catch (error) {
       setLoading(false);
@@ -47,7 +48,7 @@ const ModalCreateTest: React.FC<props> = ({ onClose, fetchExam }) => {
   };
   useEffect(() => {
     fetchExamBank();
-  }, []);
+  }, [subjectId]);
   const examBankOptions = examBank.map((subject: IExamBank) => {
     return { label: subject.testBankName, value: subject.id };
   });
@@ -188,6 +189,9 @@ const ModalCreateTest: React.FC<props> = ({ onClose, fetchExam }) => {
               >
                 <Select
                   size="large"
+                  onChange={(value) => {
+                    setSubjectId(value);
+                  }}
                   options={subjectOptions}
                   className="   text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full  dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                   placeholder="Môn học"
@@ -207,6 +211,7 @@ const ModalCreateTest: React.FC<props> = ({ onClose, fetchExam }) => {
               >
                 <Select
                   size="large"
+                  disabled={!subjectId}
                   options={examBankOptions}
                   className="   text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full  dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                   placeholder="ngân hàng đề"
