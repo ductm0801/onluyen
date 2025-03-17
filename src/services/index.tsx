@@ -367,3 +367,7 @@ export const updateLesson = async (body: any, id: string | string[]) => {
   const res = await axiosClient.put(`/api/lessons/${id}`, body);
   return res.data;
 };
+export const updateTest = async (body: any, id: string) => {
+  const res = await axiosClient.put(`/api/exam/${id}`, body);
+  return res.data;
+};

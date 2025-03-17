@@ -169,7 +169,7 @@ const ModalCreateExam: React.FC<props> = ({ onClose, fetchExam }) => {
                   placeholder="Ngân hàng đề"
                 />
               </Form.Item>
-              <Form.Item
+              {/* <Form.Item
                 className="col-span-2  mb-0"
                 name="testType"
                 label="Dạng đề"
@@ -187,7 +187,7 @@ const ModalCreateExam: React.FC<props> = ({ onClose, fetchExam }) => {
                   className="bg-gray-50 border  text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full  dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                   placeholder="Dạng đề"
                 />
-              </Form.Item>
+              </Form.Item> */}
               <Form.Item
                 className="col-span-2  mb-0"
                 name="description"

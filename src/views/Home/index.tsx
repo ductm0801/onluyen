@@ -156,10 +156,10 @@ const Home = () => {
       } finally {
         setLoading(false);
       }
+    } else {
+      setOpen(true);
+      examDetail.current = item;
     }
-
-    setOpen(true);
-    examDetail.current = item;
   };
   const handleCLose = () => {
     setOpen(false);
@@ -302,31 +302,37 @@ const Home = () => {
               </div>
             ))}
         </div>
-        {exam &&
-          exam.map((e: any, index) => (
-            <div className="flex justify-between items-center" key={index}>
-              <div className="flex flex-col gap-2">
-                <p className="font-bold  text-start">{e.examName}</p>
-                <p className="line-clamp-1 text-sm">
-                  {e.price.toLocaleString("vi-VN")}đ
+        <div className="grid grid-cols-3 gap-4">
+          {exam &&
+            exam.map((e: any, index) => (
+              <div
+                className="flex flex-col gap-4 border w-full border-[#D0D5DD] rounded-xl p-4"
+                key={e.id}
+              >
+                <p className="font-bold h-[50px] text-start max-w-[70%]">
+                  {e.examName}
                 </p>
+                <div className="flex items-center justify-between">
+                  <p className="line-clamp-1 text-md">
+                    {e.price.toLocaleString("vi-VN")}đ
+                  </p>
+                  {e.enrollmentId ? (
+                    <CustomButton
+                      text="Vào thi ngay"
+                      textHover="Đừng ngại"
+                      onClick={() => handleOpenPopup(e)}
+                    />
+                  ) : (
+                    <CustomButton
+                      text="Nhận mã thi"
+                      textHover="Đừng ngại"
+                      onClick={() => handleOpenPopup(e)}
+                    />
+                  )}
+                </div>
               </div>
-              {/* {e.freeAttempts <= 0 ? (
-                <CustomButton
-                  text="Vào thi ngay"
-                  textHover="Mua ngay"
-                  onClick={() => handlePayment(e.price)}
-                />
-              ) : (
-             
-              )} */}
-              <CustomButton
-                text="Vào thi ngay"
-                textHover="Đừng ngại"
-                onClick={() => handleOpenPopup(e)}
-              />
-            </div>
-          ))}
+            ))}
+        </div>
       </div>
       {/* <div>
         {messages.map((message, index) => (

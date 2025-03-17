@@ -4,6 +4,7 @@ import { ICourse } from "@/models";
 import { useLoading } from "@/providers/loadingProvider";
 import { getCourse } from "@/services";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 const menu = [
@@ -34,6 +35,7 @@ const Intro = () => {
   const [isActive, setIsActive] = useState(false);
   const { setLoading } = useLoading();
   const [course, setCourse] = useState<ICourse[]>([]);
+  const router = useRouter();
 
   const fetchCourse = async () => {
     try {
@@ -205,7 +207,10 @@ const Intro = () => {
                 <div className="p-4">
                   <p className="text-[#2E90FA] font-bold text-lg">{c.title}</p>
                 </div>
-                <div className="bg-[#1244A2] text-white rounded-lg text-center py-3">
+                <div
+                  className="bg-[#1244A2] text-white rounded-lg text-center py-3"
+                  onClick={() => router.push(`/course/${c.courseId}`)}
+                >
                   Chi tiết khóa học
                 </div>
               </div>

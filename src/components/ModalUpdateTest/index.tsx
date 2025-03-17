@@ -1,20 +1,20 @@
-import { IExamBank, Subject } from "@/models";
+import { IExamBank, ITest, Subject } from "@/models";
 import { useLoading } from "@/providers/loadingProvider";
-import { createTest, getExamBankAll, getSubject } from "@/services";
-import { Form, Input, InputNumber, Select } from "antd";
+import { createTest, getExamBankAll, getSubject, updateTest } from "@/services";
+import { Form, InputNumber, Select } from "antd";
 import React, { useEffect, useState } from "react";
-
 type props = {
   onClose: () => void;
   fetchExam: () => Promise<void>;
+  data: ITest | null;
 };
 
-const ModalCreateTest: React.FC<props> = ({ onClose, fetchExam }) => {
+const ModalUpdateTest: React.FC<props> = ({ onClose, fetchExam, data }) => {
   const [form] = Form.useForm();
   const { setLoading } = useLoading();
   const [examBank, setExamBank] = useState<IExamBank[]>([]);
   const [subject, setSubject] = useState<Subject[]>([]);
-  const [subjectId, setSubjectId] = useState<string>("");
+  const [subjectId, setSubjectId] = useState<string>(data?.subjectId || "");
 
   const fetchSubject = async () => {
     try {
@@ -59,7 +59,9 @@ const ModalCreateTest: React.FC<props> = ({ onClose, fetchExam }) => {
   const onFinish = async (values: any) => {
     try {
       setLoading(true);
-      await createTest(values);
+      if (data) {
+        await updateTest(values, data.id);
+      }
       onClose();
     } catch (err) {
       console.error(err);
@@ -80,7 +82,7 @@ const ModalCreateTest: React.FC<props> = ({ onClose, fetchExam }) => {
         <div className="relative bg-white rounded-lg shadow-sm dark:bg-gray-700">
           <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-              Tạo kì thi mới
+              Cập nhật kì thi
             </h3>
             <button
               type="button"
@@ -107,7 +109,12 @@ const ModalCreateTest: React.FC<props> = ({ onClose, fetchExam }) => {
             </button>
           </div>
 
-          <Form className="p-4 md:p-5" form={form} onFinish={onFinish}>
+          <Form
+            className="p-4 md:p-5"
+            form={form}
+            onFinish={onFinish}
+            initialValues={data || {}}
+          >
             <div className="grid gap-4 mb-4 grid-cols-2">
               <Form.Item
                 label="Tên kì thi"
@@ -251,7 +258,7 @@ const ModalCreateTest: React.FC<props> = ({ onClose, fetchExam }) => {
                   clip-rule="evenodd"
                 ></path>
               </svg>
-              Tạo mới
+              Xác nhận
             </button>
           </Form>
         </div>
@@ -260,4 +267,4 @@ const ModalCreateTest: React.FC<props> = ({ onClose, fetchExam }) => {
   );
 };
 
-export default ModalCreateTest;
+export default ModalUpdateTest;
