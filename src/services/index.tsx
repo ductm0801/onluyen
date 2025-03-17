@@ -280,6 +280,23 @@ export const getCourse = async (pageIndex: number, pageSize: number) => {
   });
   return res.data;
 };
+export const getCourseByInstructor = async (
+  pageIndex: number,
+  pageSize: number
+) => {
+  const res = await axiosClient.get(`/api/courses/instructor`, {
+    params: {
+      pageIndex,
+      pageSize,
+    },
+  });
+  return res.data;
+};
+
+export const getCourseDetail = async (id: string | string[]) => {
+  const res = await axiosClient.get(`/api/courses/${id}`);
+  return res.data;
+};
 export const getQuestionNotInExam = async (
   questionBankId: string,
   testId: string | string[],
@@ -302,7 +319,7 @@ export const getQuestionNotInExam = async (
 
   return res.data;
 };
-export const updateCourse = async (body: ICourse, id: string) => {
+export const updateCourse = async (body: ICourse, id: string | string[]) => {
   const res = await axiosClient.put(`/api/courses/${id}`, body);
   return res.data;
 };
@@ -340,5 +357,17 @@ export const createQuestionBank = async (body: IQuestionBank) => {
 };
 export const createTest = async (body: any) => {
   const res = await axiosClient.post(`/api/exam`, body);
+  return res.data;
+};
+export const createLesson = async (body: any) => {
+  const res = await axiosClient.post(`/api/lessons`, body);
+  return res.data;
+};
+export const updateLesson = async (body: any, id: string | string[]) => {
+  const res = await axiosClient.put(`/api/lessons/${id}`, body);
+  return res.data;
+};
+export const updateTest = async (body: any, id: string) => {
+  const res = await axiosClient.put(`/api/exam/${id}`, body);
   return res.data;
 };

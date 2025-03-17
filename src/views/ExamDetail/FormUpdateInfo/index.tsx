@@ -48,6 +48,7 @@ const FormUpdateInfo = ({
     try {
       setLoading(true);
       const res = await getExamBankAll();
+
       if (res) setExamBank(res.data);
     } catch (error) {
       setLoading(false);

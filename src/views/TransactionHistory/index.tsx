@@ -155,7 +155,7 @@ const TranSactionHistory = () => {
                   <div className="text-base font-semibold">{a.description}</div>
                 </th>
                 <td className="px-6 py-4">
-                  {a.paymentType === "Exam" ? "Mã kiểm tra" : ""}
+                  {a.paymentType === "Exam" ? "Mã kiểm tra" : "Khoá học"}
                 </td>
                 <td className="px-6 py-4">{a.method}</td>
                 <td className="px-6 py-4">

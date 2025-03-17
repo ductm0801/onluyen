@@ -1,14 +1,13 @@
 "use client";
 import ModalCreateCourse from "@/components/ModalCreateCourse";
-import ModalUpdateCourse from "@/components/ModalUpdateCourse";
 import Paging from "@/components/Paging";
 import { IMAGES } from "@/constants/images";
 import { ICourse } from "@/models";
 import { useLoading } from "@/providers/loadingProvider";
-import { getCourse } from "@/services";
+import { getCourseByInstructor } from "@/services";
 import { Image } from "antd";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 const cols = [
   {
@@ -51,14 +50,13 @@ const InstructorCourse = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [create, setCreate] = useState(false);
   const { setLoading } = useLoading();
-  const [update, setUpdate] = useState(false);
-  const detail = useRef<ICourse | null>(null);
+
   const router = useRouter();
 
   const fetchCourse = async () => {
     try {
       setLoading(true);
-      const res = await getCourse(currentPage, pageSize);
+      const res = await getCourseByInstructor(currentPage, pageSize);
       if (res) {
         setCourse(res.data.items);
         setTotalItems(res.data.totalItemsCount);
@@ -74,14 +72,6 @@ const InstructorCourse = () => {
     fetchCourse();
   }, [currentPage]);
 
-  const handleOpenUpdate = (item: ICourse) => {
-    setUpdate(true);
-    detail.current = item;
-  };
-  const handleCloseUpdate = () => {
-    setUpdate(false);
-    detail.current = null;
-  };
   return (
     <>
       <div className="relative overflow-x-auto">
@@ -146,12 +136,7 @@ const InstructorCourse = () => {
                       alt="avatar"
                     />
                     <div className="ps-3">
-                      <div
-                        className="text-base font-semibold hover:text-green-500 cursor-pointer"
-                        onClick={() =>
-                          router.push(`/instructor/course/${a.courseId}`)
-                        }
-                      >
+                      <div className="text-base font-semibold  cursor-pointer">
                         {a.title}
                       </div>
                     </div>
@@ -165,10 +150,12 @@ const InstructorCourse = () => {
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-2">
                       <div
-                        className="font-medium text-blue-600 dark:text-blue-500 hover:underline cursor-pointer"
-                        onClick={() => handleOpenUpdate(a)}
+                        className="font-medium text-blue-600 whitespace-nowrap dark:text-blue-500 hover:underline cursor-pointer"
+                        onClick={() =>
+                          router.push(`/instructor/course/${a.courseId}`)
+                        }
                       >
-                        Sửa
+                        Chi tiết
                       </div>
                       <div
                         className="font-medium whitespace-nowrap text-red-600 dark:text-red-500 hover:underline cursor-pointer ms-3"
@@ -194,13 +181,6 @@ const InstructorCourse = () => {
         <ModalCreateCourse
           onClose={() => setCreate(false)}
           fetchCourse={fetchCourse}
-        />
-      )}
-      {update && (
-        <ModalUpdateCourse
-          onClose={() => handleCloseUpdate()}
-          fetchCourse={fetchCourse}
-          data={detail.current}
         />
       )}
     </>

@@ -1,5 +1,6 @@
 "use client";
 import ModalCreateTest from "@/components/ModalCreateTest";
+import ModalUpdateTest from "@/components/ModalUpdateTest";
 import Paging from "@/components/Paging";
 import { statusEnum } from "@/constants/enum";
 import { ITest } from "@/models";
@@ -7,7 +8,7 @@ import { useLoading } from "@/providers/loadingProvider";
 import { getExamList } from "@/services";
 import dayjs from "dayjs";
 import _ from "lodash";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 
 const cols = [
@@ -40,6 +41,10 @@ const cols = [
     name: "Ngân hàng đề",
     className: "px-6 py-4 font-medium  whitespace-nowrap  rounded-e-lg",
   },
+  {
+    name: "Hành dộng",
+    className: "px-6 py-4 font-medium  whitespace-nowrap  rounded-e-lg",
+  },
 ];
 
 const ExamManager = () => {
@@ -51,6 +56,17 @@ const ExamManager = () => {
   const { setLoading } = useLoading();
   const [filter, setFilter] = useState({ searchTerm: "" });
   const [create, setCreate] = useState(false);
+  const [update, setUpdate] = useState(false);
+  const detail = useRef<ITest | null>(null);
+
+  const handleOpenUpdate = (item: ITest) => {
+    setUpdate(true);
+    detail.current = item;
+  };
+  const handleCloseUpdate = () => {
+    setUpdate(false);
+    detail.current = null;
+  };
   const fetchExam = async () => {
     try {
       setLoading(true);
@@ -148,6 +164,22 @@ const ExamManager = () => {
                 <td className="px-6 py-4 flex flex-col items-center">
                   <p>{a.testBankName}</p>
                 </td>
+                <td className="px-6 py-4">
+                  <div className="flex items-center gap-2">
+                    <div
+                      className="font-medium text-blue-600 whitespace-nowrap dark:text-blue-500 hover:underline cursor-pointer"
+                      onClick={() => handleOpenUpdate(a)}
+                    >
+                      Chi tiết
+                    </div>
+                    {/* <div
+                        className="font-medium whitespace-nowrap text-red-600 dark:text-red-500 hover:underline cursor-pointer ms-3"
+                        // onClick={() => openConfirm(a.id)}
+                      >
+                        Ẩn khóa học
+                      </div> */}
+                  </div>
+                </td>
               </tr>
             ))}
         </tbody>
@@ -163,6 +195,13 @@ const ExamManager = () => {
         <ModalCreateTest
           onClose={() => setCreate(false)}
           fetchExam={fetchExam}
+        />
+      )}
+      {update && (
+        <ModalUpdateTest
+          onClose={handleCloseUpdate}
+          fetchExam={fetchExam}
+          data={detail.current}
         />
       )}
     </div>

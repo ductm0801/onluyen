@@ -128,7 +128,29 @@ export type ICourse = {
   courseStatus: string;
   instructorId: string;
   instructorName: string;
+  lessons: ILessons;
 };
+export type ILessons = {
+  totalItemsCount: number;
+  pageSize: number;
+  totalPageCount: number;
+  pageIndex: number;
+  next: boolean;
+  previous: boolean;
+  items: ILesson[];
+};
+export type ILesson = {
+  lessonId: string;
+  order: number;
+  title: string;
+  description: string;
+  videoUrl: string;
+  content: string;
+  imageUrl: string;
+  courseId: string;
+  courseName: string;
+};
+
 export type ITest = {
   id: string;
   examName: string;
