@@ -1,6 +1,13 @@
+"use client";
+import FormUpdateCourse from "@/components/FormUpdateCourse";
+import FormUpdateLesson from "@/components/FormUpdateLesson";
 import { IMAGES } from "@/constants/images";
-import { Image, Tooltip } from "antd";
-import React from "react";
+import { ICourse } from "@/models";
+import { useLoading } from "@/providers/loadingProvider";
+import { getCourseDetail } from "@/services";
+import { Image, Tabs, Tooltip } from "antd";
+import { useParams } from "next/navigation";
+import React, { useEffect, useState } from "react";
 
 const lessons = [
   {
@@ -58,51 +65,54 @@ const lessons = [
 ];
 
 const CourseDetail = () => {
+  const [detail, setDetail] = useState<ICourse>();
+  const { setLoading } = useLoading();
+  const params = useParams();
+  const fetchCourseDetail = async () => {
+    try {
+      setLoading(true);
+      const res = await getCourseDetail(params.id);
+      setDetail(res.data);
+    } catch (error) {
+      console.error("Error:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
+    fetchCourseDetail();
+  }, [params.id]);
+  if (!detail) return;
+  const tab = [
+    {
+      value: 0,
+      label: "Thông tin chung",
+      children: <FormUpdateCourse course={detail} />,
+    },
+    {
+      value: 1,
+      label: "Danh sách bài học",
+      children: (
+        <FormUpdateLesson
+          lessons={detail.lessons.items}
+          fetchCourseDetail={fetchCourseDetail}
+        />
+      ),
+    },
+  ];
   return (
     <div>
       <div className="flex items-center justify-between border-b border-[#1244A2] pb-2">
         <p className="text-3xl font-semibold">Chi tiết khóa học</p>
-        <div className="bg-[#1244A2] text-white px-3 py-2 rounded-xl font-bold">
-          Tạo bài học mới
-        </div>
       </div>
-      <div className=" px-3 py-2 rounded-xl font-bold mt-2">
-        Danh sách bài học
-      </div>
-      <div className="flex flex-col gap-4">
-        {lessons.map((lesson, index) => (
-          <div
-            key={index}
-            className="border-b border-[#1244A2] pb-2 flex justify-between items-center"
-          >
-            <div className="flex items-center gap-4 ">
-              <Image
-                width={100}
-                height={100}
-                src={IMAGES.about1}
-                alt={lesson.title}
-                className="object-cover"
-              />
-              <div>
-                <p className="text-lg font-semibold">{lesson.title}</p>
-                <p className="text-[#333333a1] text-sm">{lesson.description}</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-2">
-              <Tooltip title="Chỉnh sửa bài học" className="cursor-pointer">
-                <div className="p-2 rounded-lg bg-blue-500">
-                  <img src={IMAGES.editIcon} alt="edit" className="w-4  r" />
-                </div>
-              </Tooltip>
-              <Tooltip title="Xóa bài học" className="cursor-pointer">
-                <div className="p-2 rounded-lg bg-red-500 cursor-pointer">
-                  <img src={IMAGES.trashIcon} alt="edit" className="w-4   " />
-                </div>
-              </Tooltip>
-            </div>
-          </div>
-        ))}
-      </div>
+      <Tabs
+        defaultActiveKey={tab[0].value.toString()}
+        items={tab.map((item) => ({
+          key: item.value.toString(),
+          label: item.label,
+          children: item.children,
+        }))}
+      />
     </div>
   );
 };
