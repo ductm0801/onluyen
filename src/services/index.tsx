@@ -389,3 +389,29 @@ export const getExamByTestBank = async (
   });
   return res.data;
 };
+export const downloadExcelTemplate = async () => {
+  const res = await axiosClient.get(
+    `/api/question/DownloadAddQuestionTemplate`,
+    { responseType: "blob" }
+  );
+  return res.data;
+};
+export const previewExcelTemplate = async (formData: FormData) => {
+  const res = await axiosClient.post(
+    `/api/question/previewQuestionsFromExcel`,
+    formData,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    }
+  );
+  return res.data;
+};
+export const createBulkQuestion = async (body: any, id: string | string[]) => {
+  const res = await axiosClient.post(
+    `/api/question/AddBulkQuestionsFromExcel/${id}`,
+    body
+  );
+  return res.data;
+};

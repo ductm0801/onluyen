@@ -3,13 +3,22 @@ import Paging from "@/components/Paging";
 import { difficultyEnum, questionEnum } from "@/constants/enum";
 import { IQuestion, IQuestionBank } from "@/models";
 import { useLoading } from "@/providers/loadingProvider";
-import { deleteQuestion, getQuestionBank, getQuestionByBank } from "@/services";
+import {
+  createBulkQuestion,
+  deleteQuestion,
+  downloadExcelTemplate,
+  getQuestionBank,
+  getQuestionByBank,
+  previewExcelTemplate,
+} from "@/services";
 import { useParams, useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import QuestionDetail from "../Question/Detail";
 import ModalCreateQuestion from "@/components/ModalCreateQuestion";
-import { Modal, Select } from "antd";
+import { Button, Form, Modal, Select, Upload } from "antd";
+import { InboxOutlined } from "@ant-design/icons";
 import _ from "lodash";
+import { toast } from "react-toastify";
 
 const cols = [
   {
@@ -70,6 +79,11 @@ const BankDetail = () => {
   const qDetail = useRef<IQuestion | null>(null);
   const [confirm, setConfirm] = useState(false);
   const [questionId, setQuestionId] = useState("");
+  const [createBulk, setCreateBulk] = useState(false);
+  const [validQuestion, setValidQuestion] = useState<any[]>([]);
+  const [invalidQuestion, setInvalidQuestion] = useState<any[]>([]);
+  const [form] = Form.useForm();
+  const [active, setActive] = useState(0);
   const [filter, setFilter] = useState({
     type: "",
     difficulty: "",
@@ -138,16 +152,97 @@ const BankDetail = () => {
     }, 1000),
     []
   );
+  const handleDownload = async () => {
+    try {
+      setLoading(true);
+      const res = await downloadExcelTemplate();
+      if (res) {
+        const blob = new Blob([res]);
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", "question_template.xlsx");
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+    } catch (error) {
+      setLoading(false);
+      console.error("Error downloading file:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  const handlePreview = async (values: any) => {
+    console.log(values);
+    try {
+      setLoading(true);
+      const formData = new FormData();
+      formData.append("file", values.file.file.originFileObj);
+      const res = await previewExcelTemplate(formData);
+      setValidQuestion(res.questions.validQuestions);
+      setInvalidQuestion(res.questions.errors);
+    } catch (error) {
+      setLoading(false);
+      console.error("Error downloading file:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  const handleConfirm = () => {
+    if (invalidQuestion.length > 0) {
+      Modal.confirm({
+        title: "Xác nhận tạo câu hỏi",
+        content: `Bạn đang có ${invalidQuestion.length} câu hỏi không hợp lệ. Bạn có chắc chắn muốn tạo câu hỏi không?`,
+        okText: "Xác nhận",
+        cancelText: "Hủy",
+        onOk: async () => {
+          await handleCreateBulkQuestion();
+        },
+      });
+      return;
+    }
+    handleCreateBulkQuestion();
+  };
+  const handleCreateBulkQuestion = async () => {
+    try {
+      setLoading(true);
+      await createBulkQuestion(validQuestion, params.id);
+      toast.success("Tạo câu hỏi thành công");
+      setCreateBulk(false);
+    } catch (error: any) {
+      setLoading(false);
+      toast.error(error.response.data.message);
+    } finally {
+      setLoading(false);
+      setCreateBulk(false);
+      fetchQuestion();
+    }
+  };
 
   return (
     <>
       <div className="relative overflow-x-auto">
         <div className="flex justify-between  items-center  flex-column flex-wrap md:flex-row space-y-4 md:space-y-0 pb-4">
-          <div
-            className="bg-[#ffc022] rounded-lg px-3 py-2 cursor-pointer"
-            onClick={() => setCreate(true)}
-          >
-            Tạo câu hỏi mới
+          <div className="flex w-full flex-shrink-0 pb-2 gap-4">
+            <div
+              className="bg-[#ffc022] rounded-lg px-3 py-2 cursor-pointer"
+              onClick={() => setCreate(true)}
+            >
+              Tạo câu hỏi mới
+            </div>
+            <div
+              className="bg-blue-600 ml-auto text-white rounded-lg px-3 py-2 cursor-pointer"
+              onClick={() => setCreateBulk(true)}
+            >
+              Tạo câu hỏi từ excel
+            </div>
+            <div
+              className="bg-blue-600 text-white rounded-lg px-3 py-2 cursor-pointer"
+              onClick={() => handleDownload()}
+            >
+              Tải excel mẫu
+            </div>
           </div>
           <div className="flex items-center gap-2">
             <Select
@@ -288,6 +383,121 @@ const BankDetail = () => {
           cancelText="Hủy"
         >
           Bạn có chắc muốn xóa câu hỏi này?
+        </Modal>
+      )}
+      {createBulk && (
+        <Modal
+          title={
+            validQuestion.length > 0 || invalidQuestion.length > 0
+              ? "Xem trước câu hỏi"
+              : "Tạo câu hỏi từ excel"
+          }
+          open={createBulk}
+          onCancel={() => setCreateBulk(false)}
+          footer={null}
+        >
+          <>
+            {validQuestion.length > 0 || invalidQuestion.length > 0 ? (
+              <div>
+                <div className="flex items-center gap-4 border-b mb-4">
+                  <div
+                    onClick={() => setActive(0)}
+                    className={`${
+                      active === 0
+                        ? "text-blue-600 bg-gray-300 rounded-t-lg px-3 py-2"
+                        : ""
+                    } cursor-pointer`}
+                  >
+                    Câu hỏi hợp lệ: {validQuestion.length} câu hỏi
+                  </div>
+                  <div
+                    onClick={() => setActive(1)}
+                    className={`${
+                      active === 1
+                        ? "text-blue-600 bg-gray-300 rounded-t-lg px-3 py-2"
+                        : ""
+                    } cursor-pointer`}
+                  >
+                    Câu hỏi không hợp lệ: {invalidQuestion.length} câu hỏi
+                  </div>
+                </div>
+                {active === 0 ? (
+                  <ul className="text-gray-700 flex flex-col gap-2">
+                    {validQuestion.map((question, index) => (
+                      <li key={index} className="text-sm font-bold">
+                        {index + 1}. {question.title}
+                        <p>
+                          Dạng câu hỏi:
+                          {""}{" "}
+                          {
+                            questionEnum[
+                              question.type as keyof typeof questionEnum
+                            ]
+                          }
+                        </p>
+                        <ul
+                          className={`list-inside font-normal ${
+                            question.type === 2 ? "list-none" : "list-disc"
+                          } `}
+                        >
+                          {question.answers?.map(
+                            (answer: any, index: number) => (
+                              <li
+                                key={index}
+                                className={`${
+                                  answer.isCorrect
+                                    ? "text-green-500"
+                                    : "text-gray-600"
+                                }  `}
+                              >
+                                {answer.content}
+                              </li>
+                            )
+                          )}
+                        </ul>
+                        <p className="text-sm text-gray-600">
+                          {question.answerText}
+                        </p>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <div className="text-gray-700 flex flex-col gap-2">
+                    {invalidQuestion.map((question, index) =>
+                      question.errors.map((error: any, idx: number) => (
+                        <li
+                          key={`${index}-${idx}`}
+                          className="text-sm text-red-600"
+                        >
+                          {idx + 1}. Dòng số {question.rowNumber} {error}
+                        </li>
+                      ))
+                    )}
+                  </div>
+                )}
+                <div
+                  className="flex justify-end mt-4"
+                  onClick={() => handleConfirm()}
+                >
+                  <Button type="primary">Xác nhận</Button>
+                </div>
+              </div>
+            ) : (
+              <Form form={form} onFinish={handlePreview}>
+                <Form.Item name="file">
+                  <Upload.Dragger>
+                    <p className="ant-upload-drag-icon">
+                      <InboxOutlined />
+                    </p>
+                    <p>Kéo thả hoặc click để tải lên</p>
+                  </Upload.Dragger>
+                </Form.Item>
+                <Form.Item>
+                  <Button htmlType="submit">Tạo câu hỏi</Button>
+                </Form.Item>
+              </Form>
+            )}
+          </>
         </Modal>
       )}
     </>
