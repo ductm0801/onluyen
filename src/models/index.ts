@@ -80,6 +80,7 @@ export type IExamBank = {
   subjectId: string;
   subjectName: string;
   isDeleted: boolean;
+  numberOfTests: number;
 };
 export type IExam = {
   id: string;
@@ -167,4 +168,23 @@ export type ITest = {
   isEnrolled: boolean;
   enrollmentId: string;
   hasOngoingAttempt: boolean;
+};
+export type IInstructor = {
+  userId: string;
+  subjectId: string;
+  certificate: string;
+  yearOfExperience: number;
+  resumeUrl: string;
+  user: string;
+  subject: string;
+  courses: string;
+  questionBanks: string;
+  id: string;
+  creationDate: Date;
+  createdBy: string;
+  modificationDate: string;
+  modificationBy: string;
+  deletionDate: string;
+  deleteBy: string;
+  isDeleted: boolean;
 };

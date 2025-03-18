@@ -1,34 +1,37 @@
 "use client";
-import ModalCreateExamBank from "@/components/ModalCreateExamBank";
+import ModaReviewTest from "@/components/ModalReviewExam";
 import Paging from "@/components/Paging";
-import { IExamBank } from "@/models";
+import { examEnum } from "@/constants/enum";
+import { IExam } from "@/models";
 import { useLoading } from "@/providers/loadingProvider";
-import { deleteExamBank, getExamBank } from "@/services";
-import { Modal } from "antd";
-import { useRouter } from "next/navigation";
-
-import React, { useEffect, useState } from "react";
+import { getExamByTestBank } from "@/services";
+import { useParams, useRouter } from "next/navigation";
+import React, { useEffect, useRef, useState } from "react";
+import { toast } from "react-toastify";
 const cols = [
   {
-    name: "Tên",
+    name: "Tiêu đề",
     className:
       "px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white rounded-s-lg",
   },
   {
-    name: "Miêu tả",
+    name: "Thời lượng",
     className:
       "px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white",
   },
+
   {
-    name: "Tổng số đề",
+    name: "Mô tả",
     className:
       "px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white",
   },
+
   {
-    name: "Môn học",
+    name: "Tổng Điểm",
     className:
       "px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white",
   },
+
   {
     name: "Hành động",
     className:
@@ -36,69 +39,54 @@ const cols = [
   },
 ];
 
-const TestBank = () => {
-  const [examBank, setExamBank] = useState<IExamBank[]>([]);
-  const [pageSize, setPageSize] = useState(0);
+const TestBankDetail = () => {
+  const [exam, setExam] = useState<IExam[]>([]);
+  const { setLoading } = useLoading();
+  const [pageSize, setPageSize] = useState(10);
   const [currentPage, setCurrentPage] = useState(0);
   const [totalItems, setTotalItems] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
-  const [create, setCreate] = useState(false);
-  const { setLoading } = useLoading();
+  const params = useParams();
+  // const [create, setCreate] = useState(false);
+  const [detail, setDetail] = useState(false);
   const router = useRouter();
-
-  const [confirm, setConfirm] = useState(false);
-  const [examBankId, setExamBankId] = useState("");
-  const handleDeleteExamBank = async () => {
+  const examDetail = useRef<IExam | null>(null);
+  // const [confirm, setConfirm] = useState(false);
+  // const [examId, setExamId] = useState("");
+  const fetchExam = async () => {
     try {
       setLoading(true);
-      await deleteExamBank(examBankId);
-      setConfirm(false);
-      setExamBankId("");
-      fetchExamBank();
-    } catch (error) {
-      setLoading(false);
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleOpenConfirm = (id: string) => {
-    setConfirm(true);
-    setExamBankId(id);
-  };
-  const handleCloseConfirm = () => {
-    setConfirm(false);
-    setExamBankId("");
-  };
-
-  const fetchExamBank = async () => {
-    try {
-      setLoading(true);
-      const res = await getExamBank(currentPage, pageSize);
-      if (res) setExamBank(res.data.items);
-      setPageSize(res.data.pageSize);
+      const res = await getExamByTestBank(params.id, currentPage, pageSize);
+      if (res) setExam(res.data.items);
       setTotalItems(res.data.totalItemsCount);
       setTotalPages(res.data.totalPageCount);
-    } catch (error) {
+    } catch (err: any) {
       setLoading(false);
-      console.error(error);
+      toast.error(err.response.data.message);
     } finally {
       setLoading(false);
     }
   };
   useEffect(() => {
-    fetchExamBank();
+    fetchExam();
   }, [currentPage]);
+  const handleOpenDetail = async (items: IExam) => {
+    setDetail(true);
+    examDetail.current = items;
+  };
+  const handleCloseDetail = () => {
+    setDetail(false);
+    examDetail.current = null;
+  };
   return (
     <div className="relative overflow-x-auto">
-      <div className="flex justify-between  items-center  flex-column flex-wrap md:flex-row space-y-4 md:space-y-0 pb-4">
-        <div
+      <div className="flex justify-between items-center  flex-column flex-wrap md:flex-row space-y-4 md:space-y-0 pb-4">
+        {/* <div
           className="bg-[#ffc022] rounded-lg px-3 py-2 cursor-pointer"
-          onClick={() => setCreate(true)}
+          // onClick={() => setCreate(true)}
         >
-          Tạo ngân hàng đề mới
-        </div>
+          Tạo đề mới
+        </div> */}
         <div className="relative">
           <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
             <svg
@@ -136,8 +124,8 @@ const TestBank = () => {
           </tr>
         </thead>
         <tbody>
-          {examBank &&
-            examBank
+          {exam &&
+            exam
               .filter((a) => !a.isDeleted)
               .map((a, idx) => (
                 <tr
@@ -148,34 +136,18 @@ const TestBank = () => {
                     scope="row"
                     className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white"
                   >
-                    {/* <img
-                    className="w-10 h-10 rounded-full"
-                    src={a.imageUrl || IMAGES.defaultMale}
-                    alt="avatar"
-                  /> */}
-
-                    <div className="text-base font-semibold">
-                      {a.testBankName}
-                    </div>
+                    <div className="text-base font-semibold">{a.testName}</div>
                   </th>
-                  <td className="px-6 py-4">{a.description}</td>
-                  <td className="px-6 py-4">{a.numberOfTests} đề</td>
-                  <td className="px-6 py-4">{a.subjectName}</td>
+                  <td className="px-6 py-4">{a.length} phút</td>
 
+                  <td className="px-6 py-4">{a.description}</td>
+                  <td className="px-6 py-4">{a.totalGrade}</td>
                   <td className="px-6 py-4 flex items-center">
                     <div
                       className="font-medium whitespace-nowrap text-blue-600 dark:text-blue-500 hover:underline cursor-pointer"
-                      onClick={() =>
-                        router.push(`/exammanager/testBank/${a.id}`)
-                      }
+                      onClick={() => handleOpenDetail(a)}
                     >
                       Chi tiết
-                    </div>
-                    <div
-                      className="font-medium text-red-600 dark:text-red-500 hover:underline cursor-pointer ms-3"
-                      onClick={() => handleOpenConfirm(a.id)}
-                    >
-                      Xóa
                     </div>
                   </td>
                 </tr>
@@ -189,26 +161,16 @@ const TestBank = () => {
         totalPages={totalPages}
         setCurrentPage={setCurrentPage}
       />
-      {create && (
-        <ModalCreateExamBank
-          onClose={() => setCreate(false)}
-          fetchExamBank={fetchExamBank}
+      {detail && examDetail.current && (
+        <ModaReviewTest
+          onClose={handleCloseDetail}
+          data={examDetail.current}
+          fetchExamByBankId={fetchExam}
+          isReview={false}
         />
-      )}
-      {confirm && (
-        <Modal
-          title="Xóa câu hỏi"
-          open={confirm}
-          onOk={handleDeleteExamBank}
-          onCancel={handleCloseConfirm}
-          okText="Đồng ý"
-          cancelText="Hủy"
-        >
-          Bạn có chắc muốn xóa câu hỏi này?
-        </Modal>
       )}
     </div>
   );
 };
 
-export default TestBank;
+export default TestBankDetail;

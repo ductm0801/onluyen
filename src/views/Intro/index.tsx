@@ -1,11 +1,18 @@
 "use client";
 import { IMAGES } from "@/constants/images";
-import { ICourse } from "@/models";
+import { ICourse, IInstructor } from "@/models";
 import { useLoading } from "@/providers/loadingProvider";
-import { getCourse } from "@/services";
+import { getAllInstructor, getCourse } from "@/services";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
+import { Swiper, SwiperRef, SwiperSlide } from "swiper/react";
+import "swiper/css";
+import "swiper/css/effect-cards";
+
+// import required modules
+import { EffectCards } from "swiper/modules";
+import CustomButton from "@/components/CustomButton";
 
 const menu = [
   {
@@ -35,7 +42,19 @@ const Intro = () => {
   const [isActive, setIsActive] = useState(false);
   const { setLoading } = useLoading();
   const [course, setCourse] = useState<ICourse[]>([]);
+  const [instructor, setInstructor] = useState<IInstructor[]>([]);
   const router = useRouter();
+
+  const swiperRef = React.useRef<SwiperRef | null>(null);
+
+  const handleSlideNext = () => {
+    if (!swiperRef) return;
+    swiperRef.current?.swiper.slideNext();
+  };
+  const handleSlidePrev = () => {
+    if (!swiperRef) return;
+    swiperRef.current?.swiper.slidePrev();
+  };
 
   const fetchCourse = async () => {
     try {
@@ -52,7 +71,20 @@ const Intro = () => {
   };
   useEffect(() => {
     fetchCourse();
+    fetchInstructor();
   }, []);
+  const fetchInstructor = async () => {
+    try {
+      setLoading(true);
+      const res = await getAllInstructor();
+      setInstructor(res.data);
+    } catch (error) {
+      setLoading(false);
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -69,7 +101,7 @@ const Intro = () => {
     return () => clearInterval(interval);
   }, []);
   return (
-    <div className="pb-10">
+    <div className="pb-10 ">
       <div className="fixed top-0 left-0 right-0 border-b border-[#A4A4A4] bg-white z-20">
         <div className="flex justify-between items-center max-w-[1300px] py-8 mx-auto">
           <div className="flex items-center gap-2">
@@ -110,7 +142,7 @@ const Intro = () => {
           </Link>
         </div>
       </div>
-      <div className=" pt-[160px]">
+      <div className=" pt-[160px] flex flex-col gap-16">
         <div className="bg-welcome aspect-[1216/604] max-w-[1300px] mx-auto bg-center bg-no-repeat flex items-center justify-between px-16">
           <div className="flex flex-col gap-6">
             <p className="text-[60px] text-white">Chào mừng đến với Ôn Luyện</p>
@@ -215,6 +247,61 @@ const Intro = () => {
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+        <div
+          id="giang-vien"
+          className="bg-gradient-to-b from-[#267DFF] to-[#000288] py-16 flex flex-col items-center justify-center gap-4"
+        >
+          <h1 className="text-center text-[60px] text-white">Các giảng viên</h1>
+          <div className="flex items-center gap-16">
+            <img
+              src={IMAGES.arrowRight}
+              alt="left"
+              className="rotate-180 cursor-pointer border-white rounded-full border w-[40px]"
+              onClick={() => handleSlidePrev()}
+            />
+            <Swiper
+              effect={"cards"}
+              ref={swiperRef}
+              grabCursor={true}
+              modules={[EffectCards]}
+              className="w-[328px] h-[530px]"
+            >
+              {instructor.map((ins, index) => (
+                <SwiperSlide key={index} className="rounded-3xl bg-white">
+                  <div className="flex flex-col justify-center items-center gap-4 p-6">
+                    <p className="text-white bg-[#F01818] rounded-full px-4 py-1 self-start">
+                      {ins.subject}
+                    </p>
+                    <p className="text-[#1A1A1A] text-xl font-bold">
+                      {ins.certificate}
+                    </p>
+
+                    <img
+                      src={IMAGES.instructorDefault}
+                      alt="instructor"
+                      className="w-[280px] aspect-[280/336] object-cover rounded-xl"
+                    />
+                    <div className="self-end">
+                      <CustomButton
+                        text="Xem chi tiết"
+                        textHover="Xem ngay"
+                        onClick={() =>
+                          router.push(`/instructor-detail/${ins.id}`)
+                        }
+                      />
+                    </div>
+                  </div>
+                </SwiperSlide>
+              ))}
+            </Swiper>
+            <img
+              src={IMAGES.arrowRight}
+              alt="right"
+              className="cursor-pointer border-white rounded-full border w-[40px]"
+              onClick={() => handleSlideNext()}
+            />
           </div>
         </div>
       </div>

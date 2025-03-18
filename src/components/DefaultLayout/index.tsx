@@ -66,7 +66,13 @@ const DefaultLayout: React.FC<props> = ({ children }) => {
   return (
     <>
       <Nav sidebarOpen={sidebarOpen} closeSidebar={closeSidebar} />
-      <div className={!user ? "" : "xl:ml-[288px]"}>
+      <div
+        className={
+          !user || pathName === "/" || pathName === "/login"
+            ? ""
+            : "xl:ml-[288px]"
+        }
+      >
         <nav
           className={`${
             pathName === "/login" || pathName === "/" ? "hidden" : "block"

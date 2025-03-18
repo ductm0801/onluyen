@@ -342,13 +342,16 @@ export const getExamList = async (
   });
   return res.data;
 };
-export const getChat = async () => {
+export const getChat = async (receiver: string | string[]) => {
   const res = await axiosClient.get(`/api/chat/messages`, {
     params: {
-      user1: "1",
-      user2: "2",
+      receiver,
     },
   });
+  return res.data;
+};
+export const sendMessageToInstructor = async (body: any) => {
+  const res = await axiosClient.post(`/api/chat/send_student`, body);
   return res.data;
 };
 export const createQuestionBank = async (body: IQuestionBank) => {
@@ -369,5 +372,20 @@ export const updateLesson = async (body: any, id: string | string[]) => {
 };
 export const updateTest = async (body: any, id: string) => {
   const res = await axiosClient.put(`/api/exam/${id}`, body);
+  return res.data;
+};
+export const getAllInstructor = async () => {
+  const res = await axiosClient.get(`/api/instructors/get_list_instructor`);
+  return res.data;
+};
+
+export const getExamByTestBank = async (
+  id: string | string[],
+  pageIndex: number,
+  pageSize: number
+) => {
+  const res = await axiosClient.get(`/api/test/testBank/${id}`, {
+    params: { pageIndex, pageSize },
+  });
   return res.data;
 };
