@@ -8,12 +8,14 @@ type props = {
   onClose: () => void;
   data: IExam;
   fetchExamByBankId: () => Promise<void>;
+  isReview?: boolean;
 };
 
 const ModaReviewTest: React.FC<props> = ({
   onClose,
   data,
   fetchExamByBankId,
+  isReview = true,
 }) => {
   const [examData, setExamData] = useState<IExam>();
   const { setLoading } = useLoading();
@@ -121,24 +123,29 @@ const ModaReviewTest: React.FC<props> = ({
                         </li>
                       ))}
                     </ul>
+                    <p className="text-sm text-gray-600">
+                      {question.answerText}
+                    </p>
                   </li>
                 ))}
               </ul>
             </div>
-            <div className="flex justify-end mt-6 space-x-4">
-              <button
-                onClick={() => handleUpdate(3)}
-                className="bg-red-500 text-white px-4 py-2 rounded-lg"
-              >
-                Từ chối
-              </button>
-              <button
-                onClick={() => handleUpdate(2)}
-                className="bg-blue-500 text-white px-4 py-2 rounded-lg"
-              >
-                Duyệt
-              </button>
-            </div>
+            {isReview && (
+              <div className="flex justify-end mt-6 space-x-4">
+                <button
+                  onClick={() => handleUpdate(3)}
+                  className="bg-red-500 text-white px-4 py-2 rounded-lg"
+                >
+                  Từ chối
+                </button>
+                <button
+                  onClick={() => handleUpdate(2)}
+                  className="bg-blue-500 text-white px-4 py-2 rounded-lg"
+                >
+                  Duyệt
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>

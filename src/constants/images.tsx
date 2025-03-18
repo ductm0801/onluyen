@@ -34,4 +34,6 @@ export const IMAGES = {
   examList: "/assets/examList.svg",
   pendingExam: "/assets/pendingExam.svg",
   testResult: "/assets/testResult.png",
+  instructorDefault: "/assets/instructorDefault.png",
+  chatIcon: "/assets/chatIcon.svg",
 };
