@@ -29,6 +29,9 @@ export const pendingExamEnum = {
   2: "Đã Duyệt ",
   3: "Từ chối ",
 };
+export const courseStatusEnum = {
+  0: "Bản nháp",
+};
 
 export const renderBgColorStatus = (status: keyof typeof statusEnum) => {
   switch (status) {
