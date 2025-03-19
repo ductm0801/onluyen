@@ -442,3 +442,7 @@ export const getListChat = async () => {
   const res = await axiosClient.get(`/api/chat/chat_list`);
   return res.data;
 };
+export const getInstructorDetail = async (id: string | string[]) => {
+  const res = await axiosClient.get(`/api/instructors/${id}`);
+  return res.data;
+};

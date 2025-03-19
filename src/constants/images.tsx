@@ -42,4 +42,5 @@ export const IMAGES = {
   minusIcon: "/assets/minusIcon.svg",
   defaultAvatar: "/assets/OIP.jpg",
   sendIcon: "/assets/sendIcon.svg",
+  priceIcon: "/assets/priceIcon.svg",
 };
