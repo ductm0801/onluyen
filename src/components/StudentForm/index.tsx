@@ -5,10 +5,13 @@ import { studentRegist } from "@/services";
 import { Checkbox, Flex, Form, Input, Radio } from "antd";
 import { CheckboxGroupProps } from "antd/es/checkbox";
 import { useForm } from "antd/es/form/Form";
-import React, { useState } from "react";
+import React, { Dispatch, SetStateAction, useState } from "react";
 import { toast } from "react-toastify";
+type props = {
+  setIsRegist: Dispatch<SetStateAction<boolean>>;
+};
 
-const StudentForm = () => {
+const StudentForm: React.FC<props> = ({ setIsRegist }) => {
   const { setLoading } = useLoading();
   const [form] = useForm();
   const [showPassword, setShowPassword] = useState(false);
@@ -27,6 +30,7 @@ const StudentForm = () => {
       });
       if (res) {
         toast.success("Đăng ký thành công");
+        setIsRegist(false);
       }
     } catch (e) {
       setLoading(false);
