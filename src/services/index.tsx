@@ -351,7 +351,7 @@ export const getChat = async (receiver: string | string[]) => {
   return res.data;
 };
 export const sendMessageToInstructor = async (body: any) => {
-  const res = await axiosClient.post(`/api/chat/send_student`, body);
+  const res = await axiosClient.post(`/api/chat/send_chat`, body);
   return res.data;
 };
 export const createQuestionBank = async (body: IQuestionBank) => {
@@ -413,5 +413,24 @@ export const createBulkQuestion = async (body: any, id: string | string[]) => {
     `/api/question/AddBulkQuestionsFromExcel/${id}`,
     body
   );
+  return res.data;
+};
+export const getExamResults = async (
+  pageIndex: number,
+  pageSize: number,
+  sortType: boolean
+) => {
+  const res = await axiosClient.get(`/api/exam/studentTaken`, {
+    params: { pageIndex, pageSize, isSortByHighestGrade: sortType },
+  });
+  return res.data;
+};
+export const getCourseByStudent = async (
+  pageIndex: number,
+  pageSize: number
+) => {
+  const res = await axiosClient.get(`/api/courses/guest`, {
+    params: { pageIndex, pageSize },
+  });
   return res.data;
 };

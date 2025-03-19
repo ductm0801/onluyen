@@ -2,7 +2,7 @@
 import { IMAGES } from "@/constants/images";
 import { ICourse, IInstructor } from "@/models";
 import { useLoading } from "@/providers/loadingProvider";
-import { getAllInstructor, getCourse } from "@/services";
+import { getAllInstructor, getCourse, getCourseByStudent } from "@/services";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
@@ -59,7 +59,7 @@ const Intro = () => {
   const fetchCourse = async () => {
     try {
       setLoading(true);
-      const res = await getCourse(0, 3);
+      const res = await getCourseByStudent(0, 3);
       if (res) {
         setCourse(res.data.items);
       }
@@ -288,7 +288,7 @@ const Intro = () => {
                         text="Xem chi tiết"
                         textHover="Xem ngay"
                         onClick={() =>
-                          router.push(`/instructor-detail/${ins.id}`)
+                          router.push(`/instructor-detail/${ins.userId}`)
                         }
                       />
                     </div>

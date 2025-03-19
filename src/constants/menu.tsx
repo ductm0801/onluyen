@@ -50,10 +50,10 @@ export const menus: Record<
       isShow: true,
     },
     {
-      label: "Kết quả",
-      icon: IMAGES.examCode,
-      path: "/student/result-detail/",
-      isShow: false,
+      label: "Lịch sử thi",
+      icon: IMAGES.examResult,
+      path: "/student/result-detail",
+      isShow: true,
     },
   ],
   Instructor: [

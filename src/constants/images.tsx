@@ -36,4 +36,5 @@ export const IMAGES = {
   testResult: "/assets/testResult.png",
   instructorDefault: "/assets/instructorDefault.png",
   chatIcon: "/assets/chatIcon.svg",
+  examResult: "/assets/examResultIcon.svg",
 };
