@@ -64,10 +64,8 @@ const Nav: React.FC<props> = ({ sidebarOpen, closeSidebar }) => {
                 alt={item.label}
                 width={20}
                 height={20}
-                className={`transition-all duration-300 ease-out ${
-                  pathName.startsWith(item.path)
-                    ? "filter brightness-0 invert"
-                    : "opacity-50"
+                className={`transition-all duration-300 ease-out filter brightness-0 invert ${
+                  pathName.startsWith(item.path) ? "opacity-100" : "opacity-50"
                 }`}
               />
               <p className="text-base">{item.label}</p>
