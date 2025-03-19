@@ -40,13 +40,22 @@ const CourseDetail = () => {
       <div className="flex flex-col gap-4 col-span-2">
         <h1 className="text-4xl font-bold">{course?.title}</h1>
         <p className="text-base text-[#344054]">{course?.description}</p>
-        <div className="flex items-center gap-2 text-[#667085]">
-          <img src={IMAGES.lessonIcon} alt="lesson" />
-          Tổng số
-          <span className="text-[#101828] font-bold">
-            {course?.lessons.items.length}
-          </span>{" "}
-          bài học
+        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 text-[#667085]">
+            <img src={IMAGES.lessonIcon} alt="lesson" />
+            Tổng số
+            <span className="text-[#101828] font-bold">
+              {course?.lessons.items.length}
+            </span>{" "}
+            bài học
+          </div>
+          <div className="flex items-center gap-2 text-[#667085]">
+            <img src={IMAGES.priceIcon} alt="lesson" className="w-[25px]" />
+            Giá
+            <span className="text-[#101828] font-bold">
+              {course?.coursePrice.toLocaleString("vi-VN")}đ
+            </span>{" "}
+          </div>
         </div>
         <div className="flex flex-col gap-2 text-[#667085]">
           {course?.lessons.items.map((item, index) => (

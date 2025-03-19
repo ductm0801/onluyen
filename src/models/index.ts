@@ -206,3 +206,24 @@ export type IEXamResult = {
   latestExamResult: keyof typeof examResultEnum;
   nearestAttemptDate: Date;
 };
+export type IInstructorDetail = {
+  user: {
+    id: string;
+    fullName: string;
+    email: string;
+    phoneNumber: number;
+    address: string;
+    gender: string;
+  };
+  instructor: {
+    id: string;
+    certificate: string;
+    yearOfExperience: number;
+    specialization: string;
+  };
+  courses: ICourse[];
+  subject: {
+    description: string;
+    subjectName: string;
+  };
+};

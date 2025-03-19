@@ -1,6 +1,6 @@
 "use client";
 import { IMAGES } from "@/constants/images";
-import { ICourse, IInstructor } from "@/models";
+import { ICourse, IInstructor, IInstructorDetail } from "@/models";
 import { useLoading } from "@/providers/loadingProvider";
 import { getAllInstructor, getCourse, getCourseByStudent } from "@/services";
 import Link from "next/link";
@@ -13,6 +13,7 @@ import "swiper/css/effect-cards";
 // import required modules
 import { EffectCards } from "swiper/modules";
 import CustomButton from "@/components/CustomButton";
+import { useAuth } from "@/providers/authProvider";
 
 const menu = [
   {
@@ -42,8 +43,11 @@ const Intro = () => {
   const [isActive, setIsActive] = useState(false);
   const { setLoading } = useLoading();
   const [course, setCourse] = useState<ICourse[]>([]);
-  const [instructor, setInstructor] = useState<IInstructor[]>([]);
+  const [instructor, setInstructor] = useState<IInstructorDetail[]>([]);
+  console.log(instructor);
   const router = useRouter();
+  const { user, logout } = useAuth();
+  const [open, setOpen] = useState(false);
 
   const swiperRef = React.useRef<SwiperRef | null>(null);
 
@@ -119,27 +123,68 @@ const Intro = () => {
               </Link>
             ))}
           </div>
-          <Link
-            href="/login"
-            className="text-white bg-[#1244A2] flex items-center gap-2 py-[10px] px-[14px] rounded-md"
-          >
-            Đăng nhập
-            <svg
-              width="8"
-              height="12"
-              viewBox="0 0 8 12"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
+          {user ? (
+            <div className="flex  gap-[8px] items-center relative group cursor-pointer">
+              <div>
+                <div
+                  className="font-semibold text-lg"
+                  onClick={() => setOpen((open) => !open)}
+                >
+                  Xin chào! {user?.FullName}
+                </div>
+                {/* {user?.avatar ? (
+     <Avatar
+       className="border-2 border-white w-[38px] h-[38px]"
+       src={user?.avatar}
+     />
+   ) : (
+     <Avatar className="border-2 border-white w-[36px] h-[36px]">
+       {user?.username?.charAt(0).toUpperCase()}
+     </Avatar>
+   )} */}
+              </div>
+              <div
+                className={`${
+                  open ? "max-h-[300px]" : "max-h-0"
+                } transition-all overflow-hidden min-w-[150px] duration-300 ease-in-out absolute top-10 right-0 w-full rounded-xl shadow-lg `}
+              >
+                <div className="flex flex-col gap-1 bg-white  p-2">
+                  <button className="bg-white rounded-[10px] border border-gray-300 py-2 text-black w-full flex items-center justify-center cursor-pointer">
+                    Hồ sơ
+                  </button>
+
+                  <button
+                    className="bg-white rounded-[10px] border border-gray-300 py-2 text-black w-full flex items-center justify-center cursor-pointer"
+                    onClick={logout}
+                  >
+                    Đăng xuất
+                  </button>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <Link
+              href="/login"
+              className="text-white bg-[#1244A2] flex items-center gap-2 py-[10px] px-[14px] rounded-md"
             >
-              <path
-                d="M1.5 11L6.5 6L1.5 1"
-                stroke="white"
-                stroke-width="1.66667"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-            </svg>
-          </Link>
+              Đăng nhập
+              <svg
+                width="8"
+                height="12"
+                viewBox="0 0 8 12"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M1.5 11L6.5 6L1.5 1"
+                  stroke="white"
+                  stroke-width="1.66667"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </Link>
+          )}
         </div>
       </div>
       <div className=" pt-[160px] flex flex-col gap-16">
@@ -272,10 +317,10 @@ const Intro = () => {
                 <SwiperSlide key={index} className="rounded-3xl bg-white">
                   <div className="flex flex-col justify-center items-center gap-4 p-6">
                     <p className="text-white bg-[#F01818] rounded-full px-4 py-1 self-start">
-                      {ins.subject}
+                      {ins.subject.subjectName}
                     </p>
                     <p className="text-[#1A1A1A] text-xl font-bold">
-                      {ins.certificate}
+                      {ins.user.fullName}
                     </p>
 
                     <img
@@ -288,7 +333,7 @@ const Intro = () => {
                         text="Xem chi tiết"
                         textHover="Xem ngay"
                         onClick={() =>
-                          router.push(`/instructor-detail/${ins.userId}`)
+                          router.push(`/instructor-detail/${ins.user.id}`)
                         }
                       />
                     </div>
@@ -298,9 +343,8 @@ const Intro = () => {
             </Swiper>
             <img
               src={IMAGES.arrowRight}
-              alt="right"
-              className="cursor-pointer border-white rounded-full border w-[40px]"
-              onClick={() => handleSlideNext()}
+              alt="left"
+              className="rotate-180 absolute top-1/2 z-50 -translate-y-1/2 left-[-20px] cursor-pointer bg-blue-600 rounded-full"
             />
           </div>
         </div>
