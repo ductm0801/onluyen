@@ -4,7 +4,6 @@ import { examEnum, questionEnum } from "@/constants/enum";
 import { IExam } from "@/models";
 import { useLoading } from "@/providers/loadingProvider";
 import { getTest, saveExam, submitExam } from "@/services";
-import { Modal } from "antd";
 import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
@@ -91,25 +90,6 @@ const TakeExam = () => {
     return `${minutes}:${secs < 10 ? "0" : ""}${secs}`;
   };
   const onSubmit = async () => {
-    const totalQuestions = exam?.questions.length ?? 0;
-    const answeredQuestions = Object.keys(selectedAnswers).length;
-
-    if (answeredQuestions < totalQuestions) {
-      Modal.confirm({
-        title: "Xác nhận nộp bài",
-        content: `Bạn mới làm ${answeredQuestions}/${totalQuestions} câu. Bạn có chắc chắn muốn nộp bài không?`,
-        okText: "Nộp bài",
-        cancelText: "Hủy",
-        onOk: async () => {
-          await submitExamHandler();
-        },
-      });
-      return;
-    }
-    await submitExamHandler();
-  };
-
-  const submitExamHandler = async () => {
     const formattedAnswers = Object.entries(selectedAnswers).map(
       ([questionId, answer]) => ({
         questionId,
@@ -117,7 +97,6 @@ const TakeExam = () => {
         answerText: answer.text || "",
       })
     );
-
     try {
       setLoading(true);
       const res = await saveExam(
@@ -131,7 +110,7 @@ const TakeExam = () => {
       router.push(`/student/exam/result/${params.id}`);
     } catch (err: any) {
       setLoading(false);
-      toast.error(err.response?.data?.message || "Lỗi khi nộp bài");
+      toast.error(err.response.data.message);
     } finally {
       setLoading(false);
     }

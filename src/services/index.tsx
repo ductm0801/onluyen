@@ -294,7 +294,7 @@ export const getCourseByInstructor = async (
 };
 
 export const getCourseDetail = async (id: string | string[]) => {
-  const res = await axiosClient.get(`/api/courses/${id}`);
+  const res = await axiosClient.get(`/api/courses/guest/${id}`);
   return res.data;
 };
 export const getQuestionNotInExam = async (
@@ -432,5 +432,13 @@ export const getCourseByStudent = async (
   const res = await axiosClient.get(`/api/courses/guest`, {
     params: { pageIndex, pageSize },
   });
+  return res.data;
+};
+export const publishCourse = async (id: string | string[]) => {
+  const res = await axiosClient.put(`/api/courses/status/${id}`, { status: 2 });
+  return res.data;
+};
+export const getListChat = async () => {
+  const res = await axiosClient.get(`/api/chat/chat_list`);
   return res.data;
 };

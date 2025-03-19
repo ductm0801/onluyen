@@ -1,4 +1,5 @@
 import {
+  courseStatusEnum,
   difficultyEnum,
   examEnum,
   examResultEnum,
@@ -127,7 +128,7 @@ export type ICourse = {
   subjectName: string;
   imageUrl: string;
   coursePrice: number;
-  courseStatus: string;
+  courseStatus: keyof typeof courseStatusEnum;
   instructorId: string;
   instructorName: string;
   lessons: ILessons;

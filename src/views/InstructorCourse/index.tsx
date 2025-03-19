@@ -1,6 +1,7 @@
 "use client";
 import ModalCreateCourse from "@/components/ModalCreateCourse";
 import Paging from "@/components/Paging";
+import { courseStatusEnum } from "@/constants/enum";
 import { IMAGES } from "@/constants/images";
 import { ICourse } from "@/models";
 import { useLoading } from "@/providers/loadingProvider";
@@ -145,7 +146,9 @@ const InstructorCourse = () => {
                   <td className="px-6 py-4">
                     {a.coursePrice.toLocaleString("vi-VN")}đ
                   </td>
-                  <td className="px-6 py-4">{a.courseStatus}</td>
+                  <td className="px-6 py-4">
+                    {courseStatusEnum[a.courseStatus]}
+                  </td>
 
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-2">

@@ -5,7 +5,7 @@ import { getChat, sendMessageToInstructor } from "@/services";
 import { Form } from "antd";
 import { collection, onSnapshot } from "firebase/firestore";
 import { useParams } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import moment from "moment";
 import { useAuth } from "@/providers/authProvider";
 
@@ -29,7 +29,7 @@ const InstructorDetail = () => {
       fetchChat();
     });
   }, []);
-  console.log(messages);
+
   const handleSubmit = async (values: any) => {
     try {
       await sendMessageToInstructor({ receiver: params.id, text: values.text });
@@ -39,6 +39,15 @@ const InstructorDetail = () => {
       form.resetFields();
     }
   };
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
   return (
     <div>
       InstructorDetail
@@ -51,21 +60,32 @@ const InstructorDetail = () => {
             </div>
           </div>
           <div className="p-4 flex flex-col gap-2 overflow-y-auto h-[300px]">
-            {messages.map((m, index) => (
-              <div
-                className={`${
-                  m.sender === user?.UserId ? "self-end" : "self-start"
-                } flex flex-col gap-2 w-fit`}
-                key={index}
-              >
-                <div key={index} className="p-2 border rounded-lg">
-                  {m.text}
+            {messages.map((m, index) =>
+              m.sender === user?.UserId ? (
+                <div className="flex justify-end mb-4">
+                  <div className="mr-2 py-3 px-4 bg-blue-400 rounded-bl-3xl rounded-tl-3xl rounded-tr-xl text-white">
+                    {m?.text}
+                  </div>
+                  <img
+                    src={IMAGES.defaultAvatar}
+                    className="object-cover h-8 w-8 rounded-full"
+                    alt=""
+                  />
                 </div>
-                <p className="text-xs self-end px-3">
-                  {moment(m.timestamp).format("HH:mm")}
-                </p>
-              </div>
-            ))}
+              ) : (
+                <div className="flex justify-start mb-4">
+                  <img
+                    src={IMAGES.defaultAvatar}
+                    className="object-cover h-8 w-8 rounded-full"
+                    alt=""
+                  />
+                  <div className="ml-2 py-3 px-4 bg-gray-400 rounded-br-3xl rounded-tr-3xl rounded-tl-xl text-white">
+                    {m?.text}
+                  </div>
+                </div>
+              )
+            )}
+            <div ref={messagesEndRef} />
           </div>
 
           <Form
