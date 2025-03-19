@@ -1,21 +1,16 @@
 "use client";
 import { IMAGES } from "@/constants/images";
 import { db } from "@/firebase/config";
-import {
-  getChat,
-  getInstructorDetail,
-  sendMessageToInstructor,
-} from "@/services";
+import { IInstructorDetail } from "@/models";
+import { useAuth } from "@/providers/authProvider";
+import { useLoading } from "@/providers/loadingProvider";
+import { getChat, getInstructorDetail, sendMessage } from "@/services";
 import { Form, Image } from "antd";
 import { collection, onSnapshot } from "firebase/firestore";
 import { useParams, useRouter } from "next/navigation";
-import React, { useEffect, useRef, useState } from "react";
-import moment from "moment";
-import { useAuth } from "@/providers/authProvider";
-import { useLoading } from "@/providers/loadingProvider";
-import { IInstructorDetail } from "@/models";
-import { Swiper, SwiperSlide } from "swiper/react";
+import { useEffect, useRef, useState } from "react";
 import "swiper/css";
+import { Swiper, SwiperSlide } from "swiper/react";
 
 const InstructorDetail = () => {
   const [open, setOpen] = useState(false);
@@ -44,7 +39,7 @@ const InstructorDetail = () => {
 
   const handleSubmit = async (values: any) => {
     try {
-      await sendMessageToInstructor({ receiver: params.id, text: values.text });
+      await sendMessage({ receiver: params.id, text: values.text });
     } catch (err) {
       console.log(err);
     } finally {
