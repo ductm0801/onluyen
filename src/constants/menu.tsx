@@ -55,6 +55,12 @@ export const menus: Record<
       path: "/student/result-detail",
       isShow: true,
     },
+    {
+      label: "Tin nhắn",
+      path: "/student/message",
+      icon: IMAGES.chatIcon,
+      isShow: true,
+    },
   ],
   Instructor: [
     {
@@ -73,6 +79,12 @@ export const menus: Record<
       label: "Khoá học",
       path: "/instructor/course",
       icon: IMAGES.courseIcon,
+      isShow: true,
+    },
+    {
+      label: "Tin nhắn",
+      path: "/instructor/message",
+      icon: IMAGES.chatIcon,
       isShow: true,
     },
   ],

@@ -4,10 +4,11 @@ import FormUpdateLesson from "@/components/FormUpdateLesson";
 import { IMAGES } from "@/constants/images";
 import { ICourse } from "@/models";
 import { useLoading } from "@/providers/loadingProvider";
-import { getCourseDetail } from "@/services";
-import { Image, Tabs, Tooltip } from "antd";
+import { getCourseDetail, publishCourse } from "@/services";
+import { Image, Modal, Tabs, Tooltip } from "antd";
 import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 const lessons = [
   {
@@ -100,10 +101,42 @@ const CourseDetail = () => {
       ),
     },
   ];
+  const handleConfirm = () => {
+    Modal.confirm({
+      title: "Xác nhận công khai khóa học",
+      content: `Bạn có chắc muốn công khai khóa học không? Sau khi công khai sẽ không được sửa khóa học.`,
+      okText: "Xác nhận",
+      cancelText: "Hủy",
+      onOk: async () => {
+        await handlePublishCourse();
+      },
+    });
+    return;
+  };
+
+  const handlePublishCourse = async () => {
+    try {
+      setLoading(true);
+      await publishCourse(params.id);
+      toast.success("Công khai khóa học thành công!");
+    } catch (error: any) {
+      toast.error(error.response.data.message);
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <div>
       <div className="flex items-center justify-between border-b border-[#1244A2] pb-2">
         <p className="text-3xl font-semibold">Chi tiết khóa học</p>
+        {detail.courseStatus === 0 && (
+          <div
+            className="bg-blue-600 text-white text-sm px-3 py-2 rounded-lg font-bold cursor-pointer"
+            onClick={() => handleConfirm()}
+          >
+            Công khai khóa học
+          </div>
+        )}
       </div>
       <Tabs
         defaultActiveKey={tab[0].value.toString()}

@@ -37,4 +37,9 @@ export const IMAGES = {
   instructorDefault: "/assets/instructorDefault.png",
   chatIcon: "/assets/chatIcon.svg",
   examResult: "/assets/examResultIcon.svg",
+  lessonIcon: "/assets/lesson.svg",
+  plusIcon: "/assets/plusIcon.svg",
+  minusIcon: "/assets/minusIcon.svg",
+  defaultAvatar: "/assets/OIP.jpg",
+  sendIcon: "/assets/sendIcon.svg",
 };

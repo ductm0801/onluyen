@@ -240,7 +240,7 @@ const Intro = () => {
                   <p className="text-[#2E90FA] font-bold text-lg">{c.title}</p>
                 </div>
                 <div
-                  className="bg-[#1244A2] text-white rounded-lg text-center py-3"
+                  className="bg-[#1244A2] text-white rounded-lg text-center py-3 cursor-pointer"
                   onClick={() => router.push(`/course/${c.courseId}`)}
                 >
                   Chi tiết khóa học
