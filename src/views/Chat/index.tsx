@@ -3,15 +3,15 @@ import { IMAGES } from "@/constants/images";
 import { db } from "@/firebase/config";
 import { useAuth } from "@/providers/authProvider";
 import { useLoading } from "@/providers/loadingProvider";
-import { getChat, getListChat, sendMessageToInstructor } from "@/services";
-import { Form, message } from "antd";
+import { getChat, getListChat, sendMessage } from "@/services";
+import { Form } from "antd";
 import { collection, onSnapshot } from "firebase/firestore";
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 
 const Chat = () => {
   const [chatList, setchatList] = useState([]);
-
+  const { setLoading } = useLoading();
   const [activeChat, setActiveChat] = useState("");
   const [messages, setMessages] = useState([]);
   const { user } = useAuth();
@@ -24,6 +24,15 @@ const Chat = () => {
       const res = await getListChat();
       if (res) {
         setchatList(res);
+
+        // if (!activeChat && res.length > 0) {
+        //   const firstChat = res[0];
+        //   setActiveChat(
+        //     user?.UserId === firstChat.receiver
+        //       ? firstChat.sender
+        //       : firstChat.receiver
+        //   );
+        // }
       }
     } catch (error) {
       toast.error("Lỗi khi lấy danh sách tin nhắn");
@@ -44,7 +53,7 @@ const Chat = () => {
   };
 
   useEffect(() => {
-    onSnapshot(collection(db, "chats"), (snapshot) => {
+    onSnapshot(collection(db, "chats"), () => {
       fetchChatList();
       fetchChat();
     });
@@ -52,7 +61,7 @@ const Chat = () => {
 
   const handleSubmit = async (values: any) => {
     try {
-      await sendMessageToInstructor({
+      await sendMessage({
         receiver: activeChat,
         text: values.text,
       });
@@ -85,7 +94,12 @@ const Chat = () => {
           </div> */}
           {chatList.map((list: any) => (
             <div
-              className="flex flex-row py-4 px-2 items-center border-b-2 cursor-pointer"
+              className={`${
+                activeChat ===
+                (user?.UserId === list.receiver ? list.sender : list?.receiver)
+                  ? "border-blue-500 bg-blue-50/50"
+                  : ""
+              } flex flex-row py-4 px-2 items-center border-b-2 cursor-pointer`}
               onClick={() =>
                 setActiveChat(
                   user?.UserId === list.receiver ? list.sender : list?.receiver

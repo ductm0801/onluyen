@@ -350,7 +350,7 @@ export const getChat = async (receiver: string | string[]) => {
   });
   return res.data;
 };
-export const sendMessageToInstructor = async (body: any) => {
+export const sendMessage = async (body: any) => {
   const res = await axiosClient.post(`/api/chat/send_chat`, body);
   return res.data;
 };
