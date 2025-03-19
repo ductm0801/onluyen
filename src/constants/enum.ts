@@ -63,3 +63,7 @@ export const renderColorStatus = (status: keyof typeof statusEnum) => {
       return "text-[#d3c718]";
   }
 };
+export const examResultEnum = {
+  1: "Chưa đạt",
+  0: "Đạt",
+};

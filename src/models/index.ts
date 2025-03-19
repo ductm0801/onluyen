@@ -1,6 +1,7 @@
 import {
   difficultyEnum,
   examEnum,
+  examResultEnum,
   pendingExamEnum,
   questionEnum,
   statusEnum,
@@ -187,4 +188,20 @@ export type IInstructor = {
   deletionDate: string;
   deleteBy: string;
   isDeleted: boolean;
+};
+export type IEXamResult = {
+  id: string;
+  examName: string;
+  description: string;
+  freeAttempts: number;
+  price: number;
+  subjectId: string;
+  subjectName: string;
+  testBankId: string;
+  testBankName: string;
+  isDeleted: boolean;
+  hasOngoingAttempt: boolean;
+  latestGrade: number;
+  latestExamResult: keyof typeof examResultEnum;
+  nearestAttemptDate: Date;
 };
