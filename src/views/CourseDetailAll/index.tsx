@@ -34,7 +34,7 @@ const CourseDetail = () => {
   useEffect(() => {
     fetchCourseDetail();
   }, [params.id]);
-  console.log(course);
+
   return (
     <div className="grid grid-cols-3 gap-x-8">
       <div className="flex flex-col gap-4 col-span-2">
@@ -95,9 +95,15 @@ const CourseDetail = () => {
           alt="images"
           className="aspect-[3/2] object-cover rounded-lg"
         />
-        <div className="bg-[#1244A2] text-white rounded-lg text-center py-3 cursor-pointer flex items-center gap-3 justify-center">
-          Vào học <img src={IMAGES.arrowRight} alt="right" />
-        </div>
+        {course?.isJoined ? (
+          <div className="bg-[#1244A2] text-white rounded-lg text-center py-3 cursor-pointer flex items-center gap-3 justify-center">
+            Vào học <img src={IMAGES.arrowRight} alt="right" />
+          </div>
+        ) : (
+          <div className="bg-[#1244A2] text-white rounded-lg text-center py-3 cursor-pointer flex items-center gap-3 justify-center">
+            Đăng ký <img src={IMAGES.arrowRight} alt="right" />
+          </div>
+        )}
       </div>
     </div>
   );

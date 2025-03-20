@@ -8,6 +8,8 @@ import {
   IQuestion,
   IQuestionBank,
   IRegist,
+  IUSer,
+  Subject,
 } from "@/models";
 
 export const login = async (body: ILoginRequest) => {
@@ -17,6 +19,12 @@ export const login = async (body: ILoginRequest) => {
 export const getSubject = async () => {
   const res = await axiosClient.get("/api/subject", {
     params: { isSortByCourse: false },
+  });
+  return res.data;
+};
+export const getSubjectPaging = async (pageIndex: number, pageSize: number) => {
+  const res = await axiosClient.get("/api/subject/paging", {
+    params: { pageIndex, pageSize },
   });
   return res.data;
 };
@@ -444,5 +452,17 @@ export const getListChat = async () => {
 };
 export const getInstructorDetail = async (id: string | string[]) => {
   const res = await axiosClient.get(`/api/instructors/${id}`);
+  return res.data;
+};
+export const getUserProfile = async () => {
+  const res = await axiosClient.get(`/api/users/get_user`);
+  return res.data;
+};
+export const updateUserProfile = async (body: IUSer) => {
+  const res = await axiosClient.put(`/api/users/update_user`, body);
+  return res.data;
+};
+export const updateSubject = async (body: Subject, id: string) => {
+  const res = await axiosClient.put(`/api/subject/${id}`, body);
   return res.data;
 };

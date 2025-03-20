@@ -1,8 +1,10 @@
 "use client";
+import ModalUpdateSubject from "@/components/ModalUpdateSubject";
+import Paging from "@/components/Paging";
 import { Subject } from "@/models";
 import { useLoading } from "@/providers/loadingProvider";
-import { getSubject } from "@/services";
-import { useEffect, useState } from "react";
+import { getSubject, getSubjectPaging } from "@/services";
+import { useEffect, useRef, useState } from "react";
 
 const cols = [
   {
@@ -25,13 +27,28 @@ const cols = [
 const Course = () => {
   const [courses, setCourses] = useState<Subject[]>([]);
   const { setLoading } = useLoading();
-
+  const [edit, setEdit] = useState(false);
+  const detail = useRef<Subject | null>(null);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalItems, setTotalItems] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
+  const [pageSize, setPageSize] = useState(5);
+  const handleOpenEdit = (item: Subject) => {
+    setEdit(true);
+    detail.current = item;
+  };
+  const handleCloseEdit = () => {
+    setEdit(false);
+    detail.current = null;
+  };
   const fetchCourse = async () => {
     try {
       setLoading(true);
 
-      const response = await getSubject();
-      if (response) setCourses(response.data);
+      const response = await getSubjectPaging(currentPage, pageSize);
+      if (response) setCourses(response.data.items);
+      setTotalItems(response.data.totalItemsCount);
+      setTotalPages(response.data.totalPageCount);
     } catch (error) {
       setLoading(false);
       console.error("Error:", error);
@@ -41,7 +58,7 @@ const Course = () => {
   };
   useEffect(() => {
     fetchCourse();
-  }, []);
+  }, [currentPage]);
 
   return (
     <div className="relative overflow-x-auto">
@@ -61,15 +78,16 @@ const Course = () => {
               <tr className="bg-white dark:bg-gray-800" key={courses.id}>
                 <th
                   scope="row"
-                  className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                  className="px-6 py-4 font-medium text-gray-900 flex items-center gap-2 whitespace-nowrap dark:text-white"
                 >
-                  {courses.subjectName}
+                  <img src={courses.imageUrl} alt="img" /> {courses.subjectName}
                 </th>
                 <td className="px-6 py-4">{courses.subjectDescription}</td>
                 <td className="flex items-center px-6 py-4">
                   <a
                     href="#"
                     className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                    onClick={() => handleOpenEdit(courses)}
                   >
                     Sửa
                   </a>
@@ -84,6 +102,20 @@ const Course = () => {
             ))}
         </tbody>
       </table>
+      <Paging
+        currentPage={currentPage}
+        pageSize={pageSize}
+        setCurrentPage={setCurrentPage}
+        totalItems={totalItems}
+        totalPages={totalPages}
+      />
+      {edit && (
+        <ModalUpdateSubject
+          data={detail.current}
+          onClose={handleCloseEdit}
+          fetchCourse={fetchCourse}
+        />
+      )}
     </div>
   );
 };
