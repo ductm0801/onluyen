@@ -19,10 +19,31 @@ export type User = {
   Role: string;
   Gender: string;
   exp: number;
+  imageUrl: string;
+};
+export type IUSer = {
+  fullName: string;
+  dateOfBirth: string;
+  address: string;
+  email: string;
+  phoneNumber: number;
+  role: number;
+  imageUrl: string;
+  gender: string;
+  status: number;
+  id: string;
+  creationDate: Date;
+  createdBy: Date;
+  modificationDate: Date;
+  modificationBy: string;
+  deletionDate: Date;
+  deleteBy: string;
+  isDeleted: boolean;
 };
 export type Subject = {
   id: string;
   subjectName: string;
+  imageUrl: string;
   subjectDescription: string;
 };
 
@@ -127,6 +148,7 @@ export type ICourse = {
   subjectId: string;
   subjectName: string;
   imageUrl: string;
+  isJoined: boolean;
   coursePrice: number;
   courseStatus: keyof typeof courseStatusEnum;
   instructorId: string;

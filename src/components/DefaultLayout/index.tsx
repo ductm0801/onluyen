@@ -1,7 +1,7 @@
 "use client";
 import { IMAGES } from "@/constants/images";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import Nav from "../Nav";
 import { menus } from "@/constants/menu";
@@ -23,6 +23,7 @@ const DefaultLayout: React.FC<props> = ({ children }) => {
   const { user, logout } = useAuth();
   const [open, setOpen] = useState(false);
   const { theme, toggleTheme } = useTheme();
+  const router = useRouter();
 
   const toggleDropDown = () => {
     setOpen(!open);
@@ -161,7 +162,10 @@ const DefaultLayout: React.FC<props> = ({ children }) => {
                           } transition-all overflow-hidden min-w-[150px] duration-300 ease-in-out absolute top-10 right-0 w-full`}
                         >
                           <div className="flex flex-col gap-1 bg-white rounded-xl p-2">
-                            <button className="bg-white rounded-[10px] border border-gray-300 py-2 text-black w-full flex items-center justify-center cursor-pointer">
+                            <button
+                              className="bg-white rounded-[10px] border border-gray-300 py-2 text-black w-full flex items-center justify-center cursor-pointer"
+                              onClick={() => router.push("/profile")}
+                            >
                               Hồ sơ
                             </button>
 

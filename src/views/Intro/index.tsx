@@ -149,7 +149,7 @@ const Intro = () => {
                 } transition-all overflow-hidden min-w-[150px] duration-300 ease-in-out absolute top-10 right-0 w-full rounded-xl shadow-lg `}
               >
                 <div className="flex flex-col gap-1 bg-white  p-2">
-                  <button className="bg-white rounded-[10px] border border-gray-300 py-2 text-black w-full flex items-center justify-center cursor-pointer">
+                  <button className="bg-white rounded-[10px] border border-gray-300 py-2 text-black w-full flex items-center justify-center cursor-pointer" onClick={() => router.push('/profile')}>
                     Hồ sơ
                   </button>
 
