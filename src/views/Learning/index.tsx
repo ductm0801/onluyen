@@ -7,6 +7,7 @@ import "plyr-react/plyr.css";
 import dynamic from "next/dynamic";
 import { useParams } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
+import Paging from "@/components/Paging";
 const VideoPlayer = dynamic(() => import("@/components/VideoPlayer"), {
   ssr: false,
 });
@@ -16,7 +17,7 @@ const Learning = () => {
   const params = useParams();
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(100);
   const [totalItems, setTotalItems] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const videoPlayerRef = useRef<any>(null);
@@ -90,6 +91,51 @@ const Learning = () => {
               </div>
             </div>
           </li>
+          <ul className="flex justify-end items-center  text-sm h-8">
+            <li>
+              <button
+                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 0))}
+                disabled={currentPage === 0}
+                className={`flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-s-lg 
+    ${
+      currentPage === 0
+        ? "opacity-50 cursor-not-allowed"
+        : "hover:bg-gray-100 hover:text-gray-700"
+    } dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white`}
+              >
+                Trang trước
+              </button>
+            </li>
+
+            <li>
+              <div
+                className={`flex items-center justify-center px-3 h-8 leading-tight border 
+     
+           !text-blue-600 !border-blue-300 !bg-blue-50
+     
+       dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white`}
+              >
+                {currentPage + 1}
+              </div>
+            </li>
+
+            <li>
+              <button
+                onClick={() =>
+                  setCurrentPage((prev) => Math.min(prev + 1, totalPages - 1))
+                }
+                disabled={currentPage >= totalPages - 1}
+                className={`flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg 
+    ${
+      currentPage >= totalPages - 1
+        ? "opacity-50 cursor-not-allowed"
+        : "hover:bg-gray-100 hover:text-gray-700"
+    } dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white`}
+              >
+                Trang sau
+              </button>
+            </li>
+          </ul>
         </ul>
       </div>
 
