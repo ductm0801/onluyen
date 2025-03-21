@@ -89,7 +89,7 @@ const StudentResult = () => {
   useEffect(() => {
     fetchResultDetail();
   }, [detail.current]);
-  console.log(resultDetail);
+
   return (
     <div>
       <div className="flex items-center justify-end gap-2">
@@ -195,7 +195,11 @@ const StudentResult = () => {
               <div key={index} className="border-b p-4 mb-4">
                 <p className="flex items-center justify-between">
                   Điểm thi lần {index + 1}:{" "}
-                  <span className="font-bold ">
+                  <span
+                    className={`font-bold ${
+                      item.isPass ? "text-[#F04438]" : "text-[#17B26A]"
+                    } `}
+                  >
                     {Math.round(item.grade)} /{item.testTotalGrade} điểm
                   </span>
                 </p>

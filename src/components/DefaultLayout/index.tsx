@@ -31,7 +31,6 @@ const DefaultLayout: React.FC<props> = ({ children }) => {
   const [openChat, setOpenChat] = useState(false);
   const [messages, setMessages] = useState<any[]>([]);
   const params = useParams();
-  console.log(pathName);
   const [form] = Form.useForm();
 
   const { setLoading } = useLoading();
