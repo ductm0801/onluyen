@@ -2,7 +2,7 @@
 import { IExam } from "@/models";
 import { useLoading } from "@/providers/loadingProvider";
 import { getExamDetail, updateTestStatus } from "@/services";
-import { Form, Input, Select, Tabs } from "antd";
+import { Form, Input, Modal, Select, Tabs } from "antd";
 import TabPane from "antd/es/tabs/TabPane";
 import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
@@ -10,12 +10,24 @@ import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import FormUpdateInfo from "./FormUpdateInfo";
 import FormUpdateExam from "./FormUpdateExam";
-const testStatus = [
-  { label: "Bản Nháp", value: 0 },
-  { label: "Chờ duyệt", value: 1 },
-  { label: "Đã Duyệt", value: 2 },
-  { label: "Từ chối", value: 3 },
-];
+import { pendingExamEnum } from "@/constants/enum";
+
+export const renderBgColorStatus = (status: keyof typeof pendingExamEnum) => {
+  switch (status) {
+    case 1:
+      return "from-orange-600 to-orange-300";
+    case 2:
+      return "from-emerald-600 to-emerald-400";
+    case 4:
+      return "from-red-600 to-red-300";
+    case 3:
+      return "from-emerald-600 to-teal-400";
+    case 0:
+      return "from-slate-600 to-slate-300";
+    default:
+      return "from-emerald-500 to-teal-400";
+  }
+};
 
 const ExamDetail = () => {
   const [exam, setExam] = useState<IExam>();
@@ -40,10 +52,10 @@ const ExamDetail = () => {
   useEffect(() => {
     fetchExam();
   }, [params.id]);
-  const onChangeStatus = async (status: any) => {
+  const onChangeStatus = async () => {
     try {
       setLoading(true);
-      const res = await updateTestStatus({ status: status }, params.id);
+      const res = await updateTestStatus({ status: 1 }, params.id);
       if (res) {
         toast.success(res.message);
         fetchExam();
@@ -69,16 +81,44 @@ const ExamDetail = () => {
     },
   ];
 
-  //   const renderTab = () => {};
+  const handleConfirm = () => {
+    Modal.confirm({
+      title: "Xác nhận Chuyển Trạng thái Chờ Duyệt",
+      content: `Bạn có chắc chắn muốn chuyển trạng thái sang Chờ Duyệt? Khi đã chuyển, bạn sẽ không thể chỉnh sửa bài kiểm tra nữa.`,
+      okText: "Xác nhận",
+      cancelText: "Hủy",
+      onOk: async () => {
+        await onChangeStatus();
+      },
+    });
+    return;
+  };
+
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex items-center gap-4">
+      <div className="flex items-end gap-4">
         <h1 className="text-4xl font-bold">{exam?.testName}</h1>
-        <Select
-          options={testStatus}
-          value={exam?.testApprovalStatus}
-          onChange={(value) => onChangeStatus(value)}
-        />
+        <div
+          className={`bg-gradient-to-br px-3 rounded-xl text-xs py-2 ${renderBgColorStatus(
+            exam?.testApprovalStatus ?? 0
+          )}`}
+        >
+          <p className={`font-bold uppercase text-white`}>
+            {
+              pendingExamEnum[
+                exam?.testApprovalStatus as keyof typeof pendingExamEnum
+              ]
+            }
+          </p>
+        </div>
+        {exam?.testApprovalStatus === 0 && (
+          <div
+            className="bg-blue-600 ml-auto text-white text-sm px-3 py-2 rounded-lg font-bold cursor-pointer"
+            onClick={() => handleConfirm()}
+          >
+            Chuyển sang chờ duyệt
+          </div>
+        )}
       </div>
       <Tabs
         defaultActiveKey={tab[0].value.toString()}

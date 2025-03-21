@@ -28,7 +28,9 @@ export const pendingExamEnum = {
   1: "Chờ duyệt",
   2: "Đã Duyệt ",
   3: "Từ chối ",
+  4: "Thu hồi",
 };
+
 export const courseStatusEnum = {
   0: "Bản nháp",
   1: "Công khai",

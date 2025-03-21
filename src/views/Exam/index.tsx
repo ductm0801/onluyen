@@ -21,11 +21,7 @@ const cols = [
     className:
       "px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white",
   },
-  {
-    name: "Loại Đề",
-    className:
-      "px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white",
-  },
+
   {
     name: "Mô tả",
     className:
@@ -157,7 +153,7 @@ const Exam = () => {
                     <div className="text-base font-semibold">{a.testName}</div>
                   </th>
                   <td className="px-6 py-4">{a.length} phút</td>
-                  <td className="px-6 py-4">{examEnum[a.testType]}</td>
+                  {/* <td className="px-6 py-4">{examEnum[a.testType]}</td> */}
                   <td className="px-6 py-4">{a.description}</td>
                   <td className="px-6 py-4">{a.totalGrade}</td>
                   <td className="px-6 py-4 flex items-center">

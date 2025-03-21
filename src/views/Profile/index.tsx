@@ -17,8 +17,9 @@ const options = [
 const Profile = () => {
   const [user, setUser] = useState<IUSer>();
   const { isLoading, setLoading } = useLoading();
-
+  const { setUpdate } = useAuth();
   const [form] = Form.useForm();
+
   const [imageUrl, setImageUrl] = useState<
     | {
         uid: string;
@@ -77,7 +78,8 @@ const Profile = () => {
 
       setImageUrl(initialImg);
     }
-  }, []);
+  }, [user]);
+
   const onFinish = async (values: IUSer) => {
     try {
       setLoading(true);
@@ -89,6 +91,7 @@ const Profile = () => {
         ),
       });
       toast.success("Cập nhật thông tin thành công!");
+      setUpdate((prev) => !prev);
     } catch (error: any) {
       setLoading(false);
       toast.error(error.response.data.message);

@@ -108,7 +108,11 @@ const Chat = () => {
             >
               <div className="w-1/4">
                 <img
-                  src={IMAGES.defaultAvatar}
+                  src={
+                    user?.UserId === list.receiver
+                      ? list.senderImageUrl || IMAGES.defaultAvatar
+                      : list?.receiverImageUrl || IMAGES.defaultAvatar
+                  }
                   className="object-cover h-12 w-12 rounded-full"
                   alt=""
                 />
@@ -134,7 +138,7 @@ const Chat = () => {
                     {m?.text}
                   </div>
                   <img
-                    src={IMAGES.defaultAvatar}
+                    src={m.senderImageUrl || IMAGES.defaultAvatar}
                     className="object-cover h-8 w-8 rounded-full"
                     alt=""
                   />
@@ -142,7 +146,7 @@ const Chat = () => {
               ) : (
                 <div className="flex justify-start mb-4">
                   <img
-                    src={IMAGES.defaultAvatar}
+                    src={m.senderImageUrl || IMAGES.defaultAvatar}
                     className="object-cover h-8 w-8 rounded-full"
                     alt=""
                   />

@@ -13,14 +13,6 @@ export type ILoginRequest = {
   password: string;
 };
 
-export type User = {
-  UserId: string;
-  FullName: string;
-  Role: string;
-  Gender: string;
-  exp: number;
-  imageUrl: string;
-};
 export type IUSer = {
   fullName: string;
   dateOfBirth: string;
@@ -40,6 +32,16 @@ export type IUSer = {
   deleteBy: string;
   isDeleted: boolean;
 };
+
+export type User = IUSer & {
+  UserId: string;
+  FullName: string;
+  Role: string;
+  Gender: string;
+  exp: number;
+  imageUrl: string;
+};
+
 export type Subject = {
   id: string;
   subjectName: string;

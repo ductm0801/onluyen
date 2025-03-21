@@ -19,6 +19,7 @@ const Login = () => {
   const [isRegist, setIsRegist] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const { setLoading } = useLoading();
+
   const handleSubmit = async (values: ILoginRequest) => {
     try {
       setLoading(true);
@@ -26,6 +27,8 @@ const Login = () => {
       if (res) {
         toast.success("Đăng nhập thành công!");
         localStorage.setItem("token", res.data);
+
+        window.dispatchEvent(new Event("storage"));
         const decoded: User = jwtDecode(res.data);
         setUser(decoded);
         const role = decoded.Role as keyof typeof menus;

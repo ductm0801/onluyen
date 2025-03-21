@@ -9,6 +9,7 @@ import { useAuth } from "@/providers/authProvider";
 import { useTheme } from "@/providers/themeProvider";
 import { Moon, Sun } from "lucide-react";
 import path from "path";
+import { Avatar } from "antd";
 
 type props = {
   children: React.ReactNode;
@@ -23,6 +24,7 @@ const DefaultLayout: React.FC<props> = ({ children }) => {
   const { user, logout } = useAuth();
   const [open, setOpen] = useState(false);
   const { theme, toggleTheme } = useTheme();
+
   const router = useRouter();
 
   const toggleDropDown = () => {
@@ -138,24 +140,18 @@ const DefaultLayout: React.FC<props> = ({ children }) => {
                     </div>
                     {user ? (
                       <div className="flex flex-row gap-[8px] items-center relative group cursor-pointer">
-                        <div>
-                          <div
-                            className="font-semibold text-white text-lg"
-                            onClick={() => toggleDropDown()}
-                          >
-                            {user?.FullName}
-                          </div>
-                          {/* {user?.avatar ? (
-     <Avatar
-       className="border-2 border-white w-[38px] h-[38px]"
-       src={user?.avatar}
-     />
-   ) : (
-     <Avatar className="border-2 border-white w-[36px] h-[36px]">
-       {user?.username?.charAt(0).toUpperCase()}
-     </Avatar>
-   )} */}
+                        <div
+                          className="font-semibold text-white text-lg"
+                          onClick={() => toggleDropDown()}
+                        >
+                          {user?.fullName}
                         </div>
+
+                        <Avatar
+                          className="border-2 border-white w-[38px] h-[38px]"
+                          src={user?.imageUrl || IMAGES.defaultAvatar}
+                        />
+
                         <div
                           className={`${
                             open ? "max-h-[300px]" : "max-h-0"
