@@ -6,11 +6,11 @@ import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 const { TextArea } = Input;
 
-export const examOptions = [
-  { value: 0, label: "Trắc nghiệm" },
-  { value: 1, label: "Tự luận" },
-  { value: 2, label: "Tổng hợp" },
-];
+// export const examOptions = [
+//   { value: 0, label: "Trắc nghiệm" },
+//   { value: 1, label: "Tự luận" },
+//   { value: 2, label: "Tổng hợp" },
+// ];
 
 const FormUpdateInfo = ({
   exam,
@@ -105,7 +105,7 @@ const FormUpdateInfo = ({
         >
           <Input size="large" min={10} type="number" addonAfter="Điểm" />
         </Form.Item>
-        <Form.Item
+        {/* <Form.Item
           name="testType"
           label="Dạng đề"
           labelCol={{ span: 24 }}
@@ -117,7 +117,7 @@ const FormUpdateInfo = ({
           ]}
         >
           <Select size="large" options={examOptions} />
-        </Form.Item>
+        </Form.Item> */}
         <Form.Item
           name="testBankId"
           label="Ngân hàng đề"

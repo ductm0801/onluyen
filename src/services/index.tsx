@@ -466,3 +466,7 @@ export const updateSubject = async (body: Subject, id: string) => {
   const res = await axiosClient.put(`/api/subject/${id}`, body);
   return res.data;
 };
+export const paymentCourse = async (body: any) => {
+  const res = await axiosClient.post(`/create_course_payment_link`, body);
+  return res.data;
+};

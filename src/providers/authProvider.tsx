@@ -1,21 +1,23 @@
 "use client";
 
+import { User } from "@/models";
+import { getUserProfile } from "@/services";
 import { jwtDecode } from "jwt-decode";
 import { useRouter } from "next/navigation";
-import { createContext, useContext, useEffect, useState } from "react";
+import {
+  createContext,
+  Dispatch,
+  SetStateAction,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { toast } from "react-toastify";
-
-interface User {
-  UserId: string;
-  FullName: string;
-  Role: string;
-  Gender: string;
-  exp: number;
-}
 
 interface AuthContextType {
   user: User | null;
   setUser: (user: User | null) => void;
+  setUpdate: Dispatch<SetStateAction<boolean>>;
   logout: () => void;
 }
 
@@ -23,12 +25,15 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [update, setUpdate] = useState(false);
+
   const router = useRouter();
 
   useEffect(() => {
-    const checkToken = () => {
+    const checkToken = async () => {
       const token = localStorage.getItem("token");
       if (!token) {
+        setUser(null);
         // router.replace("/login");
         return;
       }
@@ -42,9 +47,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           localStorage.removeItem("token");
           setUser(null);
           router.replace("/login");
-        } else {
-          setUser(decoded);
+          return;
         }
+
+        // Lấy thông tin người dùng từ API
+        const newData = await getUserProfile();
+        setUser({ ...decoded, ...newData.data }); // Cập nhật đúng
       } catch (error) {
         console.error("Lỗi khi giải mã token:", error);
         localStorage.removeItem("token");
@@ -55,9 +63,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     checkToken();
 
-    window.addEventListener("storage", checkToken);
-    return () => window.removeEventListener("storage", checkToken);
-  }, [router]);
+    // Lắng nghe thay đổi trong localStorage (khi token thay đổi)
+    const handleStorageChange = () => {
+      checkToken();
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+    return () => window.removeEventListener("storage", handleStorageChange);
+  }, [router, update]);
 
   const logout = () => {
     localStorage.removeItem("token");
@@ -66,7 +79,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, setUser, logout }}>
+    <AuthContext.Provider value={{ setUpdate, user, setUser, logout }}>
       {children}
     </AuthContext.Provider>
   );
