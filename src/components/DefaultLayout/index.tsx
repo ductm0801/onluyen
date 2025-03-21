@@ -189,7 +189,7 @@ const DefaultLayout: React.FC<props> = ({ children }) => {
           className={
             pathName === "/login" || pathName === "/"
               ? ""
-              : "max-w-[1020px] py-8 mx-auto overflow-visible"
+              : "xl:max-w-[70vw] xl:px-0 px-4 py-8 mx-auto overflow-visible"
           }
         >
           {children}

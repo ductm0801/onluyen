@@ -121,7 +121,10 @@ const CourseDetail = () => {
           className="aspect-[3/2] object-cover rounded-lg"
         />
         {course?.isJoined ? (
-          <div className="bg-[#1244A2] text-white rounded-lg text-center py-3 cursor-pointer flex items-center gap-3 justify-center">
+          <div
+            className="bg-[#1244A2] text-white rounded-lg text-center py-3 cursor-pointer flex items-center gap-3 justify-center"
+            onClick={() => router.push(`/student/learning/${course?.courseId}`)}
+          >
             Vào học <img src={IMAGES.arrowRight} alt="right" />
           </div>
         ) : (

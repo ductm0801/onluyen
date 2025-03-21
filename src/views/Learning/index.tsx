@@ -1,18 +1,48 @@
-import React from "react";
+"use client";
+import { IMAGES } from "@/constants/images";
+import { ICourse, ILesson } from "@/models";
+import { useLoading } from "@/providers/loadingProvider";
+import { getCourseDetail } from "@/services";
+import { useParams } from "next/navigation";
+import React, { useEffect, useState } from "react";
 
 const Learning = () => {
+  const [course, setCourse] = useState<ICourse>();
+  const params = useParams();
+  const [activeLesson, setActiveLesson] = useState<ILesson | undefined>(
+    undefined
+  );
+
+  const { setLoading } = useLoading();
+  const fetchCourseDetail = async () => {
+    try {
+      setLoading(true);
+      const res = await getCourseDetail(params.id, 0, 100);
+      if (res) {
+        setCourse(res.data);
+        setActiveLesson(res.data.lessons.items[0]);
+      }
+    } catch (err) {
+      setLoading(false);
+    } finally {
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
+    fetchCourseDetail();
+  }, [params.id]);
   return (
-    <div className="grid grid-cols-1 xl:grid-cols-12 gap-30px">
+    <div className="grid grid-cols-1 xl:grid-cols-12 gap-[30px]">
       <div
         className="xl:col-start-1 xl:col-span-4 aos-init aos-animate"
         data-aos="fade-up"
       >
         <ul className="accordion-container curriculum">
-          <li className="accordion mb-25px overflow-hidden">
+          <li className="accordion mb-[25px] overflow-hidden">
             <div className="bg-whiteColor border border-borderColor dark:bg-whiteColor-dark dark:border-borderColor-dark rounded-t-md">
               <div>
-                <button className="accordion-controller flex justify-between items-center text-xl text-headingColor font-bold w-full px-5 py-18px dark:text-headingColor-dark font-hind leading-[20px]">
-                  <span>Lesson #01</span>
+                <button className="accordion-controller flex justify-between items-center text-xl text-headingColor font-bold w-full px-5 py-[18px] dark:text-headingColor-dark font-hind leading-[20px]">
+                  <span>{course?.title}</span>
                   <svg
                     className="transition-all duration-500 rotate-0"
                     width="20"
@@ -29,97 +59,31 @@ const Learning = () => {
               </div>
 
               <div className="accordion-content transition-all duration-500">
-                <div className="content-wrapper p-10px md:px-30px">
-                  <ul>
-                    <li className="py-4 flex items-center justify-between flex-wrap border-b border-borderColor dark:border-borderColor-dark">
+                <ul>
+                  {course?.lessons.items.map((item, index) => (
+                    <li
+                      className={`py-4 flex items-center justify-between flex-wrap p-[10px] md:px-[30px] ${
+                        course?.lessons.items.length - 1 === index
+                          ? ""
+                          : "border-b"
+                      } ${
+                        activeLesson?.lessonId === item.lessonId
+                          ? "bg-blue-50/50 text-blue-600 hover:text-blue600"
+                          : ""
+                      }`}
+                      key={item.courseId}
+                    >
                       <div>
-                        <h4 className="text-blackColor dark:text-blackColor-dark leading-1 font-light">
-                          <i className="icofont-video-alt mr-10px"></i>
-                          <a
-                            href="lesson.html"
-                            className="font-medium text-contentColor dark:text-contentColor-dark hover:text-primaryColor dark:hover;text-primaryColor"
-                          >
-                            Course Intro
-                          </a>
-                        </h4>
-                      </div>
-                      <div className="text-blackColor dark:text-blackColor-dark text-sm flex items-center">
-                        <p className="font-semibold">3.27</p>
-                        <a
-                          href="lesson.html"
-                          className="bg-primaryColor text-whiteColor text-sm ml-5 rounded py-0.5"
-                        >
-                          <p className="px-10px">
-                            <i className="icofont-eye"></i> Preview
+                        <h4 className="text-blackColor flex items-center gap-4 dark:text-blackColor-dark leading-1 font-light">
+                          <img src={IMAGES.lessonIcon} alt="icon" />
+                          <p className="font-medium text-contentColor dark:text-contentColor-dark hover:text-primaryColor dark:hover;text-primaryColor">
+                            {item.title}
                           </p>
-                        </a>
-                      </div>
-                    </li>
-                    <li className="py-4 flex items-center justify-between flex-wrap border-b border-borderColor dark:border-borderColor-dark">
-                      <div>
-                        <h4 className="text-blackColor dark:text-blackColor-dark leading-1 font-light">
-                          <i className="icofont-video-alt mr-10px"></i>
-                          <a
-                            href="lesson-2.html"
-                            className="font-medium text-contentColor dark:text-contentColor-dark hover:text-primaryColor dark:hover;text-primaryColor"
-                          >
-                            Course Outline
-                          </a>
-                        </h4>
-                      </div>
-                      <div className="text-blackColor dark:text-blackColor-dark text-sm flex items-center">
-                        <p className="font-semibold">5.00</p>
-                        <a
-                          href="lesson.html"
-                          className="bg-primaryColor text-whiteColor text-sm ml-5 rounded py-0.5"
-                        >
-                          <p className="px-10px">
-                            <i className="icofont-eye"></i> Preview
-                          </p>
-                        </a>
-                      </div>
-                    </li>
-                    <li className="py-4 flex items-center justify-between flex-wrap border-b border-borderColor dark:border-borderColor-dark">
-                      <div>
-                        <h4 className="text-blackColor dark:text-blackColor-dark leading-1 font-light">
-                          <i className="icofont-file-text mr-10px"></i>
-                          <a
-                            href="lesson-course-materials.html"
-                            className="font-medium text-contentColor dark:text-contentColor-dark hover:text-primaryColor dark:hover;text-primaryColor"
-                          >
-                            Course Materials
-                          </a>
                         </h4>
                       </div>
                     </li>
-                    <li className="py-4 flex items-center justify-between flex-wrap border-b border-borderColor dark:border-borderColor-dark">
-                      <div>
-                        <h4 className="text-blackColor dark:text-blackColor-dark leading-1 font-light">
-                          <i className="icofont-audio mr-10px"></i>
-                          <a
-                            href="lesson-quiz.html"
-                            className="font-medium text-contentColor dark:text-contentColor-dark hover:text-primaryColor dark:hover;text-primaryColor"
-                          >
-                            Summer Quiz
-                          </a>
-                        </h4>
-                      </div>
-                    </li>
-                    <li className="py-4 flex items-center justify-between flex-wrap">
-                      <div>
-                        <h4 className="text-blackColor dark:text-blackColor-dark leading-1 font-light">
-                          <i className="icofont-file-text mr-10px"></i>
-                          <a
-                            href="lesson-assignment.html"
-                            className="font-medium text-contentColor dark:text-contentColor-dark hover:text-primaryColor dark:hover;text-primaryColor"
-                          >
-                            Assignment
-                          </a>
-                        </h4>
-                      </div>
-                    </li>
-                  </ul>
-                </div>
+                  ))}
+                </ul>
               </div>
             </div>
           </li>
@@ -131,7 +95,7 @@ const Learning = () => {
         data-aos="fade-up"
       >
         <div>
-          <div className="absolute top-0 left-0 w-full flex justify-between items-center px-5 py-10px bg-primaryColor leading-1.2 text-whiteColor">
+          <div className="absolute top-0 left-0 w-full flex justify-between items-center px-5 py-[10px] bg-primaryColor leading-1.2 text-whiteColor">
             <h3 className="sm:text-size-22 font-bold">
               Video Content lesson 01
             </h3>
@@ -139,9 +103,9 @@ const Learning = () => {
               Close
             </a>
           </div>
-          <div className="aspect-[16/9]">
+          <div className="aspect-video">
             <iframe
-              src="https://www.youtube.com/embed/vHdclsdkp28"
+              src={activeLesson?.videoUrl}
               allowFullScreen
               allow="autoplay"
               className="w-full h-full"
