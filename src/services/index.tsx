@@ -301,8 +301,14 @@ export const getCourseByInstructor = async (
   return res.data;
 };
 
-export const getCourseDetail = async (id: string | string[]) => {
-  const res = await axiosClient.get(`/api/courses/guest/${id}`);
+export const getCourseDetail = async (
+  id: string | string[],
+  pageIndex: number,
+  pageSize: number
+) => {
+  const res = await axiosClient.get(`/api/courses/guest/${id}`, {
+    params: { pageIndex, pageSize },
+  });
   return res.data;
 };
 export const getQuestionNotInExam = async (

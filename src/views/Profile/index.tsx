@@ -100,8 +100,13 @@ const Profile = () => {
     }
   };
   return (
-    <Form form={form} initialValues={user} onFinish={onFinish}>
-      <div className="grid grid-cols-2 gap-x-8">
+    <Form
+      form={form}
+      initialValues={user}
+      onFinish={onFinish}
+      className="max-w-screen-sm"
+    >
+      <div className="grid grid-cols-2 gap-x-8 ">
         <Form.Item
           label="Hình ảnh"
           name="imageUrl"

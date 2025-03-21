@@ -61,6 +61,12 @@ export const menus: Record<
       icon: IMAGES.chatIcon,
       isShow: true,
     },
+    {
+      label: "học",
+      path: "/student/learning",
+      icon: IMAGES.chatIcon,
+      isShow: false,
+    },
   ],
   Instructor: [
     {
