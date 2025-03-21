@@ -476,3 +476,13 @@ export const paymentCourse = async (body: any) => {
   const res = await axiosClient.post(`/create_course_payment_link`, body);
   return res.data;
 };
+export const getHistoryExamDetail = async (
+  id: string,
+  pageIndex: number,
+  pageSize: number
+) => {
+  const res = await axiosClient.get(`/api/exam/studentExamResult/${id}`, {
+    params: { pageIndex, pageSize },
+  });
+  return res.data;
+};

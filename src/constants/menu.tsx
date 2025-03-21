@@ -1,7 +1,7 @@
 import { IMAGES } from "./images";
 
 export const menus: Record<
-  "Admin" | "Student" | "Instructor" | "ExamManager",
+  "Admin" | "Student" | "Instructor" | "ExamManager" | "Consultant",
   { label: string; path: string; icon: string; isShow: boolean }[]
 > = {
   Admin: [
@@ -62,7 +62,7 @@ export const menus: Record<
       isShow: true,
     },
     {
-      label: "học",
+      label: "Tự học",
       path: "/student/learning",
       icon: IMAGES.chatIcon,
       isShow: false,
@@ -111,6 +111,14 @@ export const menus: Record<
       label: "Đề Chờ duyệt",
       path: "/exammanager/pending-test",
       icon: IMAGES.pendingExam,
+      isShow: true,
+    },
+  ],
+  Consultant: [
+    {
+      label: "Tin nhắn",
+      path: "/consultant/message",
+      icon: IMAGES.chatIcon,
       isShow: true,
     },
   ],

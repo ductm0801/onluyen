@@ -43,4 +43,6 @@ export const IMAGES = {
   defaultAvatar: "/assets/OIP.jpg",
   sendIcon: "/assets/sendIcon.svg",
   priceIcon: "/assets/priceIcon.svg",
+  passIcon: "/assets/passIcon.svg",
+  notPassIcon: "/assets/notPassIcon.svg",
 };
