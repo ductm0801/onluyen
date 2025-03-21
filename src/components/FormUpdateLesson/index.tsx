@@ -4,12 +4,26 @@ import React, { useRef, useState } from "react";
 import ModalCreateLesson from "../ModalCreateLesson";
 import { ICourse, ILesson } from "@/models";
 import ModalUpdateLesson from "../ModalUpdateLesson";
+import Paging from "../Paging";
 type props = {
   lessons: any[];
   fetchCourseDetail: () => Promise<void>;
+  currentPage: number;
+  pageSize: number;
+  totalItems: number;
+  totalPages: number;
+  setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
 };
 
-const FormUpdateLesson: React.FC<props> = ({ lessons, fetchCourseDetail }) => {
+const FormUpdateLesson: React.FC<props> = ({
+  lessons,
+  fetchCourseDetail,
+  currentPage,
+  pageSize,
+  setCurrentPage,
+  totalItems,
+  totalPages,
+}) => {
   const [create, setCreate] = useState(false);
   const [update, setUpdate] = useState(false);
   const detail = useRef<ILesson | null>();
@@ -66,6 +80,13 @@ const FormUpdateLesson: React.FC<props> = ({ lessons, fetchCourseDetail }) => {
             </div>
           </div>
         ))}
+        <Paging
+          currentPage={currentPage}
+          pageSize={pageSize}
+          setCurrentPage={setCurrentPage}
+          totalItems={totalItems}
+          totalPages={totalPages}
+        />
       </div>
       {create && (
         <ModalCreateLesson

@@ -23,7 +23,7 @@ const CourseDetail = () => {
   const fetchCourseDetail = async () => {
     try {
       setLoading(true);
-      const res = await getCourseDetail(params.id);
+      const res = await getCourseDetail(params.id, currentPage, pageSize);
       if (res) {
         setCourse(res.data);
         setTotalItems(res.data.lessons.totalItemsCount);

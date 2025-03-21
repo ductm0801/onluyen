@@ -156,7 +156,7 @@ const InstructorDetail = () => {
       </div>
 
       {open ? (
-        <div className="w-[400px] aspect-[3/2] flex flex-col rounded-t-lg bg-white border fixed bottom-0 right-10 ">
+        <div className="w-[400px] aspect-[3/2] flex flex-col rounded-t-lg bg-white border z-50 fixed bottom-0 right-10 ">
           <div className="flex justify-between items-center p-4 border-b bg-blue-600 text-white rounded-t-lg">
             <div>Đặt câu hỏi cho</div>
             <div onClick={() => setOpen(false)} className="cursor-pointer">

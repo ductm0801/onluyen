@@ -229,6 +229,7 @@ export type IEXamResult = {
   latestGrade: number;
   latestExamResult: keyof typeof examResultEnum;
   nearestAttemptDate: Date;
+  latestTestTotalGrade: number;
 };
 export type IInstructorDetail = {
   user: {

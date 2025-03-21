@@ -10,70 +10,21 @@ import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
-const lessons = [
-  {
-    title: "Giới thiệu về Tiếng Anh",
-    description:
-      "Bài học nhập môn giúp bạn làm quen với Tiếng Anh và cách học hiệu quả.",
-    videoUrl: "https://example.com/video1.mp4",
-    content:
-      "Tiếng Anh là ngôn ngữ quốc tế, quan trọng trong giao tiếp và công việc.",
-    imageUrl: "https://example.com/image1.jpg",
-    courseId: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-    instructorId: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-  },
-  {
-    title: "Bảng chữ cái Tiếng Anh",
-    description: "Học cách phát âm và viết bảng chữ cái Tiếng Anh.",
-    videoUrl: "https://example.com/video2.mp4",
-    content:
-      "Bảng chữ cái Tiếng Anh gồm 26 chữ cái, mỗi chữ có cách phát âm riêng.",
-    imageUrl: "https://example.com/image2.jpg",
-    courseId: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-    instructorId: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-  },
-  {
-    title: "Cách phát âm các nguyên âm và phụ âm",
-    description:
-      "Hướng dẫn cách phát âm chính xác các nguyên âm và phụ âm trong Tiếng Anh.",
-    videoUrl: "https://example.com/video3.mp4",
-    content:
-      "Tiếng Anh có 5 nguyên âm chính và nhiều phụ âm quan trọng cần luyện tập.",
-    imageUrl: "https://example.com/image3.jpg",
-    courseId: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-    instructorId: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-  },
-  {
-    title: "Chào hỏi và giới thiệu bản thân",
-    description:
-      "Học các mẫu câu chào hỏi và cách giới thiệu bản thân bằng Tiếng Anh.",
-    videoUrl: "https://example.com/video4.mp4",
-    content: "Ví dụ: 'Hello, my name is John. Nice to meet you!'",
-    imageUrl: "https://example.com/image4.jpg",
-    courseId: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-    instructorId: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-  },
-  {
-    title: "Số đếm và cách sử dụng",
-    description:
-      "Hướng dẫn cách đọc và sử dụng số đếm trong các tình huống hàng ngày.",
-    videoUrl: "https://example.com/video5.mp4",
-    content: "Học cách đếm từ 1 đến 100 và cách sử dụng số trong câu.",
-    imageUrl: "https://example.com/image5.jpg",
-    courseId: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-    instructorId: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-  },
-];
-
 const CourseDetail = () => {
   const [detail, setDetail] = useState<ICourse>();
   const { setLoading } = useLoading();
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalItems, setTotalItems] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
+  const [pageSize, setPageSize] = useState(5);
   const params = useParams();
   const fetchCourseDetail = async () => {
     try {
       setLoading(true);
-      const res = await getCourseDetail(params.id);
+      const res = await getCourseDetail(params.id, currentPage, pageSize);
       setDetail(res.data);
+      setTotalItems(res.data.lessons.totalItemsCount);
+      setTotalPages(res.data.lessons.totalPageCount);
     } catch (error) {
       console.error("Error:", error);
     } finally {
@@ -82,7 +33,7 @@ const CourseDetail = () => {
   };
   useEffect(() => {
     fetchCourseDetail();
-  }, [params.id]);
+  }, [params.id, currentPage]);
   if (!detail) return;
   const tab = [
     {
@@ -97,6 +48,11 @@ const CourseDetail = () => {
         <FormUpdateLesson
           lessons={detail.lessons.items}
           fetchCourseDetail={fetchCourseDetail}
+          currentPage={currentPage}
+          pageSize={pageSize}
+          totalItems={totalItems}
+          totalPages={totalPages}
+          setCurrentPage={setCurrentPage}
         />
       ),
     },
