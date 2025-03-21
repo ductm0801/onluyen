@@ -15,6 +15,10 @@ const Learning = () => {
   const [course, setCourse] = useState<ICourse>();
   const params = useParams();
   const [isPlaying, setIsPlaying] = useState(false);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [pageSize, setPageSize] = useState(10);
+  const [totalItems, setTotalItems] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
   const videoPlayerRef = useRef<any>(null);
   const [activeLesson, setActiveLesson] = useState<ILesson | undefined>(
     undefined
@@ -29,7 +33,9 @@ const Learning = () => {
   const fetchCourseDetail = async () => {
     try {
       setLoading(true);
-      const res = await getCourseDetail(params.id, 0, 100);
+      const res = await getCourseDetail(params.id, currentPage, pageSize);
+      setTotalItems(res.data.lessons.totalItemsCount);
+      setTotalPages(res.data.lessons.totalPageCount);
       if (res) {
         setCourse(res.data);
         setActiveLesson(res.data.lessons.items[0]);
