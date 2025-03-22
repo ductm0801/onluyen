@@ -31,7 +31,7 @@ const Nav: React.FC<props> = ({ sidebarOpen, closeSidebar }) => {
     <div
       className={`${
         !user || pathName === "/" || pathName === "/login" ? "hidden" : "block"
-      } fixed top-0 left-0 bottom-0 bg-[#1244A2] w-[288px] my-3 rounded-xl p-8 z-40 transition-all duration-300 ease-in-out ${
+      } fixed top-0 left-0 bottom-0 bg-[#1244A2] w-[288px]  p-8 z-40 transition-all duration-300 ease-in-out ${
         sidebarOpen ? "translate-x-0" : "xl:translate-x-0 -translate-x-[100%]"
       } `}
     >
