@@ -23,7 +23,7 @@ const StudentForm: React.FC<props> = ({ setIsRegist }) => {
         fullName: values.fullName,
         email: values.email,
         password: values.password,
-        gender: values.gender,
+        gender: values.gender || "Male",
         phoneNumber: values.phoneNumber,
         username: values.username,
         role: "Student",
