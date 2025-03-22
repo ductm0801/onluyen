@@ -5,13 +5,27 @@ import { IExam } from "@/models";
 import { useLoading } from "@/providers/loadingProvider";
 import { examResult } from "@/services";
 import { useParams } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 const ResultDetail = () => {
   const [exam, setExam] = useState<IExam | null>(null);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const { setLoading } = useLoading();
   const params = useParams();
+
+  const listRef = useRef<HTMLUListElement>(null);
+  const itemRefs = useRef<(HTMLLIElement | null)[]>([]);
+
+  useEffect(() => {
+    if (itemRefs.current[currentQuestionIndex]) {
+      itemRefs.current[currentQuestionIndex]?.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest",
+        inline: "center",
+      });
+    }
+  }, [currentQuestionIndex]);
+
   const fetchResult = async () => {
     try {
       setLoading(true);
@@ -49,17 +63,18 @@ const ResultDetail = () => {
               const isSelected = answer.isSelected;
               const isCorrect = answer.isCorrect;
               const isWrongSelected = isSelected && !isCorrect;
+
               return (
                 <li
                   key={answer.id}
-                  className={`w-[40%] py-4 px-8 shadow-[0px_0px_3px_rgba(0,0,0,0.3)] rounded-xl cursor-pointer  flex items-center r ${
-                    isCorrect
-                      ? "bg-green-100 text-green-500 border-green-500"
-                      : isWrongSelected
-                      ? "bg-red-100 text-red-500 border-red-500"
-                      : "bg-gray-100 text-gray-500 border-gray-300"
-                  }
- `}
+                  className={`w-[40%] py-4 px-8 shadow-[0px_0px_3px_rgba(0,0,0,0.3)] rounded-xl cursor-pointer flex items-center
+          ${
+            isCorrect
+              ? "bg-green-100 text-green-500 border-green-500"
+              : isWrongSelected
+              ? "bg-red-100 text-red-500 border-red-500"
+              : "bg-gray-100 text-gray-500 border-gray-300"
+          }`}
                 >
                   <span>{String.fromCharCode(65 + index)}.</span>
                   <span
@@ -69,6 +84,11 @@ const ResultDetail = () => {
                 </li>
               );
             })}
+            {!currentQuestion.answers.some((answer) => answer.isSelected) && (
+              <p className="w-full text-center text-red-500 font-semibold mt-4">
+                Bạn chưa chọn đáp án nào!
+              </p>
+            )}
           </ul>
           {currentQuestion.type === 2 && (
             <textarea
@@ -101,11 +121,17 @@ const ResultDetail = () => {
         >
           Câu trước
         </button>
-        <ul className="flex items-center gap-6 w-[75%] overflow-x-auto p-[1px]">
+        <ul
+          ref={listRef}
+          className="flex items-center gap-6 w-[75%] overflow-x-auto p-[1px]"
+        >
           {exam.questions.map((q, index) => (
             <li
+              ref={(el) => {
+                itemRefs.current[index] = el;
+              }}
               key={q.id}
-              className={`w-8 h-8 flex items-center justify-center rounded-lg text-center shadow-[0px_0px_3px_rgba(0,0,0,0.3)] cursor-pointer 
+              className={`w-8 h-8 flex-shrink-0 flex items-center justify-center rounded-lg text-center shadow-[0px_0px_3px_rgba(0,0,0,0.3)] cursor-pointer 
             ${index === currentQuestionIndex ? "border-2 border-[#273d30]" : ""}
            `}
               onClick={() => setCurrentQuestionIndex(index)}
