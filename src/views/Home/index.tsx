@@ -277,6 +277,27 @@ const Home = () => {
         />
       </div>
       <div className="flex flex-col gap-6">
+        <div className="text-2xl font-bold">Môn học</div>
+        <div className="flex gap-4 flex-wrap">
+          {subjects &&
+            subjects.map((s, index) => (
+              <div
+                ref={(el) => {
+                  subjectRefs.current[index] = el;
+                }}
+                key={s.id}
+                className={` border cursor-pointer hover:border-blue-600 transition-all duration-300 rounded-lg px-4 py-[21px] w-[112px] h-[138px] flex flex-col items-center gap-2`}
+                onClick={() => handleSubjectClick(s.id, index)}
+              >
+                <img src={s.imageUrl} alt="img" />
+                <div className="font-bold text-sm text-center">
+                  {s.subjectName}
+                </div>
+              </div>
+            ))}
+        </div>
+      </div>
+      <div className="flex flex-col gap-6">
         <div className="text-2xl font-bold">Đề thi</div>
         <div className="flex border-b overflow-auto">
           {subjects &&

@@ -5,10 +5,11 @@ import { IMAGES } from "@/constants/images";
 import { IEXamResult } from "@/models";
 import { useLoading } from "@/providers/loadingProvider";
 import { examResult, getExamResults, getHistoryExamDetail } from "@/services";
-import { Modal } from "antd";
+import { Modal, Tooltip } from "antd";
 import moment from "moment";
 import React, { useEffect, useRef, useState } from "react";
 import dayjs from "dayjs";
+import { useRouter } from "next/navigation";
 
 const sort = [
   { label: "Điểm cao đến thấp", value: true },
@@ -45,6 +46,7 @@ const StudentResult = () => {
   const [sortType, setSortType] = useState(true);
   const detail = useRef<IEXamResult | null>(null);
   const [viewDetail, setViewDetail] = useState(false);
+  const router = useRouter();
   const [resultDetail, setResultDetail] = useState<{
     testHistory: any[];
   } | null>(null);
@@ -192,32 +194,49 @@ const StudentResult = () => {
         >
           <div className="p-4 max-h-[600px] overflow-y-auto">
             {resultDetail?.testHistory?.map((item: any, index: number) => (
-              <div key={index} className="border-b p-4 mb-4">
-                <p className="flex items-center justify-between">
-                  Điểm thi lần {index + 1}:{" "}
-                  <span
-                    className={`font-bold ${
-                      item.isPass ? "text-[#F04438]" : "text-[#17B26A]"
-                    } `}
-                  >
-                    {Math.round(item.grade)} /{item.testTotalGrade} điểm
-                  </span>
-                </p>
-                <div className="flex items-center justify-between">
-                  Thời gian thi:{" "}
-                  <p className="font-bold">
-                    {moment(item.publishedDate).diff(
-                      moment(item.attemptDate),
-                      "minutes"
-                    )}{" "}
-                    phút{" "}
-                    {moment(item.publishedDate).diff(
-                      moment(item.attemptDate),
-                      "seconds"
-                    ) % 60}{" "}
-                    giây
+              <div
+                key={index}
+                className="border-b p-4 mb-4 flex items-center gap-3"
+              >
+                <div className="flex-shrink-0 w-[90%]">
+                  <p className="flex items-center justify-between">
+                    Điểm thi lần {index + 1}:{" "}
+                    <span
+                      className={`font-bold ${
+                        item.isPass ? "text-[#F04438]" : "text-[#17B26A]"
+                      } `}
+                    >
+                      {Math.round(item.grade)} /{item.testTotalGrade} điểm
+                    </span>
                   </p>
+                  <div className="flex items-center justify-between">
+                    Thời gian thi:{" "}
+                    <p className="font-bold">
+                      {moment(item.publishedDate).diff(
+                        moment(item.attemptDate),
+                        "minutes"
+                      )}{" "}
+                      phút{" "}
+                      {moment(item.publishedDate).diff(
+                        moment(item.attemptDate),
+                        "seconds"
+                      ) % 60}{" "}
+                      giây
+                    </p>
+                  </div>
                 </div>
+                <Tooltip title="Xem lại bài làm">
+                  <img
+                    src={IMAGES.eyeShow}
+                    alt="detail"
+                    className="w-[20px] cursor-pointer"
+                    onClick={() =>
+                      router.push(
+                        `/student/result-detail/${item.testAttemptId}`
+                      )
+                    }
+                  />
+                </Tooltip>
               </div>
             ))}
           </div>

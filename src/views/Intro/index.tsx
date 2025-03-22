@@ -11,9 +11,10 @@ import "swiper/css";
 import "swiper/css/effect-cards";
 
 // import required modules
-import { EffectCards } from "swiper/modules";
+import { Autoplay, EffectCards } from "swiper/modules";
 import CustomButton from "@/components/CustomButton";
 import { useAuth } from "@/providers/authProvider";
+import { Avatar } from "antd";
 
 const menu = [
   {
@@ -105,7 +106,7 @@ const Intro = () => {
     return () => clearInterval(interval);
   }, []);
   return (
-    <div className="pb-10 ">
+    <div className="">
       <div className="fixed top-0 left-0 right-0 border-b border-[#A4A4A4] bg-white z-20">
         <div className="flex justify-between items-center max-w-[1300px] py-8 mx-auto">
           <div className="flex items-center gap-2">
@@ -125,24 +126,18 @@ const Intro = () => {
           </div>
           {user ? (
             <div className="flex  gap-[8px] items-center relative group cursor-pointer">
-              <div>
-                <div
-                  className="font-semibold text-lg"
-                  onClick={() => setOpen((open) => !open)}
-                >
-                  Xin chào! {user?.FullName}
-                </div>
-                {/* {user?.avatar ? (
-     <Avatar
-       className="border-2 border-white w-[38px] h-[38px]"
-       src={user?.avatar}
-     />
-   ) : (
-     <Avatar className="border-2 border-white w-[36px] h-[36px]">
-       {user?.username?.charAt(0).toUpperCase()}
-     </Avatar>
-   )} */}
+              <div
+                className="font-semibold text-lg"
+                onClick={() => setOpen((open) => !open)}
+              >
+                Xin chào! {user?.FullName}
               </div>
+
+              <Avatar
+                className="border-2 border-gray-500 w-[38px] h-[38px]"
+                src={user?.imageUrl || IMAGES.defaultAvatar}
+              />
+
               <div
                 className={`${
                   open ? "max-h-[300px]" : "max-h-0"
@@ -299,10 +294,10 @@ const Intro = () => {
         </div>
         <div
           id="giang-vien"
-          className="bg-gradient-to-b from-[#267DFF] to-[#000288] py-16 flex flex-col items-center justify-center gap-4"
+          className="bg-gradient-to-b from-[#267DFF] to-[#000288] py-16 flex flex-col items-center justify-center gap-4 "
         >
           <h1 className="text-center text-[60px] text-white">Các giảng viên</h1>
-          <div className="flex items-center gap-16">
+          <div className="flex items-center gap-16 w-full max-w-[1300px] mx-auto">
             <img
               src={IMAGES.arrowRight}
               alt="left"
@@ -310,11 +305,14 @@ const Intro = () => {
               onClick={() => handleSlidePrev()}
             />
             <Swiper
-              effect={"cards"}
+              slidesPerView={3}
+              loop={true}
+              autoplay={{ delay: 3000 }}
+              spaceBetween={32}
               ref={swiperRef}
               grabCursor={true}
-              modules={[EffectCards]}
-              className="w-[328px] h-[530px]"
+              modules={[Autoplay]}
+              className="w-full"
             >
               {instructor.map((ins, index) => (
                 <SwiperSlide key={index} className="rounded-3xl bg-white">
