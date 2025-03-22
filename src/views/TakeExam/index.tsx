@@ -4,8 +4,9 @@ import { examEnum, questionEnum } from "@/constants/enum";
 import { IExam } from "@/models";
 import { useLoading } from "@/providers/loadingProvider";
 import { getTest, saveExam, submitExam } from "@/services";
+import { Modal } from "antd";
 import { useParams, useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 
 const TakeExam = () => {
@@ -18,6 +19,18 @@ const TakeExam = () => {
     Record<string, { ids: string[]; text: string }>
   >({});
   const router = useRouter();
+  const listRef = useRef<HTMLUListElement>(null);
+  const itemRefs = useRef<(HTMLLIElement | null)[]>([]);
+
+  useEffect(() => {
+    if (itemRefs.current[currentQuestionIndex]) {
+      itemRefs.current[currentQuestionIndex]?.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest",
+        inline: "center",
+      });
+    }
+  }, [currentQuestionIndex]);
 
   useEffect(() => {
     const fetchExam = async () => {
@@ -90,6 +103,25 @@ const TakeExam = () => {
     return `${minutes}:${secs < 10 ? "0" : ""}${secs}`;
   };
   const onSubmit = async () => {
+    const totalQuestions = exam?.questions.length ?? 0;
+    const answeredQuestions = Object.keys(selectedAnswers).length;
+
+    if (answeredQuestions < totalQuestions) {
+      Modal.confirm({
+        title: "Xác nhận nộp bài",
+        content: `Bạn mới làm ${answeredQuestions}/${totalQuestions} câu. Bạn có chắc chắn muốn nộp bài không?`,
+        okText: "Nộp bài",
+        cancelText: "Hủy",
+        onOk: async () => {
+          await submitExamHandler();
+        },
+      });
+      return;
+    }
+    await submitExamHandler();
+  };
+
+  const submitExamHandler = async () => {
     const formattedAnswers = Object.entries(selectedAnswers).map(
       ([questionId, answer]) => ({
         questionId,
@@ -97,6 +129,7 @@ const TakeExam = () => {
         answerText: answer.text || "",
       })
     );
+
     try {
       setLoading(true);
       const res = await saveExam(
@@ -110,7 +143,7 @@ const TakeExam = () => {
       router.push(`/student/exam/result/${params.id}`);
     } catch (err: any) {
       setLoading(false);
-      toast.error(err.response.data.message);
+      toast.error(err.response?.data?.message || "Lỗi khi nộp bài");
     } finally {
       setLoading(false);
     }
@@ -210,11 +243,17 @@ const TakeExam = () => {
         >
           Câu trước
         </button>
-        <ul className="flex items-center gap-6 w-[75%] overflow-x-auto p-[1px]">
+        <ul
+          ref={listRef}
+          className="flex items-center gap-6 w-[75%] overflow-x-auto p-[1px]"
+        >
           {exam.questions.map((q, index) => (
             <li
+              ref={(el) => {
+                itemRefs.current[index] = el;
+              }}
               key={q.id}
-              className={`w-8 h-8 flex items-center justify-center rounded-lg text-center shadow-[0px_0px_3px_rgba(0,0,0,0.3)] cursor-pointer 
+              className={`w-8 h-8 flex-shrink-0 flex items-center justify-center rounded-lg text-center shadow-[0px_0px_3px_rgba(0,0,0,0.3)] cursor-pointer 
                 ${
                   index === currentQuestionIndex
                     ? "border-2 border-[#273d30]"
