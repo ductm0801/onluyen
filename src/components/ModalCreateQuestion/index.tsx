@@ -1,18 +1,19 @@
 import { IMAGES } from "@/constants/images";
 import { IAnswers, IQuestion } from "@/models";
 import { useLoading } from "@/providers/loadingProvider";
-import { createQuestion } from "@/services";
+import { createQuestion, uploadImg } from "@/services";
 import {
   CheckSquareOutlined,
   FormOutlined,
   FullscreenExitOutlined,
 } from "@ant-design/icons";
-import { Button, Checkbox, Form, Input, Radio, Select } from "antd";
+import { Button, Checkbox, Form, Input, Radio, Select, Upload } from "antd";
 import React, { useState } from "react";
 import { toast } from "react-toastify";
 import CombinedEditor from "../CombinedEditor";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
+const { TextArea } = Input;
 
 type props = {
   onClose: () => void;
@@ -61,6 +62,20 @@ const ModalCreateQuestion: React.FC<props> = ({
   const [form] = Form.useForm();
   const [type, setType] = useState({ label: "", value: -1 });
 
+  const handleChangeImage = async ({ file }: { file: any }, name: any) => {
+    setLoading(true);
+    const formData = new FormData();
+    formData.append("file", file.originFileObj);
+    try {
+      const res = await uploadImg(formData);
+      form.setFieldValue(name, res.url);
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || "Lỗi tải ảnh");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleTypeQuestion = () => {
     switch (type.value) {
       case 0:
@@ -68,9 +83,8 @@ const ModalCreateQuestion: React.FC<props> = ({
           <Form
             form={form}
             onFinish={(values) => {
-              const answers = form.getFieldValue("answers");
-              const hasCorrectAnswer = answers.some(
-                (answer: IAnswers) => answer.isCorrect
+              const hasCorrectAnswer = values.answers.some(
+                (answer: any) => answer.isCorrect
               );
               if (!hasCorrectAnswer) {
                 toast.error("Vui lòng chọn một câu trả lời đúng.");
@@ -80,14 +94,30 @@ const ModalCreateQuestion: React.FC<props> = ({
             }}
             className="p-4"
           >
-            <Form.Item
-              name="title"
-              label="Câu hỏi"
-              labelCol={{ span: 24 }}
-              rules={[{ required: true, message: "Vui lòng nhập câu hỏi" }]}
-            >
-              <Input />
-            </Form.Item>
+            <div className="flex flex-col items-center w-full">
+              <Form.Item
+                name="title"
+                label="Câu hỏi"
+                labelCol={{ span: 24 }}
+                rules={[{ required: true, message: "Vui lòng nhập câu hỏi" }]}
+                className="w-full"
+              >
+                <TextArea />
+              </Form.Item>
+
+              <Form.Item
+                name="imageUrl"
+                rules={[{ required: true, message: "Vui lòng chọn ảnh" }]}
+              >
+                <Upload
+                  listType="picture-card"
+                  maxCount={1}
+                  onChange={(info) => handleChangeImage(info, "imageUrl")}
+                >
+                  Thêm hình
+                </Upload>
+              </Form.Item>
+            </div>
             <Form.Item
               name="difficulty"
               label="Độ khó"
@@ -100,67 +130,72 @@ const ModalCreateQuestion: React.FC<props> = ({
                 allowClear
               />
             </Form.Item>
+
             <Form.List name="answers">
               {(fields, { add, remove }) => (
                 <Radio.Group
                   className="w-full"
                   onChange={(e) => {
-                    const selectedIndex = e.target.value;
-                    const answers = form.getFieldValue("answers");
-                    const updatedAnswers = answers.map(
-                      (answer: IAnswers, index: number) => ({
+                    const updatedAnswers = form
+                      .getFieldValue("answers")
+                      .map((answer: any, index: number) => ({
                         ...answer,
-                        isCorrect: index === selectedIndex,
-                      })
-                    );
+                        isCorrect: index === e.target.value,
+                      }));
                     form.setFieldsValue({ answers: updatedAnswers });
                   }}
                 >
                   {fields.map(({ key, name }, index) => (
-                    <Form.Item key={key} className="w-full">
-                      <div className="flex w-full items-center gap-8">
-                        <Radio value={index} />
+                    <div key={key} className="flex items-start gap-4 w-full">
+                      <Radio value={index} />
+                      <div className="flex flex-col items-center mb-3 w-full gap-4">
                         <Form.Item
                           name={[name, "content"]}
-                          noStyle
                           rules={[
                             {
                               required: true,
                               message: "Vui lòng nhập câu trả lời",
                             },
                           ]}
+                          noStyle
                         >
-                          <Input />
+                          <TextArea placeholder="Nhập câu trả lời" />
                         </Form.Item>
-                        <div
-                          style={{ cursor: "pointer", color: "red" }}
-                          onClick={() => remove(name)}
-                        >
-                          Xoá
-                        </div>
+                        <Form.Item name={[name, "imageUrl"]} noStyle>
+                          <Upload
+                            listType="picture-card"
+                            maxCount={1}
+                            onChange={(info) =>
+                              handleChangeImage(info, [
+                                "answers",
+                                name,
+                                "imageUrl",
+                              ])
+                            }
+                          >
+                            Thêm hình
+                          </Upload>
+                        </Form.Item>
                       </div>
-                    </Form.Item>
+                      <Button type="link" danger onClick={() => remove(name)}>
+                        Xoá
+                      </Button>
+                    </div>
                   ))}
-                  <div className="flex justify-start">
-                    <Button
-                      type="dashed"
-                      onClick={() => add({ content: "", isCorrect: false })}
-                    >
-                      Thêm câu trả lời
-                    </Button>
-                  </div>
+                  <Button
+                    type="dashed"
+                    onClick={() => add({ content: "", isCorrect: false })}
+                  >
+                    Thêm câu trả lời
+                  </Button>
                 </Radio.Group>
               )}
             </Form.List>
+
             <div className="flex justify-end mt-4">
-              <Form.Item>
-                <button
-                  type="submit"
-                  className="text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                >
-                  Lưu thay đổi
-                </button>
-              </Form.Item>
+              <Button type="primary" htmlType="submit">
+                Lưu thay đổi
+              </Button>
             </div>
           </Form>
         );
@@ -181,14 +216,29 @@ const ModalCreateQuestion: React.FC<props> = ({
             }}
             className="p-4"
           >
-            <Form.Item
-              name="title"
-              label="Câu hỏi"
-              labelCol={{ span: 24 }}
-              rules={[{ required: true, message: "Vui lòng nhập câu hỏi" }]}
-            >
-              <Input />
-            </Form.Item>
+            <div className="flex flex-col items-center w-full">
+              <Form.Item
+                name="title"
+                label="Câu hỏi"
+                labelCol={{ span: 24 }}
+                rules={[{ required: true, message: "Vui lòng nhập câu hỏi" }]}
+                className="w-full"
+              >
+                <TextArea />
+              </Form.Item>
+              <Form.Item
+                name="imageUrl"
+                rules={[{ required: true, message: "Vui lòng chọn ảnh" }]}
+              >
+                <Upload
+                  listType="picture-card"
+                  maxCount={1}
+                  onChange={(info) => handleChangeImage(info, "imageUrl")}
+                >
+                  Thêm hình
+                </Upload>
+              </Form.Item>
+            </div>
             <Form.Item
               name="difficulty"
               label="Độ khó"
@@ -218,11 +268,29 @@ const ModalCreateQuestion: React.FC<props> = ({
                 >
                   {fields.map(({ key, name }, index) => (
                     <Form.Item key={key} className="w-full">
-                      <div className="flex w-full items-center gap-8">
+                      <div className="flex w-full items-start gap-8">
                         <Checkbox value={index} />
-                        <Form.Item name={[name, "content"]} noStyle>
-                          <Input />
-                        </Form.Item>
+                        <div className="flex flex-col gap-4 items-center w-full">
+                          <Form.Item name={[name, "content"]} noStyle>
+                            <TextArea />
+                          </Form.Item>
+
+                          <Form.Item name={[name, "imageUrl"]} noStyle>
+                            <Upload
+                              listType="picture-card"
+                              maxCount={1}
+                              onChange={(info) =>
+                                handleChangeImage(info, [
+                                  "answers",
+                                  name,
+                                  "imageUrl",
+                                ])
+                              }
+                            >
+                              Thêm hình
+                            </Upload>
+                          </Form.Item>
+                        </div>
                         <div
                           style={{ cursor: "pointer", color: "red" }}
                           onClick={() => remove(name)}
@@ -270,14 +338,29 @@ const ModalCreateQuestion: React.FC<props> = ({
               onFinish(formattedValues);
             }}
           >
-            <Form.Item
-              name="title"
-              label="Câu hỏi"
-              labelCol={{ span: 24 }}
-              rules={[{ required: true, message: "Vui lòng nhập câu hỏi" }]}
-            >
-              <Input />
-            </Form.Item>
+            <div className="flex flex-col items-center w-full">
+              <Form.Item
+                name="title"
+                label="Câu hỏi"
+                labelCol={{ span: 24 }}
+                rules={[{ required: true, message: "Vui lòng nhập câu hỏi" }]}
+                className="w-full"
+              >
+                <TextArea />
+              </Form.Item>
+              <Form.Item
+                name="imageUrl"
+                rules={[{ required: true, message: "Vui lòng chọn ảnh" }]}
+              >
+                <Upload
+                  listType="picture-card"
+                  maxCount={1}
+                  onChange={(info) => handleChangeImage(info, "imageUrl")}
+                >
+                  Thêm hình
+                </Upload>
+              </Form.Item>
+            </div>
             <Form.Item
               name="difficulty"
               label="Độ khó"
@@ -304,7 +387,7 @@ const ModalCreateQuestion: React.FC<props> = ({
                       },
                     ]}
                   >
-                    <Input />
+                    <TextArea />
                   </Form.Item>
                   <Form.Item name="isCorrect" initialValue={true} hidden>
                     <Input type="hidden" />
@@ -417,7 +500,9 @@ const ModalCreateQuestion: React.FC<props> = ({
                 className="rotate-180 bg-[#1244A2] rounded-full mx-4 my-2 cursor-pointer"
                 onClick={() => setType({ label: "", value: -1 })}
               />
-              {handleTypeQuestion()}
+              <div className="max-h-[500px] overflow-y-auto">
+                {handleTypeQuestion()}
+              </div>
             </>
           )}
         </div>
