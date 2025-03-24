@@ -4,7 +4,7 @@ import { examEnum, questionEnum } from "@/constants/enum";
 import { IExam } from "@/models";
 import { useLoading } from "@/providers/loadingProvider";
 import { getTest, saveExam, submitExam } from "@/services";
-import { Modal } from "antd";
+import { Image, Modal } from "antd";
 import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
@@ -66,7 +66,7 @@ const TakeExam = () => {
       return () => clearInterval(timer);
     }
     if (timeLeft !== null && timeLeft <= 0) {
-      onSubmit();
+      submitExamHandler();
     }
   }, [timeLeft]);
 
@@ -173,17 +173,29 @@ const TakeExam = () => {
         </button>
       </div>
 
-      <div className="flex">
+      <div className="flex gap-16">
         <div className="flex-1 flex flex-col gap-4">
           <h5>
             Câu hỏi {currentQuestionIndex + 1} trên {exam.questions.length}
           </h5>
           <p
             className="text-2xl font-bold"
-            dangerouslySetInnerHTML={{ __html: currentQuestion.title }}
-          ></p>{" "}
+            dangerouslySetInnerHTML={{
+              __html: currentQuestion.title.replace(/\n/g, "<br/>"),
+            }}
+          />
+
+          {currentQuestion.imageUrl && (
+            <Image
+              width={400}
+              height={200}
+              src={currentQuestion.imageUrl}
+              alt="img"
+              className="object-cover"
+            />
+          )}
           <span>{questionEnum[currentQuestion.type]}</span>
-          <ul className="flex flex-wrap gap-8 mt-4">
+          <ul className="grid grid-cols-2 gap-8 mt-4">
             {currentQuestion.answers.map((answer, index) => (
               <li
                 key={answer.id}
@@ -194,18 +206,31 @@ const TakeExam = () => {
                     answer.id
                   )
                 }
-                className={`w-[40%] py-4 px-8 shadow-[0px_0px_3px_rgba(0,0,0,0.3)] rounded-xl cursor-pointer  flex items-center 
+                className={`w-full py-4 px-8 shadow-[0px_0px_3px_rgba(0,0,0,0.3)] rounded-xl cursor-pointer  flex items-center justify-between 
         ${
           selectedAnswers[currentQuestion.id]?.ids?.includes(answer.id)
             ? "bg-blue-300"
             : ""
         }`}
               >
-                <span>{String.fromCharCode(65 + index)}.</span>
-                <span
-                  className="ml-4"
-                  dangerouslySetInnerHTML={{ __html: answer.content }}
-                ></span>
+                <p className="flex items-start">
+                  <span>{String.fromCharCode(65 + index)}.</span>
+                  <span
+                    className="ml-4"
+                    dangerouslySetInnerHTML={{
+                      __html: answer.content.replace(/\n/g, "<br/>"),
+                    }}
+                  />
+                </p>
+                {answer.imageUrl && (
+                  <Image
+                    width={100}
+                    height={100}
+                    src={answer.imageUrl}
+                    alt="img"
+                    className="object-cover"
+                  />
+                )}
               </li>
             ))}
           </ul>
