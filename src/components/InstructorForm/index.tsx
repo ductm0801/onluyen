@@ -1,21 +1,39 @@
 import { IMAGES } from "@/constants/images";
 import { useLoading } from "@/providers/loadingProvider";
-import { getSubject, uploadImg } from "@/services";
+import { getSubject, instructorRegist, uploadImg } from "@/services";
 import { Form, Radio, Select, Upload } from "antd";
-import React, { useEffect, useState } from "react";
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
 import { Subject } from "@/models";
 
-const InstructorForm = () => {
+const InstructorForm = ({
+  setIsRegist,
+}: {
+  setIsRegist: Dispatch<SetStateAction<boolean>>;
+}) => {
   const [form] = Form.useForm();
 
   const { setLoading } = useLoading();
   const [imageUrl, setImageUrl] = useState<string>();
   const [loadingImg, setLoadingImg] = useState(false);
   const [subject, setSubject] = useState<Subject[]>([]);
-  const onFinish = (values: any) => {
-    console.log(values);
+  const onFinish = async (values: any) => {
+    try {
+      setLoading(true);
+      await instructorRegist({
+        ...values,
+        role: "Instructor",
+        gender: values.gender || "Male",
+        resumeUrl: "string",
+      });
+      toast.success("Đăng ký thành công!");
+      setIsRegist(false);
+    } catch (err: any) {
+      setLoading(false);
+    } finally {
+      setLoading(false);
+    }
   };
   const options = [
     { label: "Nam", value: "Male" },
@@ -50,7 +68,7 @@ const InstructorForm = () => {
     try {
       const res = await uploadImg(formData);
 
-      form.setFieldValue("imageUrl", res.url);
+      form.setFieldValue("certificate", res.url);
 
       setLoading(false);
     } catch (error: any) {
@@ -181,7 +199,7 @@ const InstructorForm = () => {
             block
             size="large"
             options={options}
-            // defaultValue="Male"
+            defaultValue="Male"
             optionType="button"
             buttonStyle="solid"
           />

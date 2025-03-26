@@ -4,7 +4,7 @@ import { menus } from "@/constants/menu";
 import { useAuth } from "@/providers/authProvider";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 type props = {
@@ -18,6 +18,7 @@ const Nav: React.FC<props> = ({ sidebarOpen, closeSidebar }) => {
   const [menuItems, setMenuItems] = useState<
     { label: string; path: string; icon: string; isShow: boolean }[]
   >([]);
+  const router = useRouter();
 
   useEffect(() => {
     if (!user) return;
@@ -26,6 +27,10 @@ const Nav: React.FC<props> = ({ sidebarOpen, closeSidebar }) => {
     );
     setMenuItems(filteredMenus);
   }, [user, menus]);
+  const handleChangeRoute = (route: string) => {
+    closeSidebar();
+    router.push(route);
+  };
 
   return (
     <div
@@ -36,7 +41,7 @@ const Nav: React.FC<props> = ({ sidebarOpen, closeSidebar }) => {
       } `}
     >
       <div
-        className="absolute top-2 right-4 text-xl font-bold rounded-lg xl:hidden"
+        className="absolute top-2 right-4 text-white text-xl font-bold rounded-lg xl:hidden"
         onClick={closeSidebar}
       >
         &times;
@@ -50,8 +55,8 @@ const Nav: React.FC<props> = ({ sidebarOpen, closeSidebar }) => {
         </div>
         <div className="flex flex-col gap-3 h-full">
           {menuItems.map((item) => (
-            <Link
-              href={item.path}
+            <div
+              onClick={() => handleChangeRoute(item.path)}
               className={`transition-all duration-300 ease-in-out flex items-center gap-2 py-2 px-[18px] cursor-pointer text-white ${
                 pathName.startsWith(item.path)
                   ? "bg-[#FDB022] rounded-xl "
@@ -69,7 +74,7 @@ const Nav: React.FC<props> = ({ sidebarOpen, closeSidebar }) => {
                 }`}
               />
               <p className="text-base">{item.label}</p>
-            </Link>
+            </div>
           ))}
         </div>
       </div>

@@ -486,3 +486,11 @@ export const getHistoryExamDetail = async (
   });
   return res.data;
 };
+export const insstructorRegist = async (body: any) => {
+  const res = await axiosClient.post(`/api/instructors/regist`, body);
+  return res.data;
+};
+export const updateLessonProgress = async (id: string) => {
+  const res = await axiosClient.put(`/api/progress/complete/${id}`);
+  return res.data;
+};

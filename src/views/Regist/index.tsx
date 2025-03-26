@@ -20,7 +20,7 @@ const Regist = ({
       case "Student":
         return <StudentForm setIsRegist={setIsRegist} />;
       case "Instructor":
-        return <InstructorForm />;
+        return <InstructorForm setIsRegist={setIsRegist} />;
       default:
         return <StudentForm setIsRegist={setIsRegist} />;
     }
