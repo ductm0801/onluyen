@@ -1,4 +1,5 @@
 "use client";
+import { updateLessonProgress } from "@/services";
 import { SourceInfo } from "plyr";
 import Plyr from "plyr-react";
 import "plyr-react/plyr.css";
@@ -15,13 +16,17 @@ type VideoPlayerProps = {
   videoSrc: string;
   videoRef: any;
   setIsPlaying: Dispatch<SetStateAction<boolean>>;
+  lessonId: string | undefined;
 };
 const VideoPlayer: React.FC<VideoPlayerProps> = ({
   videoSrc,
   setIsPlaying,
   videoRef,
+  lessonId,
 }) => {
   const ref = useRef<any>(null);
+  const [videoDuration, setVideoDuration] = useState(0);
+  const apiCalledRef = useRef(false); // Use useRef instead of useState
   const videoOptions: SourceInfo = {
     type: "video",
 
@@ -69,8 +74,15 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
       if (ref.current) {
         const player = ref.current.plyr;
         if (player) {
+          player.on("ready", () => {
+            const duration = player?.embed?.getDuration?.();
+            if (duration) {
+              setVideoDuration(duration);
+            }
+          });
           player.on("statechange", (event: any) => {
             const state = event.detail.plyr?.embed?.getPlayerState();
+
             switch (state) {
               case -1:
                 // console.log("Video chưa bắt đầu.");
@@ -98,6 +110,25 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
                 break;
             }
           });
+          player.on("timeupdate", async () => {
+            const currentTime = player?.embed?.getCurrentTime?.();
+            if (
+              currentTime &&
+              videoDuration &&
+              currentTime >= videoDuration * 0.8 &&
+              !apiCalledRef.current &&
+              lessonId
+            ) {
+              console.log("Gọi API tại 80% video!");
+              apiCalledRef.current = true;
+              try {
+                await updateLessonProgress(lessonId || "");
+              } catch (error) {
+                console.error("Failed to update lesson progress:", error);
+                apiCalledRef.current = false;
+              }
+            }
+          });
         } else {
           console.error("Plyr ref is null");
         }
@@ -107,8 +138,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     }, 100);
 
     return () => clearTimeout(timeoutId);
-  }, [ref.current]);
-  //   console.log(isPause.current);
+  }, [ref.current, videoDuration, lessonId]);
 
   return <Plyr source={videoOptions} ref={ref} options={plyrOptions} />;
 };

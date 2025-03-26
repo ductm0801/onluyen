@@ -153,6 +153,7 @@ const Learning = () => {
             <VideoPlayer
               setIsPlaying={setIsPlaying}
               videoSrc={activeLesson?.videoUrl || ""}
+              lessonId={activeLesson?.lessonId}
               videoRef={videoPlayerRef}
             />
           </div>
