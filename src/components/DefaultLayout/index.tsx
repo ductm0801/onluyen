@@ -38,8 +38,8 @@ const DefaultLayout: React.FC<props> = ({ children }) => {
   const sliderRef = useRef<any>();
   const fetchChat = async () => {
     try {
-      // const res = await getChat(params.id);
-      // if (res) setMessages(res);
+      const res = await getChat();
+      if (res) setMessages(res);
     } catch (err) {
       console.log(err);
     }

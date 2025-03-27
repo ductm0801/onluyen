@@ -45,8 +45,9 @@ const TakeExam = () => {
         if (storedAnswers) {
           setSelectedAnswers(JSON.parse(storedAnswers));
         }
-      } catch (error) {
-        console.error("Error fetching exam:", error);
+      } catch (error: any) {
+        if (error.response.data.message === "Bài làm đã xong.")
+          router.push(`/student/exam/result/${params.id}`);
       } finally {
         setLoading(false);
       }

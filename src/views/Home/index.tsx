@@ -9,13 +9,14 @@ import { IMAGES } from "@/constants/images";
 import {
   enrollExam,
   getExamBySubjectId,
+  getStudentCourseProgress,
   getSubject,
   paymentExamCode,
   takeExam,
 } from "@/services";
 import { useLoading } from "@/providers/loadingProvider";
 import { useAuth } from "@/providers/authProvider";
-import { IExam, Subject } from "@/models";
+import { ICourseProgress, IExam, Subject } from "@/models";
 import { toast } from "react-toastify";
 import CustomButton from "@/components/CustomButton";
 import { useRouter } from "next/navigation";
@@ -24,44 +25,6 @@ import ExamDetail from "../ExamDetail";
 import { db } from "@/firebase/config";
 import { collection, onSnapshot } from "firebase/firestore";
 
-const items = [
-  {
-    id: 0,
-    title: "Vật lý",
-    desc: "Khám phá các quy luật của tự nhiên, bao gồm các chủ đề như cơ học, điện từ, nhiệt động lực học và lý thuyết lượng tử.",
-    value: 80,
-  },
-  {
-    id: 1,
-    title: "Toán",
-    desc: "Bao gồm các chủ đề như đại số, hình học, phép tính và thống kê. Tập trung vào lý luận logic và kỹ năng giải quyết vấn đề.",
-    value: 90,
-  },
-  {
-    id: 2,
-    title: "Hóa",
-    desc: "Nghiên cứu về thành phần, cấu trúc, tính chất và sự thay đổi của vật chất, bao gồm hóa học hữu cơ, vô cơ và vật lý.",
-    value: 75,
-  },
-  {
-    id: 3,
-    title: "Sinh",
-    desc: "Nghiên cứu về sinh vật sống và các quá trình sống, bao gồm sinh học tế bào, di truyền, tiến hóa, sinh thái học và sinh học con người.",
-    value: 85,
-  },
-  {
-    id: 4,
-    title: "Tiếng Anh",
-    desc: "Tập trung vào việc đọc, viết và phân tích văn học, cũng như phát triển kỹ năng giao tiếp bằng tiếng Anh.",
-    value: 95,
-  },
-  {
-    id: 5,
-    title: "Sử",
-    desc: "Nghiên cứu các sự kiện lịch sử, văn hóa và xã hội trong nhiều thời kỳ khác nhau, tập trung vào lịch sử thế giới và lịch sử quốc gia.",
-    value: 70,
-  },
-];
 const renderBullet = (index: number, className: string) =>
   `<div class="${className}"></div>`;
 
@@ -75,6 +38,20 @@ const Home = () => {
   const [open, setOpen] = useState(false);
   const subjectRefs = useRef<(HTMLDivElement | null)[]>([]);
   const examDetail = useRef<any>();
+  const [items, setItems] = useState<ICourseProgress[]>([]);
+
+  const fetCourseProgress = async () => {
+    try {
+      setLoading(true);
+      const res = await getStudentCourseProgress();
+      if (res) setItems(res.data);
+    } catch (error) {
+      setLoading(false);
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleSubjectClick = (id: string, index: number) => {
     setActive(id);
@@ -116,6 +93,7 @@ const Home = () => {
   };
   useEffect(() => {
     fetchSubject();
+    fetCourseProgress();
   }, []);
   const [pageIndex, setPageIndex] = useState(0);
   const [exam, setExam] = useState([]);
@@ -243,15 +221,22 @@ const Home = () => {
                   gaugeSecondaryColor="#1244A2"
                   max={100}
                   min={0}
-                  value={item.value}
+                  value={Math.round(item.progress)}
                 />
                 <div className="flex flex-col gap-4">
                   <div>
-                    <div className="font-bold text-lg">{item.title}</div>
-                    <p className="line-clamp-1 text-xs">{item.desc}</p>
+                    <div className="font-bold text-lg line-clamp-1">
+                      {item.title}
+                    </div>
+                    <p className="line-clamp-1 text-xs">{item.description}</p>
                   </div>
                   <div className="font-bold  text-xs text-[#FDB022] flex items-center gap-[6px] mt-auto cursor-pointer">
-                    <p className="border-b border-[#FDB022] ">
+                    <p
+                      className="border-b border-[#FDB022] "
+                      onClick={() =>
+                        router.push(`/student/learning/${item.courseId}`)
+                      }
+                    >
                       Tiếp tục chương trình
                     </p>
                     <img src={IMAGES.arrowRight} alt="right" />
@@ -282,12 +267,9 @@ const Home = () => {
           {subjects &&
             subjects.map((s, index) => (
               <div
-                ref={(el) => {
-                  subjectRefs.current[index] = el;
-                }}
                 key={s.id}
                 className={` border cursor-pointer hover:border-blue-600 transition-all duration-300 rounded-lg px-4 py-[21px] w-[112px] h-[138px] flex flex-col items-center gap-2`}
-                onClick={() => handleSubjectClick(s.id, index)}
+                onClick={() => router.push(`/student/course/${s.id}`)}
               >
                 <img src={s.imageUrl} alt="img" />
                 <div className="font-bold text-sm text-center">

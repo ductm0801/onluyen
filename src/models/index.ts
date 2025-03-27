@@ -151,11 +151,13 @@ export type ICourse = {
   subjectName: string;
   imageUrl: string;
   isJoined: boolean;
+  isStarted: boolean;
   coursePrice: number;
   courseStatus: keyof typeof courseStatusEnum;
   instructorId: string;
   instructorName: string;
   lessons: ILessons;
+  studentCourseId: string;
 };
 export type ILessons = {
   totalItemsCount: number;
@@ -176,6 +178,13 @@ export type ILesson = {
   imageUrl: string;
   courseId: string;
   courseName: string;
+  progress: IProgress;
+};
+export type IProgress = {
+  id: string;
+  lessonId: string;
+  isCompleted: boolean;
+  completeDate: Date;
 };
 
 export type ITest = {
@@ -251,4 +260,12 @@ export type IInstructorDetail = {
     description: string;
     subjectName: string;
   };
+};
+export type ICourseProgress = {
+  courseId: string;
+  title: string;
+  description: string;
+  isStarted: boolean;
+  progress: number;
+  studentCourseId: string;
 };
