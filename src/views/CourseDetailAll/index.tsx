@@ -4,7 +4,7 @@ import { IMAGES } from "@/constants/images";
 import { ICourse } from "@/models";
 import { useAuth } from "@/providers/authProvider";
 import { useLoading } from "@/providers/loadingProvider";
-import { getCourseDetail, paymentCourse } from "@/services";
+import { getCourseDetail, paymentCourse, startCourse } from "@/services";
 import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
@@ -59,6 +59,14 @@ const CourseDetail = () => {
     } finally {
       setLoading(false);
     }
+  };
+  const handleStartLearning = async () => {
+    if (course?.isStarted) {
+      router.push(`/student/learning/${course?.courseId}`);
+      return;
+    }
+    await startCourse(course?.studentCourseId || "");
+    router.push(`/student/learning/${course?.courseId}`);
   };
   return (
     <div className="grid grid-cols-3 gap-x-8">
@@ -123,7 +131,7 @@ const CourseDetail = () => {
         {course?.isJoined ? (
           <div
             className="bg-[#1244A2] text-white rounded-lg text-center py-3 cursor-pointer flex items-center gap-3 justify-center"
-            onClick={() => router.push(`/student/learning/${course?.courseId}`)}
+            onClick={() => handleStartLearning()}
           >
             Vào học <img src={IMAGES.arrowRight} alt="right" />
           </div>

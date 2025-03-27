@@ -8,10 +8,7 @@ import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { Swiper, SwiperRef, SwiperSlide } from "swiper/react";
 import "swiper/css";
-import "swiper/css/effect-cards";
-
-// import required modules
-import { Autoplay, EffectCards } from "swiper/modules";
+import { Autoplay } from "swiper/modules";
 import CustomButton from "@/components/CustomButton";
 import { useAuth } from "@/providers/authProvider";
 import { Avatar } from "antd";
@@ -53,12 +50,12 @@ const Intro = () => {
   const swiperRef = React.useRef<SwiperRef | null>(null);
 
   const handleSlideNext = () => {
-    if (!swiperRef) return;
-    swiperRef.current?.swiper.slideNext();
+    if (!swiperRef.current) return;
+    swiperRef.current.swiper.slideNext();
   };
   const handleSlidePrev = () => {
-    if (!swiperRef) return;
-    swiperRef.current?.swiper.slidePrev();
+    if (!swiperRef.current) return;
+    swiperRef.current.swiper.slidePrev();
   };
 
   const fetchCourse = async () => {
@@ -304,44 +301,49 @@ const Intro = () => {
               className="rotate-180 cursor-pointer border-white rounded-full border w-[40px]"
               onClick={() => handleSlidePrev()}
             />
-            <Swiper
-              slidesPerView={3}
-              loop={true}
-              autoplay={{ delay: 3000 }}
-              spaceBetween={32}
-              ref={swiperRef}
-              grabCursor={true}
-              modules={[Autoplay]}
-              className="w-full"
-            >
-              {instructor.map((ins, index) => (
-                <SwiperSlide key={index} className="rounded-3xl bg-white">
-                  <div className="flex flex-col justify-center items-center gap-4 p-6">
-                    <p className="text-white bg-[#F01818] rounded-full px-4 py-1 self-start">
-                      {ins.subject.subjectName}
-                    </p>
-                    <p className="text-[#1A1A1A] text-xl font-bold">
-                      {ins.user.fullName}
-                    </p>
+            {instructor.length > 0 && (
+              <Swiper
+                slidesPerView={3.1}
+                autoplay={{
+                  delay: 2500,
+                  disableOnInteraction: false,
+                }}
+                loop={true}
+                spaceBetween={32}
+                ref={swiperRef}
+                grabCursor={true}
+                modules={[Autoplay]}
+                className="w-full"
+              >
+                {instructor.concat(instructor).map((ins, index) => (
+                  <SwiperSlide key={index} className="rounded-3xl bg-white">
+                    <div className="flex flex-col justify-center items-center gap-4 p-6">
+                      <p className="text-white bg-[#F01818] rounded-full px-4 py-1 self-start">
+                        {ins.subject.subjectName}
+                      </p>
+                      <p className="text-[#1A1A1A] text-xl font-bold">
+                        {ins.user.fullName}
+                      </p>
 
-                    <img
-                      src={IMAGES.instructorDefault}
-                      alt="instructor"
-                      className="w-[280px] aspect-[280/336] object-cover rounded-xl"
-                    />
-                    <div className="self-end">
-                      <CustomButton
-                        text="Xem chi tiết"
-                        textHover="Xem ngay"
-                        onClick={() =>
-                          router.push(`/instructor-detail/${ins.user.id}`)
-                        }
+                      <img
+                        src={IMAGES.instructorDefault}
+                        alt="instructor"
+                        className="w-[280px] aspect-[280/336] object-cover rounded-xl"
                       />
+                      <div className="self-end">
+                        <CustomButton
+                          text="Xem chi tiết"
+                          textHover="Xem ngay"
+                          onClick={() =>
+                            router.push(`/instructor-detail/${ins.user.id}`)
+                          }
+                        />
+                      </div>
                     </div>
-                  </div>
-                </SwiperSlide>
-              ))}
-            </Swiper>
+                  </SwiperSlide>
+                ))}
+              </Swiper>
+            )}
             <img
               src={IMAGES.arrowRight}
               alt="right"

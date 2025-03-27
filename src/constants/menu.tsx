@@ -67,6 +67,12 @@ export const menus: Record<
       icon: IMAGES.chatIcon,
       isShow: false,
     },
+    {
+      label: "Khóa học",
+      path: "/student/course",
+      icon: IMAGES.chatIcon,
+      isShow: false,
+    },
   ],
   Instructor: [
     {

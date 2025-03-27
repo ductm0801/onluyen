@@ -16,13 +16,13 @@ type VideoPlayerProps = {
   videoSrc: string;
   videoRef: any;
   setIsPlaying: Dispatch<SetStateAction<boolean>>;
-  lessonId: string | undefined;
+  progressId: string | undefined;
 };
 const VideoPlayer: React.FC<VideoPlayerProps> = ({
   videoSrc,
   setIsPlaying,
   videoRef,
-  lessonId,
+  progressId,
 }) => {
   const ref = useRef<any>(null);
   const [videoDuration, setVideoDuration] = useState(0);
@@ -117,12 +117,12 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
               videoDuration &&
               currentTime >= videoDuration * 0.8 &&
               !apiCalledRef.current &&
-              lessonId
+              progressId
             ) {
               console.log("Gọi API tại 80% video!");
               apiCalledRef.current = true;
               try {
-                await updateLessonProgress(lessonId || "");
+                await updateLessonProgress(progressId || "");
               } catch (error) {
                 console.error("Failed to update lesson progress:", error);
                 apiCalledRef.current = false;
@@ -138,7 +138,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     }, 100);
 
     return () => clearTimeout(timeoutId);
-  }, [ref.current, videoDuration, lessonId]);
+  }, [ref.current, videoDuration, progressId]);
 
   return <Plyr source={videoOptions} ref={ref} options={plyrOptions} />;
 };

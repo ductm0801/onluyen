@@ -356,7 +356,7 @@ export const getExamList = async (
   });
   return res.data;
 };
-export const getChat = async (receiver: string | string[]) => {
+export const getChat = async (receiver?: string | string[]) => {
   const res = await axiosClient.get(`/api/chat/messages`, {
     params: {
       receiver,
@@ -441,10 +441,11 @@ export const getExamResults = async (
 };
 export const getCourseByStudent = async (
   pageIndex: number,
-  pageSize: number
+  pageSize: number,
+  subjectId?: string | string[]
 ) => {
   const res = await axiosClient.get(`/api/courses/guest`, {
-    params: { pageIndex, pageSize },
+    params: { pageIndex, pageSize, subjectId },
   });
   return res.data;
 };
@@ -492,5 +493,13 @@ export const insstructorRegist = async (body: any) => {
 };
 export const updateLessonProgress = async (id: string) => {
   const res = await axiosClient.put(`/api/progress/complete/${id}`);
+  return res.data;
+};
+export const startCourse = async (id: string) => {
+  const res = await axiosClient.put(`/api/student-course/start/${id}`);
+  return res.data;
+};
+export const getStudentCourseProgress = async () => {
+  const res = await axiosClient.get(`/api/student-course/student`);
   return res.data;
 };
