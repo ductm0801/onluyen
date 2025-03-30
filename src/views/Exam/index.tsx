@@ -1,7 +1,7 @@
 "use client";
 import ModalCreateExam from "@/components/ModalCreateExam";
 import Paging from "@/components/Paging";
-import { examEnum } from "@/constants/enum";
+import { examEnum, pendingExamEnum } from "@/constants/enum";
 import { IMAGES } from "@/constants/images";
 import { IAccount, IExam } from "@/models";
 import { useLoading } from "@/providers/loadingProvider";
@@ -27,7 +27,11 @@ const cols = [
     className:
       "px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white",
   },
-
+  {
+    name: "Trạng thái",
+    className:
+      "px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white",
+  },
   {
     name: "Tổng Điểm",
     className:
@@ -40,6 +44,23 @@ const cols = [
       "px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white rounded-e-lg",
   },
 ];
+
+export const renderBgColorStatus = (status: keyof typeof pendingExamEnum) => {
+  switch (status) {
+    case 1:
+      return "from-orange-600 to-orange-300";
+    case 2:
+      return "from-emerald-600 to-emerald-400";
+    case 4:
+      return "from-red-600 to-red-300";
+    case 3:
+      return "from-emerald-600 to-teal-400";
+    case 0:
+      return "from-slate-600 to-slate-300";
+    default:
+      return "from-emerald-500 to-teal-400";
+  }
+};
 
 const Exam = () => {
   const [exam, setExam] = useState<IExam[]>([]);
@@ -155,6 +176,19 @@ const Exam = () => {
                   <td className="px-6 py-4">{a.length} phút</td>
                   {/* <td className="px-6 py-4">{examEnum[a.testType]}</td> */}
                   <td className="px-6 py-4">{a.description}</td>
+                  <td className="px-6 py-4">
+                    <p
+                      className={`bg-gradient-to-br rounded-lg text-white py-0.5 px-2 ${renderBgColorStatus(
+                        a.testApprovalStatus
+                      )}`}
+                    >
+                      {
+                        pendingExamEnum[
+                          a.testApprovalStatus as keyof typeof pendingExamEnum
+                        ]
+                      }
+                    </p>
+                  </td>
                   <td className="px-6 py-4">{a.totalGrade}</td>
                   <td className="px-6 py-4 flex items-center">
                     <div
