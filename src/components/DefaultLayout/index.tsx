@@ -30,12 +30,9 @@ const DefaultLayout: React.FC<props> = ({ children }) => {
   const { theme, toggleTheme } = useTheme();
   const [openChat, setOpenChat] = useState(false);
   const [messages, setMessages] = useState<any[]>([]);
-  const params = useParams();
+
   const [form] = Form.useForm();
 
-  const { setLoading } = useLoading();
-
-  const sliderRef = useRef<any>();
   const fetchChat = async () => {
     try {
       const res = await getChat();
@@ -189,12 +186,12 @@ const DefaultLayout: React.FC<props> = ({ children }) => {
                           className="font-semibold text-white text-lg"
                           onClick={() => toggleDropDown()}
                         >
-                          {user?.fullName}
+                          {user?.user?.fullName}
                         </div>
 
                         <Avatar
                           className="border-2 border-white w-[38px] h-[38px]"
-                          src={user?.imageUrl || IMAGES.defaultAvatar}
+                          src={user?.user?.imageUrl || IMAGES.defaultAvatar}
                         />
 
                         <div

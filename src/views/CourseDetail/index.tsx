@@ -74,6 +74,7 @@ const CourseDetail = () => {
     try {
       setLoading(true);
       await publishCourse(params.id);
+      fetchCourseDetail();
       toast.success("Công khai khóa học thành công!");
     } catch (error: any) {
       toast.error(error.response.data.message);

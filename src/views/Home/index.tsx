@@ -139,6 +139,36 @@ const Home = () => {
       examDetail.current = item;
     }
   };
+  const handleBuyExamCode = async (item: any) => {
+    console.log(item);
+    if (!item.enrollmentId) {
+      try {
+        setLoading(true);
+        const res = await enrollExam(item.id);
+        if (res) {
+          // toast.success(res.message);
+          await fetchExam();
+          const response = await paymentExamCode({
+            examEnrollmentId: res.data,
+            buyerName: "string",
+            buyerEmail: "string",
+            buyerPhone: "string",
+            cancelUrl: `${process.env.NEXT_PUBLIC_HOST}/payment/cancel`,
+            returnUrl: `${process.env.NEXT_PUBLIC_DOMAIN}/student/home`,
+            amount: item.price,
+          });
+          if (response) router.push(response.data);
+        }
+      } catch (err: any) {
+        toast.error(err.response?.data?.message || "Có lỗi xảy ra");
+        console.log(err);
+        setLoading(false);
+        return;
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
   const handleCLose = () => {
     setOpen(false);
     examDetail.current = undefined;
@@ -146,7 +176,7 @@ const Home = () => {
   const handlePayment = async () => {
     try {
       setLoading(true);
-      console.log(examDetail.current);
+
       const res = await paymentExamCode({
         examEnrollmentId: examDetail.current.enrollmentId,
         buyerName: "string",
@@ -325,11 +355,17 @@ const Home = () => {
                       textHover="Đừng ngại"
                       onClick={() => handleOpenPopup(e)}
                     />
-                  ) : (
+                  ) : e.freeAttempts > 0 ? (
                     <CustomButton
                       text="Nhận mã thi"
                       textHover="Đừng ngại"
-                      onClick={() => handleOpenPopup(e)}
+                      onClick={() => handleTakeExam()}
+                    />
+                  ) : (
+                    <CustomButton
+                      text="Mua mã thi"
+                      textHover="Đừng ngại"
+                      onClick={() => handleBuyExamCode(e)}
                     />
                   )}
                 </div>
@@ -337,14 +373,7 @@ const Home = () => {
             ))}
         </div>
       </div>
-      {/* <div>
-        {messages.map((message, index) => (
-          <div key={index} className="flex gap-2">
-            <div className="font-bold">{message.name}</div>
-            <div>{message.message}</div>
-          </div>
-        ))}
-      </div> */}
+
       {open && (
         <Modal
           open={open}

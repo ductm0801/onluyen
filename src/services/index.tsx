@@ -462,7 +462,7 @@ export const getInstructorDetail = async (id: string | string[]) => {
   return res.data;
 };
 export const getUserProfile = async () => {
-  const res = await axiosClient.get(`/api/users/get_user`);
+  const res = await axiosClient.get(`/api/users/get_userDetail`);
   return res.data;
 };
 export const updateUserProfile = async (body: IUSer) => {
@@ -501,5 +501,21 @@ export const startCourse = async (id: string) => {
 };
 export const getStudentCourseProgress = async () => {
   const res = await axiosClient.get(`/api/student-course/student`);
+  return res.data;
+};
+export const getTransactionList = async (
+  pageIndex: number,
+  pageSize: number
+) => {
+  const res = await axiosClient.get(
+    `/api/instructor_transaction/get_list_pending`,
+    {
+      params: {
+        pageIndex,
+        pageSize,
+        SortBy: "string",
+      },
+    }
+  );
   return res.data;
 };
