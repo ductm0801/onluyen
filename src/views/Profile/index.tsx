@@ -29,7 +29,7 @@ const Profile = () => {
       : [],
     datasets: [
       {
-        label: "Bảng điểm trung bình các môn",
+        label: "BBiểu đồ năng lực học tập",
         data: Array.isArray(user?.subjects)
           ? user.subjects.map((a) => a.averageScorePercentage)
           : [],
@@ -137,7 +137,7 @@ const Profile = () => {
         form={form}
         initialValues={user?.user || undefined}
         onFinish={onFinish}
-        className="max-w-screen-sm"
+        className="w-full"
       >
         <div className="grid grid-cols-2 gap-x-8 ">
           <Form.Item
@@ -230,13 +230,17 @@ const Profile = () => {
         </div>
 
         <Form.Item className="flex justify-end">
-          <Button type="primary" htmlType="submit" size="large">
+          <button
+            type="submit"
+            className="bg-blue-500 rounded-lg w-[240px] py-3 text-white font-bold"
+          >
+            {" "}
             {isLoading ? <LoadingOutlined /> : "Cập nhật"}
-          </Button>
+          </button>
         </Form.Item>
       </Form>
       {user?.student && (
-        <div className="w-1/2">
+        <div className="w-1/2 self-center">
           <Radar data={data} options={options} />
         </div>
       )}

@@ -11,7 +11,7 @@ import { Moon, Sun } from "lucide-react";
 import path from "path";
 import { Avatar, Form } from "antd";
 import { useLoading } from "@/providers/loadingProvider";
-import { getChat, sendMessage } from "@/services";
+import { getChat, getNoti, sendMessage } from "@/services";
 import { collection, onSnapshot } from "firebase/firestore";
 import { db } from "@/firebase/config";
 
@@ -30,6 +30,8 @@ const DefaultLayout: React.FC<props> = ({ children }) => {
   const { theme, toggleTheme } = useTheme();
   const [openChat, setOpenChat] = useState(false);
   const [messages, setMessages] = useState<any[]>([]);
+  const [noti, setNoti] = useState<any[]>([]);
+  const [openNoti, setOpenNoti] = useState(false);
 
   const [form] = Form.useForm();
 
@@ -41,10 +43,21 @@ const DefaultLayout: React.FC<props> = ({ children }) => {
       console.log(err);
     }
   };
+  const fetchNoti = async () => {
+    try {
+      const res = await getNoti();
+      if (res) setNoti(res);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   useEffect(() => {
     onSnapshot(collection(db, "chats"), (snapshot) => {
       fetchChat();
+    });
+    onSnapshot(collection(db, "notifications"), (snapshot) => {
+      fetchNoti();
     });
   }, []);
 
@@ -109,7 +122,7 @@ const DefaultLayout: React.FC<props> = ({ children }) => {
   }, [pathName, user]);
 
   return (
-    <>
+    <div className="overflow-x-hidden">
       <Nav sidebarOpen={sidebarOpen} closeSidebar={closeSidebar} />
       <div
         className={
@@ -176,9 +189,14 @@ const DefaultLayout: React.FC<props> = ({ children }) => {
                           )}
                         </div>
                       </div>
-                      {/* <div>
-                        <NotificationMobileComponents />
-                      </div> */}
+                      <div className="relative">
+                        <img
+                          src={IMAGES.bellIcon}
+                          alt="bell"
+                          className="w-[30px] cursor-pointer"
+                          onClick={() => setOpenNoti((prev) => !prev)}
+                        />
+                      </div>
                     </div>
                     {user ? (
                       <div className="flex flex-row gap-[8px] items-center relative group cursor-pointer">
@@ -319,7 +337,27 @@ const DefaultLayout: React.FC<props> = ({ children }) => {
           />
         )}
       </div>
-    </>
+      <div
+        className={`${
+          openNoti ? "translate-x-0" : "translate-x-[100%]"
+        } transition-all overflow-hidden h-full bg-gray-400 duration-300 w-full max-w-[500px] ease-in-out fixed top-2.5 right-0 bottom-0 rounded-s-lg z-50`}
+      >
+        <div
+          className="absolute top-0 text-xl font-bold right-3 cursor-pointer"
+          onClick={() => setOpenNoti(false)}
+        >
+          &times;
+        </div>
+        <div className="flex flex-col gap-1 bg-gray-400  p-2">
+          <p className="text-center">Thông báo</p>
+          {noti.map((noti, index) => (
+            <div key={index} className="flex flex-row gap-2 border-b">
+              {noti.title}
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
   );
 };
 

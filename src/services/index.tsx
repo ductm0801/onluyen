@@ -364,6 +364,10 @@ export const getChat = async (receiver?: string | string[]) => {
   });
   return res.data;
 };
+export const getNoti = async () => {
+  const res = await axiosClient.get(`/api/chat/get_noti`);
+  return res.data;
+};
 export const sendMessage = async (body: any) => {
   const res = await axiosClient.post(`/api/chat/send_chat`, body);
   return res.data;
