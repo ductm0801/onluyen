@@ -14,23 +14,35 @@ export type ILoginRequest = {
 };
 
 export type IUSer = {
-  fullName: string;
-  dateOfBirth: string;
-  address: string;
-  email: string;
-  phoneNumber: number;
-  role: number;
-  imageUrl: string;
-  gender: string;
-  status: number;
+  student: {
+    education: string;
+    level: string;
+    gpa: number;
+    certificate: string;
+  };
+  user: {
+    id: string;
+    imageUrl: string;
+    fullName: string;
+    email: string;
+    phoneNumber: number;
+    address: string;
+    gender: string;
+  };
+  instructor: {
+    id: string;
+    certificate: string;
+    yearOfExperience: number;
+    specialization: string;
+  };
+  subjects: IUserSubject[] | IUserSubject;
+};
+export type IUserSubject = {
   id: string;
-  creationDate: Date;
-  createdBy: Date;
-  modificationDate: Date;
-  modificationBy: string;
-  deletionDate: Date;
-  deleteBy: string;
-  isDeleted: boolean;
+  subjectName: string;
+  subjectDescription: string;
+  imageUrl: string;
+  averageScorePercentage: number;
 };
 
 export type User = IUSer & {

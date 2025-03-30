@@ -19,7 +19,7 @@ const CustomButton: React.FC<props> = ({ text, textHover, onClick }) => {
         {text}
       </p>
 
-      <div className="bg-[#1244A2] w-4 aspect-square rounded-full">
+      <div className="bg-[#1244A2] w-4 aspect-square rounded-full overflow-hidden">
         <img
           src={IMAGES.arrowRight}
           alt="arrow"

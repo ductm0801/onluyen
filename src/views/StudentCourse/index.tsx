@@ -4,7 +4,7 @@ import { IMAGES } from "@/constants/images";
 import { ICourse } from "@/models";
 import { useLoading } from "@/providers/loadingProvider";
 import { getCourseByStudent } from "@/services";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 const StudentCourse = () => {
@@ -15,6 +15,7 @@ const StudentCourse = () => {
   const [totalItems, setTotalItems] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [pageSize, setPageSize] = useState(10);
+  const router = useRouter();
   const fetchCourse = async () => {
     try {
       setLoading(true);
@@ -38,7 +39,11 @@ const StudentCourse = () => {
       </h1>
       <div className="grid grid-cols-4">
         {course.map((c) => (
-          <div key={c.courseId} className="flex flex-col gap-6 items-start">
+          <div
+            key={c.courseId}
+            className="flex flex-col gap-6 items-start cursor-pointer"
+            onClick={() => router.push(`/course/${c.courseId}`)}
+          >
             <img
               src={c.imageUrl}
               alt={`img-${c.courseId}`}

@@ -15,12 +15,12 @@ import React, {
 type VideoPlayerProps = {
   videoSrc: string;
   videoRef: any;
-  setIsPlaying: Dispatch<SetStateAction<boolean>>;
+  setIsSaveProgress: React.Dispatch<React.SetStateAction<boolean>>;
   progressId: string | undefined;
 };
 const VideoPlayer: React.FC<VideoPlayerProps> = ({
   videoSrc,
-  setIsPlaying,
+  setIsSaveProgress,
   videoRef,
   progressId,
 }) => {
@@ -89,16 +89,16 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
                 break;
               case 0:
                 // console.log("Video đã kết thúc.");
+                setIsSaveProgress((prev) => !prev);
                 break;
               case 1:
                 // console.log("Video đang phát.");
-                setIsPlaying(true);
 
                 // isPause.current = false;
                 break;
               case 2:
                 // console.log("Video đang tạm dừng.");
-                setIsPlaying(false);
+
                 // isPause.current = true;
                 break;
               case 3:

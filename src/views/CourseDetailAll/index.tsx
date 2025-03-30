@@ -14,7 +14,7 @@ const CourseDetail = () => {
   const params = useParams();
   const { setLoading } = useLoading();
   const [currentPage, setCurrentPage] = useState(0);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(5);
   const [totalItems, setTotalItems] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const { user } = useAuth();
@@ -37,7 +37,7 @@ const CourseDetail = () => {
   };
   useEffect(() => {
     fetchCourseDetail();
-  }, [params.id]);
+  }, [params.id, currentPage]);
   const handlePayment = async () => {
     if (!user) {
       toast.warning("Vui lòng đăng nhập để thanh toán!");

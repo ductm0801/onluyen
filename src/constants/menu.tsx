@@ -23,6 +23,12 @@ export const menus: Record<
       icon: IMAGES.courseIcon,
       isShow: true,
     },
+    {
+      label: "Yêu cầu rút tiền",
+      path: "/admin/pending-transaction",
+      icon: IMAGES.transactionIcon,
+      isShow: true,
+    },
   ],
   Student: [
     {
