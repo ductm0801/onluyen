@@ -48,4 +48,6 @@ export const IMAGES = {
   transactionIcon: "/assets/transaction.svg",
   learningIcon: "/assets/learningIcon.svg",
   bellIcon: "/assets/bell.svg",
+  systemAva: "/assets/systemAva.png",
+  withDrawIcon: "/assets/withdrawIcon.svg",
 };

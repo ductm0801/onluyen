@@ -189,13 +189,40 @@ const DefaultLayout: React.FC<props> = ({ children }) => {
                           )}
                         </div>
                       </div>
-                      <div className="relative">
-                        <img
-                          src={IMAGES.bellIcon}
-                          alt="bell"
-                          className="w-[30px] cursor-pointer"
-                          onClick={() => setOpenNoti((prev) => !prev)}
-                        />
+
+                      <img
+                        src={IMAGES.bellIcon}
+                        alt="bell"
+                        className="w-[30px] cursor-pointer"
+                        onClick={() => setOpenNoti((prev) => !prev)}
+                      />
+                      <div
+                        className={`${
+                          openNoti ? "h-[452px]" : "h-0"
+                        } transition-all overflow-hidden   bg-white duration-300 shadow-lg   min-w-[388px] ease-in-out absolute top-16 right-16 rounded-xl z-50`}
+                      >
+                        <div className="flex flex-col overflow-y-auto gap-3  py-4 px-6">
+                          {noti.map((noti, index) => (
+                            <div key={index} className="flex items-start gap-2">
+                              <img
+                                src={IMAGES.systemAva}
+                                alt="ava"
+                                className=" aspect-square"
+                              />
+                              <div className="flex flex-col gap-[6px]">
+                                <p className="text-[#101828] font-bold">
+                                  {noti.title}
+                                </p>
+                                <p className="text-[#344054] line-clamp-2 text-sm">
+                                  {noti.body}
+                                </p>
+                                <div className="text-[#2E90FA] text-sm">
+                                  Xem thêm
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
                       </div>
                     </div>
                     {user ? (
@@ -336,26 +363,6 @@ const DefaultLayout: React.FC<props> = ({ children }) => {
             onClick={() => setOpenChat(true)}
           />
         )}
-      </div>
-      <div
-        className={`${
-          openNoti ? "translate-x-0" : "translate-x-[100%]"
-        } transition-all overflow-hidden h-full bg-gray-400 duration-300 w-full max-w-[500px] ease-in-out fixed top-2.5 right-0 bottom-0 rounded-s-lg z-50`}
-      >
-        <div
-          className="absolute top-0 text-xl font-bold right-3 cursor-pointer"
-          onClick={() => setOpenNoti(false)}
-        >
-          &times;
-        </div>
-        <div className="flex flex-col gap-1 bg-gray-400  p-2">
-          <p className="text-center">Thông báo</p>
-          {noti.map((noti, index) => (
-            <div key={index} className="flex flex-row gap-2 border-b">
-              {noti.title}
-            </div>
-          ))}
-        </div>
       </div>
     </div>
   );
