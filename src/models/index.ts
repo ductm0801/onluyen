@@ -34,6 +34,7 @@ export type IUSer = {
     certificate: string;
     yearOfExperience: number;
     specialization: string;
+    availableBalance: number;
   };
   subjects: IUserSubject[] | IUserSubject;
 };

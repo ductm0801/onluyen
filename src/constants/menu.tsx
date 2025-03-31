@@ -82,6 +82,12 @@ export const menus: Record<
   ],
   Instructor: [
     {
+      label: "Thống kê",
+      path: "/instructor/dashboard",
+      icon: IMAGES.statsitcIcon,
+      isShow: true,
+    },
+    {
       label: "Bộ Câu hỏi",
       path: "/instructor/question",
       icon: IMAGES.questionIcon,
@@ -99,6 +105,7 @@ export const menus: Record<
       icon: IMAGES.courseIcon,
       isShow: true,
     },
+
     {
       label: "Tin nhắn",
       path: "/instructor/message",

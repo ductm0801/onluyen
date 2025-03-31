@@ -29,7 +29,7 @@ const Profile = () => {
       : [],
     datasets: [
       {
-        label: "BBiểu đồ năng lực học tập",
+        label: "Biểu đồ năng lực học tập",
         data: Array.isArray(user?.subjects)
           ? user.subjects.map((a) => a.averageScorePercentage)
           : [],
