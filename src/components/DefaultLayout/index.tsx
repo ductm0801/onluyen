@@ -32,7 +32,7 @@ const DefaultLayout: React.FC<props> = ({ children }) => {
   const [messages, setMessages] = useState<any[]>([]);
   const [noti, setNoti] = useState<any[]>([]);
   const [openNoti, setOpenNoti] = useState(false);
-
+  const router = useRouter();
   const [form] = Form.useForm();
 
   const fetchChat = async () => {
@@ -59,7 +59,7 @@ const DefaultLayout: React.FC<props> = ({ children }) => {
     onSnapshot(collection(db, "notifications"), (snapshot) => {
       fetchNoti();
     });
-  }, []);
+  }, [user]);
 
   const handleSubmit = async (values: any) => {
     try {
@@ -79,8 +79,6 @@ const DefaultLayout: React.FC<props> = ({ children }) => {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
-
-  const router = useRouter();
 
   const toggleDropDown = () => {
     setOpen(!open);
@@ -199,7 +197,7 @@ const DefaultLayout: React.FC<props> = ({ children }) => {
                       <div
                         className={`${
                           openNoti ? "h-[452px]" : "h-0"
-                        } transition-all overflow-hidden   bg-white duration-300 shadow-lg   min-w-[388px] ease-in-out absolute top-16 right-16 rounded-xl z-50`}
+                        } transition-all overflow-hidden   bg-white duration-300 shadow-lg w-full  max-w-[388px] ease-in-out absolute top-16 right-16 rounded-xl z-50`}
                       >
                         <div className="flex flex-col overflow-y-auto gap-3  py-4 px-6">
                           {noti.map((noti, index) => (

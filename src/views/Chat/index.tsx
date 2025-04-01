@@ -11,7 +11,6 @@ import { toast } from "react-toastify";
 
 const Chat = () => {
   const [chatList, setchatList] = useState([]);
-  const { setLoading } = useLoading();
   const [activeChat, setActiveChat] = useState("");
   const [messages, setMessages] = useState([]);
   const { user } = useAuth();
@@ -20,19 +19,9 @@ const Chat = () => {
   const fetchChatList = async () => {
     try {
       if (!user) return;
-
       const res = await getListChat();
       if (res) {
         setchatList(res);
-
-        // if (!activeChat && res.length > 0) {
-        //   const firstChat = res[0];
-        //   setActiveChat(
-        //     user?.UserId === firstChat.receiver
-        //       ? firstChat.sender
-        //       : firstChat.receiver
-        //   );
-        // }
       }
     } catch (error) {
       toast.error("Lỗi khi lấy danh sách tin nhắn");
