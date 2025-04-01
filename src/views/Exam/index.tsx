@@ -92,9 +92,9 @@ const Exam = () => {
       setConfirm(false);
       setExamId("");
       fetchExam();
-    } catch (error) {
+    } catch (error: any) {
       setLoading(false);
-      console.error(error);
+      toast.error(error.response.data.message);
     } finally {
       setLoading(false);
     }
