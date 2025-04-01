@@ -214,7 +214,7 @@ const DefaultLayout: React.FC<props> = ({ children }) => {
                                 <p className="text-[#344054] line-clamp-2 text-sm">
                                   {noti.body}
                                 </p>
-                                <div className="text-[#2E90FA] text-sm">
+                                <div className="text-[#2E90FA] text-sm cursor-pointer">
                                   Xem thêm
                                 </div>
                               </div>
