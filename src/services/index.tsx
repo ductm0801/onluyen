@@ -127,11 +127,17 @@ export const deleteExamBank = async (id: string) => {
   const res = await axiosClient.delete(`/api/testBank/${id}`);
   return res.data;
 };
-export const getExam = async (pageIndex: number, pageSize: number) => {
+export const getExam = async (
+  pageIndex: number,
+  pageSize: number,
+  filter: any
+) => {
   const res = await axiosClient.get(`/api/test/paging`, {
     params: {
       pageIndex,
       pageSize,
+      searchTerm: filter.search,
+      testApprovalStatus: filter.status,
     },
   });
   return res.data;

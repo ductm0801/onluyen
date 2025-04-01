@@ -21,7 +21,7 @@ export const renderBgColorStatus = (status: keyof typeof pendingExamEnum) => {
     case 4:
       return "from-red-600 to-red-300";
     case 3:
-      return "from-emerald-600 to-teal-400";
+      return "from-red-600 to-red-400";
     case 0:
       return "from-slate-600 to-slate-300";
     default:
@@ -52,10 +52,10 @@ const ExamDetail = () => {
   useEffect(() => {
     fetchExam();
   }, [params.id]);
-  const onChangeStatus = async () => {
+  const onChangeStatus = async (status: number) => {
     try {
       setLoading(true);
-      const res = await updateTestStatus({ status: 1 }, params.id);
+      const res = await updateTestStatus({ status }, params.id);
       if (res) {
         toast.success(res.message);
         fetchExam();
@@ -88,7 +88,19 @@ const ExamDetail = () => {
       okText: "Xác nhận",
       cancelText: "Hủy",
       onOk: async () => {
-        await onChangeStatus();
+        await onChangeStatus(1);
+      },
+    });
+    return;
+  };
+  const handleConfirmDraft = () => {
+    Modal.confirm({
+      title: "Xác nhận Chuyển Trạng thái bản nháp",
+      content: `Bạn có chắc chắn muốn chuyển trạng thái sang Bản nháp?`,
+      okText: "Xác nhận",
+      cancelText: "Hủy",
+      onOk: async () => {
+        await onChangeStatus(0);
       },
     });
     return;
@@ -117,6 +129,14 @@ const ExamDetail = () => {
             onClick={() => handleConfirm()}
           >
             Chuyển sang chờ duyệt
+          </div>
+        )}
+        {exam?.testApprovalStatus === 3 && (
+          <div
+            className="bg-blue-600 ml-auto text-white text-sm px-3 py-2 rounded-lg font-bold cursor-pointer"
+            onClick={() => handleConfirmDraft()}
+          >
+            Chuyển sang bản nháp
           </div>
         )}
       </div>
