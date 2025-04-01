@@ -120,7 +120,7 @@ const DefaultLayout: React.FC<props> = ({ children }) => {
   }, [pathName, user]);
 
   return (
-    <div className="overflow-x-hidden">
+    <div className="overflow-x-hidden min-h-screen">
       <Nav sidebarOpen={sidebarOpen} closeSidebar={closeSidebar} />
       <div
         className={
