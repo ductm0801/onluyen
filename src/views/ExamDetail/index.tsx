@@ -11,6 +11,7 @@ import { toast } from "react-toastify";
 import FormUpdateInfo from "./FormUpdateInfo";
 import FormUpdateExam from "./FormUpdateExam";
 import { pendingExamEnum } from "@/constants/enum";
+import { useAuth } from "@/providers/authProvider";
 
 export const renderBgColorStatus = (status: keyof typeof pendingExamEnum) => {
   switch (status) {
@@ -37,6 +38,7 @@ const ExamDetail = () => {
   const [totalItems, setTotalItems] = useState(0);
   const [pageSize, setPageSize] = useState(10);
   const { setLoading } = useLoading();
+  const { user } = useAuth();
   const fetchExam = async () => {
     try {
       setLoading(true);
@@ -93,6 +95,18 @@ const ExamDetail = () => {
     });
     return;
   };
+  const handleExamManagerConfirm = () => {
+    Modal.confirm({
+      title: "Xác nhận Chuyển Trạng thái",
+      content: `Bạn có chắc chắn muốn chuyển trạng thái sang công khai? Khi đã chuyển, bạn sẽ không thể chỉnh sửa bài kiểm tra nữa.`,
+      okText: "Xác nhận",
+      cancelText: "Hủy",
+      onOk: async () => {
+        await onChangeStatus(2);
+      },
+    });
+    return;
+  };
   const handleConfirmDraft = () => {
     Modal.confirm({
       title: "Xác nhận Chuyển Trạng thái bản nháp",
@@ -123,14 +137,22 @@ const ExamDetail = () => {
             }
           </p>
         </div>
-        {exam?.testApprovalStatus === 0 && (
-          <div
-            className="bg-blue-600 ml-auto text-white text-sm px-3 py-2 rounded-lg font-bold cursor-pointer"
-            onClick={() => handleConfirm()}
-          >
-            Chuyển sang chờ duyệt
-          </div>
-        )}
+        {exam?.testApprovalStatus === 0 &&
+          (user?.Role === "Instructor" ? (
+            <div
+              className="bg-blue-600 ml-auto text-white text-sm px-3 py-2 rounded-lg font-bold cursor-pointer"
+              onClick={() => handleConfirm()}
+            >
+              Chuyển sang chờ duyệt
+            </div>
+          ) : (
+            <div
+              className="bg-blue-600 ml-auto text-white text-sm px-3 py-2 rounded-lg font-bold cursor-pointer"
+              onClick={() => handleExamManagerConfirm()}
+            >
+              Công khai đề
+            </div>
+          ))}
         {exam?.testApprovalStatus === 3 && (
           <div
             className="bg-blue-600 ml-auto text-white text-sm px-3 py-2 rounded-lg font-bold cursor-pointer"

@@ -2,6 +2,7 @@
 import ModalCreateExamBank from "@/components/ModalCreateExamBank";
 import Paging from "@/components/Paging";
 import { IExamBank } from "@/models";
+import { useAuth } from "@/providers/authProvider";
 import { useLoading } from "@/providers/loadingProvider";
 import { deleteExamBank, getExamBank } from "@/services";
 import { Modal } from "antd";
@@ -45,6 +46,7 @@ const TestBank = () => {
   const [create, setCreate] = useState(false);
   const { setLoading } = useLoading();
   const router = useRouter();
+  const { user } = useAuth();
 
   const [confirm, setConfirm] = useState(false);
   const [examBankId, setExamBankId] = useState("");
@@ -166,7 +168,7 @@ const TestBank = () => {
                     <div
                       className="font-medium whitespace-nowrap text-blue-600 dark:text-blue-500 hover:underline cursor-pointer"
                       onClick={() =>
-                        router.push(`/exammanager/testBank/${a.id}`)
+                        router.push(`/exammanager/bank-test/${a.id}`)
                       }
                     >
                       Chi tiết

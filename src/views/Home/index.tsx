@@ -38,6 +38,7 @@ const Home = () => {
   const [open, setOpen] = useState(false);
   const subjectRefs = useRef<(HTMLDivElement | null)[]>([]);
   const examDetail = useRef<any>();
+  const [cSubject, setCSubject] = useState<Subject[]>([]);
   const [items, setItems] = useState<ICourseProgress[]>([]);
 
   const fetCourseProgress = async () => {
@@ -79,7 +80,7 @@ const Home = () => {
   const fetchSubject = async () => {
     try {
       setLoading(true);
-      const res = await getSubject();
+      const res = await getSubject(true);
       if (res) {
         setSubjects(res.data);
         setActive(res.data[0].id);
@@ -91,8 +92,23 @@ const Home = () => {
       setLoading(false);
     }
   };
+  const fetchSubjectNoGeneral = async () => {
+    try {
+      setLoading(true);
+      const res = await getSubject();
+      if (res) {
+        setCSubject(res.data);
+      }
+    } catch (err) {
+      console.error(err);
+      setLoading(false);
+    } finally {
+      setLoading(false);
+    }
+  };
   useEffect(() => {
     fetchSubject();
+    fetchSubjectNoGeneral();
     fetCourseProgress();
   }, []);
   const [pageIndex, setPageIndex] = useState(0);
@@ -294,8 +310,8 @@ const Home = () => {
       <div className="flex flex-col gap-6">
         <div className="text-2xl font-bold">Môn học</div>
         <div className="flex gap-4 flex-wrap">
-          {subjects &&
-            subjects.map((s, index) => (
+          {cSubject &&
+            cSubject.map((s, index) => (
               <div
                 key={s.id}
                 className={` border cursor-pointer hover:border-blue-600 transition-all duration-300 rounded-lg px-4 py-[21px] w-[112px] h-[138px] flex flex-col items-center gap-2`}
