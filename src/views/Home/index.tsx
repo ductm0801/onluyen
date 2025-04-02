@@ -203,7 +203,7 @@ const Home = () => {
         router.push(`/student/exam/${res.data}`);
       }
     } catch (error: any) {
-      toast.error(error.response.data.message);
+      toast.error(error?.response?.data.message);
       setLoading(false);
     } finally {
       setLoading(false);
@@ -359,7 +359,7 @@ const Home = () => {
                     <CustomButton
                       text="Nhận mã thi"
                       textHover="Đừng ngại"
-                      onClick={() => handleTakeExam()}
+                      onClick={() => handleOpenPopup(e)}
                     />
                   ) : (
                     <CustomButton
