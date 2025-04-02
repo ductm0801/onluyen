@@ -1,14 +1,20 @@
 "use client";
 import { questionEnum } from "@/constants/enum";
-import { IAnswers, IQuestion } from "@/models";
+import { IAnswers, IQuestion, Subject } from "@/models";
 import { useLoading } from "@/providers/loadingProvider";
-import { getQuestionDetail, updateQuestion, uploadImg } from "@/services";
+import {
+  getQuestionDetail,
+  getSubject,
+  updateQuestion,
+  uploadImg,
+} from "@/services";
 import { Button, Checkbox, Form, Input, Radio, Select, Upload } from "antd";
 import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import CombinedEditor from "@/components/CombinedEditor";
 import ReactQuill from "react-quill";
+import { useAuth } from "@/providers/authProvider";
 const { TextArea } = Input;
 const difficultyOptions = [
   { label: "Cơ bản", value: 0 },
@@ -35,7 +41,8 @@ const QuestionDetail: React.FC<props> = ({
   const [question, setQuestion] = useState<IQuestion | undefined>(undefined);
   const { setLoading } = useLoading();
   const [form] = Form.useForm();
-
+  const [subjects, setSubjects] = useState<Subject[]>([]);
+  const { user } = useAuth();
   const fetchDetail = async () => {
     try {
       if (!data) return;
@@ -192,6 +199,28 @@ const QuestionDetail: React.FC<props> = ({
       });
     }
   }, [question]);
+  const fetchSubject = async () => {
+    try {
+      setLoading(true);
+      const res = await getSubject();
+      if (res) {
+        setSubjects(res.data);
+      }
+    } catch (err) {
+      console.error(err);
+      setLoading(false);
+    } finally {
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
+    fetchSubject();
+  }, []);
+
+  if (!subjects) return <></>;
+  const subjectOptions = subjects.map((subject: Subject) => {
+    return { label: subject.subjectName, value: subject.id };
+  });
 
   if (!question) return <div></div>;
   const handleTypeQuestion = () => {
@@ -215,6 +244,27 @@ const QuestionDetail: React.FC<props> = ({
             className="p-4"
           >
             <div className="flex flex-col items-center w-full">
+              {user?.Role === "ExamManager" && (
+                <Form.Item
+                  className="w-full"
+                  name="subjectId"
+                  label="Môn học"
+                  labelCol={{ span: 24 }}
+                  rules={[
+                    {
+                      required: true,
+                      message: "Vui lòng chọn Môn học",
+                    },
+                  ]}
+                >
+                  <Select
+                    size="large"
+                    options={subjectOptions}
+                    className=" text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full  dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                    placeholder="Môn học"
+                  />
+                </Form.Item>
+              )}
               <Form.Item
                 name="title"
                 label="Câu hỏi"
@@ -379,6 +429,27 @@ const QuestionDetail: React.FC<props> = ({
             className="p-4"
           >
             <div className="flex flex-col items-center w-full">
+              {user?.Role === "ExamManager" && (
+                <Form.Item
+                  className="w-full"
+                  name="subjectId"
+                  label="Môn học"
+                  labelCol={{ span: 24 }}
+                  rules={[
+                    {
+                      required: true,
+                      message: "Vui lòng chọn Môn học",
+                    },
+                  ]}
+                >
+                  <Select
+                    size="large"
+                    options={subjectOptions}
+                    className=" text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full  dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                    placeholder="Môn học"
+                  />
+                </Form.Item>
+              )}
               <Form.Item
                 name="title"
                 label="Câu hỏi"
@@ -526,6 +597,27 @@ const QuestionDetail: React.FC<props> = ({
         return (
           <Form className="p-4" form={form} onFinish={onFinish}>
             <div className="flex flex-col items-center w-full">
+              {user?.Role === "ExamManager" && (
+                <Form.Item
+                  className="w-full"
+                  name="subjectId"
+                  label="Môn học"
+                  labelCol={{ span: 24 }}
+                  rules={[
+                    {
+                      required: true,
+                      message: "Vui lòng chọn Môn học",
+                    },
+                  ]}
+                >
+                  <Select
+                    size="large"
+                    options={subjectOptions}
+                    className=" text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full  dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                    placeholder="Môn học"
+                  />
+                </Form.Item>
+              )}
               <Form.Item
                 name="title"
                 label="Câu hỏi"

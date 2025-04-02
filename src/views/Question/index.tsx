@@ -9,6 +9,7 @@ import { useEffect, useRef, useState } from "react";
 import QuestionDetail from "./Detail";
 import { Select } from "antd";
 import ModalCreateQuestionBank from "@/components/ModalCreateQuestionBank";
+import { useAuth } from "@/providers/authProvider";
 const cols = [
   {
     name: "Tên bộ câu hỏi",
@@ -16,25 +17,11 @@ const cols = [
       "px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white rounded-s-lg",
   },
   {
-    name: "Môn học",
-    className:
-      "px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white",
-  },
-  {
     name: "Mô tả",
     className:
       "px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white",
   },
-  // {
-  //   name: "Loại",
-  //   className:
-  //     "px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white",
-  // },
-  //   {
-  //     name: "Ngày tạo",
-  //     className:
-  //       "px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white",
-  //   },
+
   {
     name: "Hành động",
     className:
@@ -48,6 +35,7 @@ const Question = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const [totalItems, setTotalItems] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
+  const { user } = useAuth();
   const { setLoading } = useLoading();
   const router = useRouter();
 
@@ -144,14 +132,18 @@ const Question = () => {
                       {a.questionBankName}
                     </div>
                   </th>
-                  <td className="px-6 py-4">{a.subjectName}</td>
-                  <td className="px-6 py-4 line-clamp-1">{a.description}</td>
+                  <td className="px-6 py-4">{a.description}</td>
+
                   {/* <td className="px-6 py-4">{questionEnum[a.type]}</td> */}
                   <td className="px-6 py-4">
                     <div
                       className="font-medium text-red-600 dark:text-red-500 hover:underline cursor-pointer ms-3"
                       onClick={() =>
-                        router.push(`/instructor/question/${a.id}`)
+                        router.push(
+                          user?.Role === "Instructor"
+                            ? `/instructor/question/${a.id}`
+                            : `/exammanager/question/${a.id}`
+                        )
                       }
                     >
                       Chi tiết

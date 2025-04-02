@@ -529,3 +529,8 @@ export const getTransactionList = async (
   );
   return res.data;
 };
+
+export const getExamAnalyze = async (id: string) => {
+  const res = await axiosClient.get(`/api/exam/analyse/${id}`);
+  return res.data;
+};
