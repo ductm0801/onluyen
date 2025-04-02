@@ -203,7 +203,7 @@ const StudentResult = () => {
                     Điểm thi lần {index + 1}:{" "}
                     <span
                       className={`font-bold ${
-                        item.isPass ? "text-[#F04438]" : "text-[#17B26A]"
+                        item.isPass ? "text-[#17B26A]" : " text-[#F04438]"
                       } `}
                     >
                       {Math.round(item.grade)} /{item.testTotalGrade} điểm

@@ -76,7 +76,9 @@ const ResultDetail = () => {
               : "bg-gray-100 text-gray-500 border-gray-300"
           }`}
                 >
-                  <span>{String.fromCharCode(65 + index)}.</span>
+                  {currentQuestion.type !== 2 && (
+                    <span>{String.fromCharCode(65 + index)}.</span>
+                  )}
                   <span
                     className="ml-4"
                     dangerouslySetInnerHTML={{ __html: answer.content }}
@@ -84,7 +86,9 @@ const ResultDetail = () => {
                 </li>
               );
             })}
-            {!currentQuestion.answers.some((answer) => answer.isSelected) && (
+            {!currentQuestion.answers.some(
+              (answer) => answer.isSelected || answer.isCorrect
+            ) && (
               <p className="w-full text-center text-red-500 font-semibold mt-4">
                 Bạn chưa chọn đáp án nào!
               </p>
