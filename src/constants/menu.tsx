@@ -115,6 +115,12 @@ export const menus: Record<
   ],
   ExamManager: [
     {
+      label: "Thống kê",
+      path: "/exammanager/dashboard",
+      icon: IMAGES.statsitcIcon,
+      isShow: true,
+    },
+    {
       label: "Kì thi",
       path: "/exammanager/exam",
       icon: IMAGES.examList,

@@ -37,7 +37,7 @@ const DefaultLayout: React.FC<props> = ({ children }) => {
 
   const fetchChat = async () => {
     try {
-      const res = await getChat();
+      const res = await getChat("12FFC162-D2D0-420A-8806-647253B09E95");
       if (res) setMessages(res);
     } catch (err) {
       console.log(err);
@@ -229,7 +229,7 @@ const DefaultLayout: React.FC<props> = ({ children }) => {
                           className="font-semibold text-white text-lg"
                           onClick={() => toggleDropDown()}
                         >
-                          {user?.user?.fullName}
+                          {user?.user?.fullName || user.FullName}
                         </div>
 
                         <Avatar

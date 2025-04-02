@@ -362,7 +362,7 @@ export const getExamList = async (
   });
   return res.data;
 };
-export const getChat = async (receiver?: string | string[]) => {
+export const getChat = async (receiver: string | string[]) => {
   const res = await axiosClient.get(`/api/chat/messages`, {
     params: {
       receiver,
