@@ -19,7 +19,7 @@ const ModalCreateTest: React.FC<props> = ({ onClose, fetchExam }) => {
   const fetchSubject = async () => {
     try {
       setLoading(true);
-      const res = await getSubject();
+      const res = await getSubject(true);
       if (res) {
         setSubject(res.data);
       }

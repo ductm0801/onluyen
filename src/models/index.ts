@@ -36,6 +36,13 @@ export type IUSer = {
     specialization: string;
     availableBalance: number;
   };
+  id: string;
+  imageUrl: string;
+  fullName: string;
+  email: string;
+  phoneNumber: number;
+  address: string;
+  gender: string;
   subjects: IUserSubject[] | IUserSubject;
 };
 export type IUserSubject = {

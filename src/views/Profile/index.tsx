@@ -66,10 +66,10 @@ const Profile = () => {
       const res = await getUserProfile();
       setUser(res.data);
       form.setFieldsValue({
-        ...res.data.user,
+        ...(res.data.user || res.data),
         dateOfBirth: res.data.user.dateOfBirth
           ? dayjs(res.data.user.dateOfBirth)
-          : null,
+          : dayjs(res.data.dateOfBirth) || null,
       });
     } catch (error) {
       setLoading(false);
@@ -101,7 +101,7 @@ const Profile = () => {
     }
   };
   useEffect(() => {
-    if (user && user.user.imageUrl) {
+    if ((user && user.user?.imageUrl) || user?.imageUrl) {
       const initialImg = {
         uid: `-${user.user.id}`,
         name: `image${user.user.id}.png`,

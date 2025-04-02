@@ -4,6 +4,7 @@ import Paging from "@/components/Paging";
 import { examEnum, pendingExamEnum } from "@/constants/enum";
 import { IMAGES } from "@/constants/images";
 import { IAccount, IExam } from "@/models";
+import { useAuth } from "@/providers/authProvider";
 import { useLoading } from "@/providers/loadingProvider";
 import { deleteExam, getExam } from "@/services";
 import { Modal, Select } from "antd";
@@ -79,6 +80,7 @@ const Exam = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [create, setCreate] = useState(false);
   const router = useRouter();
+  const { user } = useAuth();
   const [confirm, setConfirm] = useState(false);
   const [examId, setExamId] = useState("");
   const [filter, setFilter] = useState({
@@ -225,7 +227,13 @@ const Exam = () => {
                   <td className="px-6 py-4 flex items-center">
                     <div
                       className="font-medium whitespace-nowrap text-blue-600 dark:text-blue-500 hover:underline cursor-pointer"
-                      onClick={() => router.push(`/instructor/exam/${a.id}`)}
+                      onClick={() =>
+                        router.push(
+                          user?.Role === "Instructor"
+                            ? `/instructor/exam/${a.id}`
+                            : `/exammanager/test/${a.id}`
+                        )
+                      }
                     >
                       Chi tiết
                     </div>

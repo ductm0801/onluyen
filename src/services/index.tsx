@@ -16,9 +16,12 @@ export const login = async (body: ILoginRequest) => {
   const res = await axiosClient.post("/api/accounts/login", body);
   return res.data;
 };
-export const getSubject = async () => {
+export const getSubject = async (showGeneralSubject?: boolean) => {
   const res = await axiosClient.get("/api/subject", {
-    params: { isSortByCourse: false },
+    params: {
+      isSortByCourse: false,
+      showGeneralSubject: showGeneralSubject || false,
+    },
   });
   return res.data;
 };
