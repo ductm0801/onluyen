@@ -9,6 +9,7 @@ import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { Chart, registerables } from "chart.js/auto";
+
 import { Radar } from "react-chartjs-2";
 Chart.register(...registerables);
 

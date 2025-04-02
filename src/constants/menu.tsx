@@ -115,6 +115,12 @@ export const menus: Record<
   ],
   ExamManager: [
     {
+      label: "Thống kê",
+      path: "/exammanager/dashboard",
+      icon: IMAGES.statsitcIcon,
+      isShow: true,
+    },
+    {
       label: "Kì thi",
       path: "/exammanager/exam",
       icon: IMAGES.examList,
@@ -122,14 +128,26 @@ export const menus: Record<
     },
     {
       label: "Ngân hàng đề",
-      path: "/exammanager/testBank",
-      icon: IMAGES.questionIcon,
+      path: "/exammanager/bank-test",
+      icon: IMAGES.testIcon,
       isShow: true,
     },
     {
       label: "Đề Chờ duyệt",
       path: "/exammanager/pending-test",
       icon: IMAGES.pendingExam,
+      isShow: true,
+    },
+    {
+      label: "Bộ Câu hỏi",
+      path: "/exammanager/question",
+      icon: IMAGES.questionIcon,
+      isShow: true,
+    },
+    {
+      label: "Đề kiểm tra",
+      path: "/exammanager/test",
+      icon: IMAGES.examIcon,
       isShow: true,
     },
   ],

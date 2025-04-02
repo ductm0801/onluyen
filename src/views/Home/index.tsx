@@ -101,6 +101,7 @@ const Home = () => {
 
   const fetchExam = async () => {
     const pageSize = 10;
+    if (!active) return;
     try {
       setLoading(true);
       const res = await getExamBySubjectId(active, pageIndex, pageSize);
@@ -140,7 +141,6 @@ const Home = () => {
     }
   };
   const handleBuyExamCode = async (item: any) => {
-    console.log(item);
     if (!item.enrollmentId) {
       try {
         setLoading(true);

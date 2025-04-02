@@ -50,4 +50,5 @@ export const IMAGES = {
   bellIcon: "/assets/bell.svg",
   systemAva: "/assets/systemAva.png",
   withDrawIcon: "/assets/withdrawIcon.svg",
+  testIcon: "/assets/testIcon.svg",
 };

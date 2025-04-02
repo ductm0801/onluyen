@@ -1,18 +1,19 @@
 import { IMAGES } from "@/constants/images";
-import { IAnswers, IQuestion } from "@/models";
+import { IAnswers, IQuestion, Subject } from "@/models";
 import { useLoading } from "@/providers/loadingProvider";
-import { createQuestion, uploadImg } from "@/services";
+import { createQuestion, getSubject, uploadImg } from "@/services";
 import {
   CheckSquareOutlined,
   FormOutlined,
   FullscreenExitOutlined,
 } from "@ant-design/icons";
 import { Button, Checkbox, Form, Input, Radio, Select, Upload } from "antd";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import CombinedEditor from "../CombinedEditor";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
+import { useAuth } from "@/providers/authProvider";
 const { TextArea } = Input;
 
 type props = {
@@ -61,6 +62,8 @@ const ModalCreateQuestion: React.FC<props> = ({
   const { setLoading } = useLoading();
   const [form] = Form.useForm();
   const [type, setType] = useState({ label: "", value: -1 });
+  const [subjects, setSubjects] = useState<Subject[]>([]);
+  const { user } = useAuth();
 
   const handleChangeImage = async ({ file }: { file: any }, name: any) => {
     setLoading(true);
@@ -75,6 +78,29 @@ const ModalCreateQuestion: React.FC<props> = ({
       setLoading(false);
     }
   };
+
+  const fetchSubject = async () => {
+    try {
+      setLoading(true);
+      const res = await getSubject();
+      if (res) {
+        setSubjects(res.data);
+      }
+    } catch (err) {
+      console.error(err);
+      setLoading(false);
+    } finally {
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
+    fetchSubject();
+  }, []);
+
+  if (!subjects) return <></>;
+  const subjectOptions = subjects.map((subject: Subject) => {
+    return { label: subject.subjectName, value: subject.id };
+  });
 
   const handleTypeQuestion = () => {
     switch (type.value) {
@@ -95,6 +121,27 @@ const ModalCreateQuestion: React.FC<props> = ({
             className="p-4"
           >
             <div className="flex flex-col items-center w-full">
+              {user?.Role === "ExamManager" && (
+                <Form.Item
+                  className="w-full"
+                  name="subjectId"
+                  label="Môn học"
+                  labelCol={{ span: 24 }}
+                  rules={[
+                    {
+                      required: true,
+                      message: "Vui lòng chọn Môn học",
+                    },
+                  ]}
+                >
+                  <Select
+                    size="large"
+                    options={subjectOptions}
+                    className=" text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full  dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                    placeholder="Môn học"
+                  />
+                </Form.Item>
+              )}
               <Form.Item
                 name="title"
                 label="Câu hỏi"
@@ -105,10 +152,7 @@ const ModalCreateQuestion: React.FC<props> = ({
                 <TextArea />
               </Form.Item>
 
-              <Form.Item
-                name="imageUrl"
-                rules={[{ required: true, message: "Vui lòng chọn ảnh" }]}
-              >
+              <Form.Item name="imageUrl">
                 <Upload
                   listType="picture-card"
                   maxCount={1}
@@ -217,6 +261,27 @@ const ModalCreateQuestion: React.FC<props> = ({
             className="p-4"
           >
             <div className="flex flex-col items-center w-full">
+              {user?.Role === "ExamManager" && (
+                <Form.Item
+                  className="w-full"
+                  name="subjectId"
+                  label="Môn học"
+                  labelCol={{ span: 24 }}
+                  rules={[
+                    {
+                      required: true,
+                      message: "Vui lòng chọn Môn học",
+                    },
+                  ]}
+                >
+                  <Select
+                    size="large"
+                    options={subjectOptions}
+                    className=" text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full  dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                    placeholder="Môn học"
+                  />
+                </Form.Item>
+              )}
               <Form.Item
                 name="title"
                 label="Câu hỏi"
@@ -226,10 +291,7 @@ const ModalCreateQuestion: React.FC<props> = ({
               >
                 <TextArea />
               </Form.Item>
-              <Form.Item
-                name="imageUrl"
-                rules={[{ required: true, message: "Vui lòng chọn ảnh" }]}
-              >
+              <Form.Item name="imageUrl">
                 <Upload
                   listType="picture-card"
                   maxCount={1}
@@ -339,6 +401,27 @@ const ModalCreateQuestion: React.FC<props> = ({
             }}
           >
             <div className="flex flex-col items-center w-full">
+              {user?.Role === "ExamManager" && (
+                <Form.Item
+                  className="w-full"
+                  name="subjectId"
+                  label="Môn học"
+                  labelCol={{ span: 24 }}
+                  rules={[
+                    {
+                      required: true,
+                      message: "Vui lòng chọn Môn học",
+                    },
+                  ]}
+                >
+                  <Select
+                    size="large"
+                    options={subjectOptions}
+                    className=" text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full  dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                    placeholder="Môn học"
+                  />
+                </Form.Item>
+              )}
               <Form.Item
                 name="title"
                 label="Câu hỏi"
@@ -348,10 +431,7 @@ const ModalCreateQuestion: React.FC<props> = ({
               >
                 <TextArea />
               </Form.Item>
-              <Form.Item
-                name="imageUrl"
-                rules={[{ required: true, message: "Vui lòng chọn ảnh" }]}
-              >
+              <Form.Item name="imageUrl">
                 <Upload
                   listType="picture-card"
                   maxCount={1}

@@ -6,7 +6,7 @@ import { useLoading } from "@/providers/loadingProvider";
 import { getChat, getListChat, sendMessage } from "@/services";
 import { Form } from "antd";
 import { collection, onSnapshot } from "firebase/firestore";
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 
 const Chat = () => {
@@ -34,6 +34,7 @@ const Chat = () => {
   }, [user]);
   const fetchChat = async () => {
     try {
+      if (!activeChat) return;
       const res = await getChat(activeChat);
       if (res) setMessages(res);
     } catch (err) {
@@ -170,4 +171,4 @@ const Chat = () => {
   );
 };
 
-export default Chat;
+export default React.memo(Chat);

@@ -362,7 +362,7 @@ export const getExamList = async (
   });
   return res.data;
 };
-export const getChat = async (receiver?: string | string[]) => {
+export const getChat = async (receiver: string | string[]) => {
   const res = await axiosClient.get(`/api/chat/messages`, {
     params: {
       receiver,
@@ -527,5 +527,10 @@ export const getTransactionList = async (
       },
     }
   );
+  return res.data;
+};
+
+export const getExamAnalyze = async (id: string) => {
+  const res = await axiosClient.get(`/api/exam/analyse/${id}`);
   return res.data;
 };

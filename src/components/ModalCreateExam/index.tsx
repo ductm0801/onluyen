@@ -1,4 +1,5 @@
 import { IExam, IExamBank } from "@/models";
+import { useAuth } from "@/providers/authProvider";
 import { useLoading } from "@/providers/loadingProvider";
 import { createExam, getExamBankAll } from "@/services";
 import { Form, Input, Select } from "antd";
@@ -18,6 +19,7 @@ const examType = [
 const ModalCreateExam: React.FC<props> = ({ onClose, fetchExam }) => {
   const [form] = Form.useForm();
   const { setLoading } = useLoading();
+  const { user } = useAuth();
   const [examBank, setExamBank] = useState<IExamBank[]>([]);
   const onFinish = async (values: IExam) => {
     try {
@@ -149,45 +151,27 @@ const ModalCreateExam: React.FC<props> = ({ onClose, fetchExam }) => {
                   placeholder="Tổng điểm"
                 />
               </Form.Item>
-
-              <Form.Item
-                className="col-span-2 mb-0"
-                name="testBankId"
-                label="Ngân hàng đề"
-                labelCol={{ span: 24 }}
-                rules={[
-                  {
-                    required: true,
-                    message: "Vui lòng chọn Ngân hàng đề",
-                  },
-                ]}
-              >
-                <Select
-                  size="large"
-                  options={examBankOptions}
-                  className="bg-gray-50 border  text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full  dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                  placeholder="Ngân hàng đề"
-                />
-              </Form.Item>
-              {/* <Form.Item
-                className="col-span-2  mb-0"
-                name="testType"
-                label="Dạng đề"
-                labelCol={{ span: 24 }}
-                rules={[
-                  {
-                    required: true,
-                    message: "Vui lòng chọn Dạng đề",
-                  },
-                ]}
-              >
-                <Select
-                  size="large"
-                  options={examType}
-                  className="bg-gray-50 border  text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full  dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                  placeholder="Dạng đề"
-                />
-              </Form.Item> */}
+              {user?.Role === "Instructor" && (
+                <Form.Item
+                  className="col-span-2 mb-0"
+                  name="testBankId"
+                  label="Ngân hàng đề"
+                  labelCol={{ span: 24 }}
+                  rules={[
+                    {
+                      required: true,
+                      message: "Vui lòng chọn Ngân hàng đề",
+                    },
+                  ]}
+                >
+                  <Select
+                    size="large"
+                    options={examBankOptions}
+                    className="bg-gray-50 border  text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full  dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                    placeholder="Ngân hàng đề"
+                  />
+                </Form.Item>
+              )}
               <Form.Item
                 className="col-span-2  mb-0"
                 name="description"
