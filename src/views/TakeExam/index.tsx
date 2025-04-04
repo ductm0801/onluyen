@@ -71,6 +71,31 @@ const TakeExam = () => {
     }
   }, [timeLeft]);
 
+  useEffect(() => {
+    const autoSaveInterval = setInterval(() => {
+      autoSaveExam();
+    }, 30000);
+
+    return () => clearInterval(autoSaveInterval);
+  }, [selectedAnswers]);
+
+  const autoSaveExam = async () => {
+    const formattedAnswers = Object.entries(selectedAnswers).map(
+      ([questionId, answer]) => ({
+        questionId,
+        answerIds: answer.ids || [],
+        answerText: answer.text || "",
+      })
+    );
+
+    try {
+      await saveExam({ studentAnswers: formattedAnswers }, params.id);
+      console.log("Bài làm đã được lưu tự động.");
+    } catch (err: any) {
+      toast.error("Lỗi khi lưu bài làm tự động.");
+    }
+  };
+
   const handleSelectAnswer = (
     questionId: string,
     type: number,

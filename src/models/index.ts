@@ -100,6 +100,7 @@ export type IQuestion = {
   isDeleted: boolean;
   answerText?: string;
   answers: IAnswers[];
+  subjectName: string;
 };
 
 export type IQuestionBank = {

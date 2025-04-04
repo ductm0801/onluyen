@@ -41,11 +41,11 @@ const cols = [
     className:
       "px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white",
   },
-  //   {
-  //     name: "Ngày tạo",
-  //     className:
-  //       "px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white",
-  //   },
+  {
+    name: "Môn học",
+    className:
+      "px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white",
+  },
   {
     name: "Hành động",
     className:
@@ -330,6 +330,7 @@ const BankDetail = () => {
                       {difficultyEnum[a.difficulty]}
                     </td>
                     <td className="px-6 py-4">{questionEnum[a.type]}</td>
+                    <td className="px-6 py-4">{a.subjectName}</td>
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-2">
                         <div

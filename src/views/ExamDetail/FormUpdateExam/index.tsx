@@ -6,6 +6,7 @@ import {
   getQuestionBank,
   getQuestionByBank,
   getQuestionNotInExam,
+  previewExcelTemplate,
   updateExamQuestion,
 } from "@/services";
 import QuestionDetail from "@/views/Question/Detail";
@@ -238,6 +239,15 @@ const FormUpdateExam: React.FC<Props> = ({ exam, id }) => {
                 onChange={(e) => handleSearch(e.target.value)}
               />
             </div>
+            <div
+              className="text-blue-500 text-lg font-bold whitespace-nowrap cursor-pointer hover:text-blue-600"
+              onClick={() => {
+                setExamQuestions([...examQuestions, ...dataQuestion]);
+                setDataQuestion([]);
+              }}
+            >
+              Chọn tất cả {dataQuestion.length} câu hỏi
+            </div>
           </div>
           <div
             className={`border h-full  overflow-auto max-h-[500px] min-h-[500px] rounded-xl p-4 flex flex-col gap-2 transition-all duration-300 ${
@@ -265,7 +275,10 @@ const FormUpdateExam: React.FC<Props> = ({ exam, id }) => {
                   draggable
                   onDragStart={(e) => handleDragStart(e, question)}
                 >
-                  <p dangerouslySetInnerHTML={{ __html: question.title }} />{" "}
+                  <p
+                    className="line-clamp-1"
+                    dangerouslySetInnerHTML={{ __html: question.title }}
+                  />{" "}
                   <img
                     src={IMAGES.editIcon}
                     alt="icon"
@@ -292,7 +305,7 @@ const FormUpdateExam: React.FC<Props> = ({ exam, id }) => {
             </p>
           </div>
           <div
-            className={`w-full h-full overflow-auto  flex flex-col gap-2 border min-h-[500px] rounded-xl p-4 transition-all duration-300 ${
+            className={`w-full h-full overflow-auto  flex flex-col gap-2 border max-h-[585px] min-h-[500px] rounded-xl p-4 transition-all duration-300 ${
               isDraggingOverExam ? "bg-green-100 border-green-400" : "bg-white"
             }`}
             onDragOver={(e) => {
@@ -312,7 +325,10 @@ const FormUpdateExam: React.FC<Props> = ({ exam, id }) => {
                 draggable
                 onDragStart={(e) => handleDragStart(e, question)}
               >
-                <p dangerouslySetInnerHTML={{ __html: question.title }} />
+                <p
+                  className="line-clamp-1"
+                  dangerouslySetInnerHTML={{ __html: question.title }}
+                />
                 <img
                   src={IMAGES.editIcon}
                   alt="icon"
