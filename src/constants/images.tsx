@@ -53,4 +53,6 @@ export const IMAGES = {
   testIcon: "/assets/testIcon.svg",
   notiEmpty: "/assets/notiEmpty.png",
   clockIcon: "/assets/clock.png",
+  correct: "/assets/correct.png",
+  notCorrect: "/assets/notCorrect.png",
 };

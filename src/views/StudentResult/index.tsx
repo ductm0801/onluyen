@@ -214,14 +214,19 @@ const StudentResult = () => {
                     <p className="font-bold">
                       {moment(item.publishedDate).diff(
                         moment(item.attemptDate),
-                        "minutes"
-                      )}{" "}
-                      phút{" "}
-                      {moment(item.publishedDate).diff(
-                        moment(item.attemptDate),
                         "seconds"
-                      ) % 60}{" "}
-                      giây
+                      ) >
+                      item.testLength * 60
+                        ? `${item.testLength} phút`
+                        : `${moment(item.publishedDate).diff(
+                            moment(item.attemptDate),
+                            "minutes"
+                          )} phút ${
+                            moment(item.publishedDate).diff(
+                              moment(item.attemptDate),
+                              "seconds"
+                            ) % 60
+                          } giây`}
                     </p>
                   </div>
                 </div>
