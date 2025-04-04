@@ -1,8 +1,9 @@
 "use client";
 import Paging from "@/components/Paging";
-import { Subject } from "@/models";
+import { IExam, Subject } from "@/models";
 import { useLoading } from "@/providers/loadingProvider";
 import { getExamAnalyze, getExamBySubjectId, getSubject } from "@/services";
+import { Select } from "antd";
 import { Chart, registerables } from "chart.js/auto";
 import { useEffect, useRef, useState } from "react";
 import { Bar, Line } from "react-chartjs-2";
@@ -49,7 +50,7 @@ const Dashboard = () => {
     fetchSubject();
   }, []);
   const [pageIndex, setPageIndex] = useState(0);
-  const [exam, setExam] = useState([]);
+  const [exam, setExam] = useState<any[]>([]);
 
   const fetchExam = async () => {
     const pageSize = 3;
@@ -107,7 +108,7 @@ const Dashboard = () => {
       y: {
         beginAtZero: true,
         ticks: {
-          stepSize: 1,
+          stepSize: 100,
         },
       },
     },
@@ -138,7 +139,7 @@ const Dashboard = () => {
         y: {
           beginAtZero: true,
           ticks: {
-            stepSize: 1,
+            stepSize: 10,
           },
         },
       },
@@ -192,12 +193,32 @@ const Dashboard = () => {
       },
     ],
   };
+  const subjectOptions = subjects.map((subject) => ({
+    value: subject.id,
+    label: subject.subjectName,
+  }));
+  const examOptions = exam.map((exam) => ({
+    value: exam.id,
+    label: exam.examName,
+  }));
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex items-center gap-4">
-        <div className="rounded-2xl w-1/4 flex-shrink-0 border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
-          <h4 className="font-bold text-gray-800 text-title-sm dark:text-white/90">
+      <div className="flex items-center justify-end gap-4">
+        <Select
+          options={subjectOptions}
+          value={active}
+          onChange={(value) => setActive(value)}
+        />
+        <Select
+          options={examOptions}
+          value={examActive}
+          onChange={(value) => setExamActive(value)}
+        />
+      </div>
+      <div className="grid grid-cols-4 gap-4">
+        <div className="rounded-2xl  flex-shrink-0 border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-4">
+          <h4 className="font-bold text-gray-800 text-nase dark:text-white/90">
             Tổng lợi nhuận
           </h4>
           <div className="flex items-end justify-between mt-4 sm:mt-5">
@@ -208,8 +229,8 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
-        <div className="rounded-2xl w-1/4 flex-shrink-0 border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
-          <h4 className="font-bold text-gray-800 text-title-sm dark:text-white/90">
+        <div className="rounded-2xl  flex-shrink-0 border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-4">
+          <h4 className="font-bold text-gray-800 text-base dark:text-white/90">
             Số học sinh đậu
           </h4>
           <div className="flex items-end justify-between mt-4 sm:mt-5">
@@ -223,8 +244,8 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
-        <div className="rounded-2xl w-1/4 flex-shrink-0 border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
-          <h4 className="font-bold text-gray-800 text-title-sm dark:text-white/90">
+        <div className="rounded-2xl  flex-shrink-0 border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-4">
+          <h4 className="font-bold text-gray-800 text-base dark:text-white/90">
             Số học sinh không đậu
           </h4>
           <div className="flex items-end justify-between mt-4 sm:mt-5">
@@ -238,8 +259,8 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
-        <div className="rounded-2xl w-1/4 flex-shrink-0 border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
-          <h4 className="font-bold text-gray-800 text-title-sm dark:text-white/90">
+        <div className="rounded-2xl  flex-shrink-0 border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-4">
+          <h4 className="font-bold text-gray-800 text-base dark:text-white/90">
             Số học sinh tham gia
           </h4>
           <div className="flex items-end justify-between mt-4 sm:mt-5">
@@ -253,57 +274,6 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
-      </div>
-      <div className="flex border-b overflow-auto">
-        {subjects &&
-          subjects.map((s, index) => (
-            <div
-              ref={(el) => {
-                subjectRefs.current[index] = el;
-              }}
-              key={s.id}
-              className={`w-fit flex-shrink-0 ${
-                active === s.id ? "border-b-2 border-[#1244A2]" : ""
-              }  cursor-pointer transition-all duration-500 ease-in-out p-2`}
-              onClick={() => handleSubjectClick(s.id, index)}
-            >
-              <div className="flex flex-col items-center gap-2">
-                <div>
-                  <div className="font-bold text-sm text-center">
-                    {s.subjectName}
-                  </div>
-                  {/* <p className="line-clamp-2">{s.subjectDescription}</p> */}
-                </div>
-              </div>
-            </div>
-          ))}
-      </div>
-      <div>
-        <div className="grid grid-cols-3 gap-4">
-          {exam &&
-            exam.map((e: any, index) => (
-              <div
-                className={`${
-                  examActive === e.id
-                    ? "bg-blue-500/50 text-white"
-                    : "bg-white text-black"
-                } transition-all duration-300 flex flex-col gap-4 border w-full border-[#D0D5DD] rounded-xl p-4`}
-                key={e.id}
-                onClick={() => setExamActive(e.id)}
-              >
-                <p className="font-bold h-[50px] text-start max-w-[70%]">
-                  {e.examName}
-                </p>
-              </div>
-            ))}
-        </div>
-        <Paging
-          currentPage={pageIndex}
-          pageSize={6}
-          setCurrentPage={setPageIndex}
-          totalItems={totalItemsCount}
-          totalPages={totalPages}
-        />
       </div>
       <div className="grid grid-cols-2 gap-4">
         <div className="shadow-lg rounded-lg p-4 bg-white dark:bg-white/[0.03]">
