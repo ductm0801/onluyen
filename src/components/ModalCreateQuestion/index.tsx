@@ -1,5 +1,6 @@
 import { IMAGES } from "@/constants/images";
-import { IAnswers, IQuestion, Subject } from "@/models";
+import { IAnswers, Subject } from "@/models";
+import { useAuth } from "@/providers/authProvider";
 import { useLoading } from "@/providers/loadingProvider";
 import { createQuestion, getSubject, uploadImg } from "@/services";
 import {
@@ -9,32 +10,14 @@ import {
 } from "@ant-design/icons";
 import { Button, Checkbox, Form, Input, Radio, Select, Upload } from "antd";
 import React, { useEffect, useState } from "react";
-import { toast } from "react-toastify";
-import CombinedEditor from "../CombinedEditor";
-import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
-import { useAuth } from "@/providers/authProvider";
+import { toast } from "react-toastify";
 const { TextArea } = Input;
 
 type props = {
   onClose: () => void;
   bankId: string | string[];
   fetchQuestion: () => Promise<void>;
-};
-
-const modules = {
-  toolbar: [
-    ["bold", "italic", "underline"],
-
-    [{ list: "ordered" }, { list: "bullet" }],
-    [{ indent: "-1" }, { indent: "+1" }],
-    [{ align: [] }],
-    [{ color: [] }],
-    ["image", "formula"],
-  ],
-  clipboard: {
-    matchVisual: false,
-  },
 };
 
 const difficultyOptions = [

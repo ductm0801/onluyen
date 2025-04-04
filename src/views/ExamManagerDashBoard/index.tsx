@@ -33,7 +33,7 @@ const Dashboard = () => {
   const fetchSubject = async () => {
     try {
       setLoading(true);
-      const res = await getSubject();
+      const res = await getSubject(true);
       if (res) {
         setSubjects(res.data);
         setActive(res.data[0].id);

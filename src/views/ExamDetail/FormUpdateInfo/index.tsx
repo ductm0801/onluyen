@@ -1,4 +1,5 @@
 import { IExam, IExamBank } from "@/models";
+import { useAuth } from "@/providers/authProvider";
 import { useLoading } from "@/providers/loadingProvider";
 import { getExamBankAll, updateExam } from "@/services";
 import { Button, Form, Input, Select } from "antd";
@@ -22,6 +23,7 @@ const FormUpdateInfo = ({
   const [form] = Form.useForm();
   const { setLoading } = useLoading();
   const [examBank, setExamBank] = useState<IExamBank[]>([]);
+  const { user } = useAuth();
   const onFinish = async (values: IExam) => {
     try {
       setLoading(true);
@@ -118,19 +120,21 @@ const FormUpdateInfo = ({
         >
           <Select size="large" options={examOptions} />
         </Form.Item> */}
-        <Form.Item
-          name="testBankId"
-          label="Ngân hàng đề"
-          labelCol={{ span: 24 }}
-          rules={[
-            {
-              required: true,
-              message: "Vui lòng chọn dạng đề",
-            },
-          ]}
-        >
-          <Select size="large" options={examBankOptions} />
-        </Form.Item>
+        {user?.Role === "Instructor" && (
+          <Form.Item
+            name="testBankId"
+            label="Ngân hàng đề"
+            labelCol={{ span: 24 }}
+            rules={[
+              {
+                required: true,
+                message: "Vui lòng chọn dạng đề",
+              },
+            ]}
+          >
+            <Select size="large" options={examBankOptions} />
+          </Form.Item>
+        )}
         <Form.Item
           className="col-span-2 "
           name="description"
