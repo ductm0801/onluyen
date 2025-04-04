@@ -19,6 +19,10 @@ import { toast } from "react-toastify";
 type Props = {
   exam: IExam | undefined;
   id: string | string[];
+  examCurrentPage: number;
+  setExamCurrentPage: React.Dispatch<React.SetStateAction<number>>;
+  totalExamItem: number;
+  totalExamPage: number;
 };
 const type = [
   { label: "Chọn một", value: 0 },
@@ -33,7 +37,14 @@ const difficulty = [
   { label: "Học thuật", value: 4 },
 ];
 
-const FormUpdateExam: React.FC<Props> = ({ exam, id }) => {
+const FormUpdateExam: React.FC<Props> = ({
+  exam,
+  id,
+  examCurrentPage,
+  setExamCurrentPage,
+  totalExamItem,
+  totalExamPage,
+}) => {
   const [dataQuestion, setDataQuestion] = useState<IQuestion[]>([]);
   const [questionBank, setQuestionBank] = useState<IQuestionBank[]>([]);
   const [activeQuestionBank, setActiveQuestionBank] = useState({
@@ -58,8 +69,12 @@ const FormUpdateExam: React.FC<Props> = ({ exam, id }) => {
   const [currentPage, setCurrentPage] = useState(0);
   const [totalItems, setTotalItems] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
+
   const params = useParams();
 
+  useEffect(() => {
+    setExamQuestions(exam?.questions || []);
+  }, [exam, examCurrentPage]);
   const fetchQuestionBank = async () => {
     try {
       setLoading(true);
@@ -301,7 +316,7 @@ const FormUpdateExam: React.FC<Props> = ({ exam, id }) => {
           <div className="flex items-center justify-between">
             <p className="text-xl font-bold">Câu hỏi trong đề</p>
             <p>
-              tổng <b>{examQuestions.length}</b> câu hỏi
+              tổng <b>{exam.totalItemsCount}</b> câu hỏi
             </p>
           </div>
           <div
@@ -337,6 +352,13 @@ const FormUpdateExam: React.FC<Props> = ({ exam, id }) => {
                 />
               </div>
             ))}
+            <Paging
+              pageSize={10}
+              currentPage={examCurrentPage}
+              totalItems={totalExamItem}
+              totalPages={totalExamPage}
+              setCurrentPage={setExamCurrentPage}
+            />
           </div>
         </div>
       </div>

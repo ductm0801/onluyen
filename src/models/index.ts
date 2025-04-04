@@ -143,6 +143,8 @@ export type IExam = {
   questions: IQuestion[];
   studentGrade: number;
   studentCorrectAnswers: number;
+  totalItemsCount: number;
+  totalPageCount: number;
 };
 
 export type IExamPayment = {
