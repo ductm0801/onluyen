@@ -1,5 +1,6 @@
 "use client";
 import Paging from "@/components/Paging";
+import { userRoleEnum } from "@/constants/enum";
 import { IMAGES } from "@/constants/images";
 import { IAccount } from "@/models";
 import { useLoading } from "@/providers/loadingProvider";
@@ -58,10 +59,8 @@ const Account = () => {
   const fetchAccount = async () => {
     try {
       setLoading(true);
-      const res = await getUser();
+      const res = await getUser(currentPage, 5);
       if (res) setAccount(res.data.items);
-      setPageSize(res.data.pageSize);
-      setCurrentPage(res.data.pageIndex);
       setTotalItems(res.data.totalItemsCount);
       setTotalPages(res.data.totalPageCount);
     } catch (error) {
@@ -73,7 +72,7 @@ const Account = () => {
   };
   useEffect(() => {
     fetchAccount();
-  }, []);
+  }, [currentPage]);
 
   const onConfirm = async () => {
     try {
@@ -148,7 +147,7 @@ const Account = () => {
                     <div className="font-normal text-gray-500">{a.email}</div>
                   </div>
                 </th>
-                <td className="px-6 py-4">{a.role}</td>
+                <td className="px-6 py-4">{userRoleEnum[a.role]}</td>
                 {/* <td className="px-6 py-4">{a.phoneNumber}</td> */}
                 <td className="px-6 py-4">
                   {a.isDelete ? (
@@ -159,7 +158,7 @@ const Account = () => {
                   ) : (
                     <div className="flex items-center">
                       <div className="h-2.5 w-2.5 rounded-full bg-green-500 me-2"></div>{" "}
-                      Đang hoạt độngđộng
+                      Đang hoạt động
                     </div>
                   )}
                 </td>

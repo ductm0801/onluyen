@@ -52,8 +52,10 @@ export const studentRegist = async (body: IRegist) => {
   const res = await axiosClient.post("/api/students/regist", body);
   return res.data;
 };
-export const getUser = async () => {
-  const res = await axiosClient.get("/api/users");
+export const getUser = async (pageIndex: number, pageSize: number) => {
+  const res = await axiosClient.get("/api/users", {
+    params: { pageIndex, pageSize },
+  });
   return res.data;
 };
 export const updateUserStatus = async (id: string) => {

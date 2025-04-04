@@ -199,28 +199,45 @@ const DefaultLayout: React.FC<props> = ({ children }) => {
                           openNoti ? "h-[452px]" : "h-0"
                         } transition-all overflow-hidden   bg-white duration-300 shadow-lg w-full  max-w-[388px] ease-in-out absolute top-16 right-16 rounded-xl z-50`}
                       >
-                        <div className="flex flex-col overflow-y-auto gap-3  py-4 px-6">
-                          {noti.map((noti, index) => (
-                            <div key={index} className="flex items-start gap-2">
-                              <img
-                                src={IMAGES.systemAva}
-                                alt="ava"
-                                className=" aspect-square"
-                              />
-                              <div className="flex flex-col gap-[6px]">
-                                <p className="text-[#101828] font-bold">
-                                  {noti.title}
-                                </p>
-                                <p className="text-[#344054] line-clamp-2 text-sm">
-                                  {noti.body}
-                                </p>
-                                <div className="text-[#2E90FA] text-sm cursor-pointer">
-                                  Xem thêm
+                        {noti.length > 0 ? (
+                          <div className="flex flex-col overflow-y-auto gap-3  py-4 px-6">
+                            {noti.map((noti, index) => (
+                              <div
+                                key={index}
+                                className="flex items-start gap-2"
+                              >
+                                <img
+                                  src={IMAGES.systemAva}
+                                  alt="ava"
+                                  className=" aspect-square"
+                                />
+                                <div className="flex flex-col gap-[6px]">
+                                  <p className="text-[#101828] font-bold">
+                                    {noti.title}
+                                  </p>
+                                  <p className="text-[#344054] line-clamp-2 text-sm">
+                                    {noti.body}
+                                  </p>
+                                  <div className="text-[#2E90FA] text-sm cursor-pointer">
+                                    Xem thêm
+                                  </div>
                                 </div>
                               </div>
+                            ))}
+                          </div>
+                        ) : (
+                          <div className="flex flex-col gap-4 items-center justify-center h-full w-full py-4">
+                            <img src={IMAGES.notiEmpty} alt="empty" />
+                            <div className="flex flex-col gap-2 items-center">
+                              <p className="font-bold text-xl text-gray-500">
+                                Không có thông báo
+                              </p>
+                              <p className="text-sm">
+                                Bạn chưa có thông báo nào
+                              </p>
                             </div>
-                          ))}
-                        </div>
+                          </div>
+                        )}
                       </div>
                     </div>
                     {user ? (

@@ -51,4 +51,6 @@ export const IMAGES = {
   systemAva: "/assets/systemAva.png",
   withDrawIcon: "/assets/withdrawIcon.svg",
   testIcon: "/assets/testIcon.svg",
+  notiEmpty: "/assets/notiEmpty.png",
+  clockIcon: "/assets/clock.png",
 };
