@@ -36,14 +36,18 @@ const ExamDetail = () => {
   const params = useParams();
   const [pageIndex, setPageIndex] = useState(0);
   const [totalItems, setTotalItems] = useState(0);
-  const [pageSize, setPageSize] = useState(10);
+
+  const [totalPage, setTotalPage] = useState(0);
   const { setLoading } = useLoading();
+
   const { user } = useAuth();
   const fetchExam = async () => {
     try {
       setLoading(true);
-      const res = await getExamDetail(params.id, pageIndex, pageSize);
+      const res = await getExamDetail(params.id, pageIndex, 10);
       setExam(res.data);
+      setTotalItems(res.data.totalItemsCount);
+      setTotalPage(res.data.totalPageCount);
     } catch (err: any) {
       setLoading(false);
       toast.error(err.response.data.message);
@@ -53,7 +57,7 @@ const ExamDetail = () => {
   };
   useEffect(() => {
     fetchExam();
-  }, [params.id]);
+  }, [params.id, pageIndex]);
   const onChangeStatus = async (status: number) => {
     try {
       setLoading(true);
@@ -79,7 +83,16 @@ const ExamDetail = () => {
     {
       value: 1,
       label: "Câu hỏi",
-      children: <FormUpdateExam exam={exam} id={params.id} />,
+      children: (
+        <FormUpdateExam
+          exam={exam}
+          id={params.id}
+          examCurrentPage={pageIndex}
+          setExamCurrentPage={setPageIndex}
+          totalExamItem={totalItems}
+          totalExamPage={totalPage}
+        />
+      ),
     },
   ];
 

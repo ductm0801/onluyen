@@ -209,7 +209,7 @@ const Exam = () => {
                   </th>
                   <td className="px-6 py-4">{a.length} phút</td>
                   {/* <td className="px-6 py-4">{examEnum[a.testType]}</td> */}
-                  <td className="px-6 py-4">{a.description}</td>
+                  <td className="px-6 line-clamp-1">{a.description}</td>
                   <td className="px-6 py-4">
                     <p
                       className={`bg-gradient-to-br whitespace-nowrap text-center rounded-lg text-white py-0.5 px-2 ${renderBgColorStatus(
