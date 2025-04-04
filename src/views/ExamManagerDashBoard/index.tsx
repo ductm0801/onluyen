@@ -5,7 +5,7 @@ import { useLoading } from "@/providers/loadingProvider";
 import { getExamAnalyze, getExamBySubjectId, getSubject } from "@/services";
 import { Chart, registerables } from "chart.js/auto";
 import { useEffect, useRef, useState } from "react";
-import { Bar } from "react-chartjs-2";
+import { Bar, Line } from "react-chartjs-2";
 Chart.register(...registerables);
 
 const Dashboard = () => {
@@ -52,7 +52,7 @@ const Dashboard = () => {
   const [exam, setExam] = useState([]);
 
   const fetchExam = async () => {
-    const pageSize = 6;
+    const pageSize = 3;
     if (!active) return;
     try {
       setLoading(true);
@@ -100,7 +100,7 @@ const Dashboard = () => {
       },
       title: {
         display: true,
-        text: "THỐNG KÊ KÌ THI",
+        text: "THỐNG KÊ LỢI NHUẬN",
       },
     },
     scales: {
@@ -117,22 +117,6 @@ const Dashboard = () => {
     labels: analyzeData?.monthlyStatistics?.map((a: any) => a.month),
     datasets: [
       {
-        label: "Điểm trung bình",
-        data: analyzeData?.monthlyStatistics?.map(
-          (a: any) => a.averageScorePercentage
-        ),
-        borderColor: "rgb(255, 99, 132)",
-        backgroundColor: "rgba(255, 99, 132, 0.5)",
-      },
-      {
-        label: "Học sinh mới làm bài kiểm tra",
-        data: analyzeData?.monthlyStatistics?.map(
-          (a: any) => a.newStudentTakeExam
-        ),
-        borderColor: "rgb(53, 162, 235)",
-        backgroundColor: "rgba(53, 162, 235, 0.5)",
-      },
-      {
         label: "Lợi nhuận",
         data: analyzeData?.monthlyStatistics?.map((a: any) => a.revenue),
         borderColor: "rgba(75, 192, 192)",
@@ -140,59 +124,77 @@ const Dashboard = () => {
       },
     ],
   };
+  const options2 = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: "top" as const,
+      },
+      title: {
+        display: true,
+        text: "Thống kê điểm trung bình",
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: {
+            stepSize: 1,
+          },
+        },
+      },
+    },
+  };
+
+  const data2 = {
+    labels: analyzeData?.monthlyStatistics?.map((a: any) => a.month),
+    datasets: [
+      {
+        fill: true,
+        label: "Điểm trung bình",
+        data: analyzeData?.monthlyStatistics?.map(
+          (a: any) => a.averageScorePercentage
+        ),
+        borderColor: "rgb(53, 162, 235)",
+        backgroundColor: "rgba(53, 162, 235, 0.5)",
+      },
+    ],
+  };
+  const options3 = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: "top" as const,
+      },
+      title: {
+        display: true,
+        text: "Thống kê số học sinh làm bài kiểm tra",
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: {
+            stepSize: 1,
+          },
+        },
+      },
+    },
+  };
+  const data3 = {
+    labels: analyzeData?.monthlyStatistics?.map((a: any) => a.month),
+    datasets: [
+      {
+        label: "Số học sinh làm bài kiểm tra",
+        data: analyzeData?.monthlyStatistics?.map(
+          (a: any) => a.newStudentTakeExam
+        ),
+        borderColor: "rgb(255, 99, 132)",
+        backgroundColor: "rgba(255, 99, 132, 0.5)",
+      },
+    ],
+  };
+
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex border-b overflow-auto">
-        {subjects &&
-          subjects.map((s, index) => (
-            <div
-              ref={(el) => {
-                subjectRefs.current[index] = el;
-              }}
-              key={s.id}
-              className={`w-fit flex-shrink-0 ${
-                active === s.id ? "border-b-2 border-[#1244A2]" : ""
-              }  cursor-pointer transition-all duration-500 ease-in-out p-2`}
-              onClick={() => handleSubjectClick(s.id, index)}
-            >
-              <div className="flex flex-col items-center gap-2">
-                <div>
-                  <div className="font-bold text-sm text-center">
-                    {s.subjectName}
-                  </div>
-                  {/* <p className="line-clamp-2">{s.subjectDescription}</p> */}
-                </div>
-              </div>
-            </div>
-          ))}
-      </div>
-      <div>
-        <div className="grid grid-cols-3 gap-4">
-          {exam &&
-            exam.map((e: any, index) => (
-              <div
-                className={`${
-                  examActive === e.id
-                    ? "bg-blue-500/50 text-white"
-                    : "bg-white text-black"
-                } transition-all duration-300 flex flex-col gap-4 border w-full border-[#D0D5DD] rounded-xl p-4`}
-                key={e.id}
-                onClick={() => setExamActive(e.id)}
-              >
-                <p className="font-bold h-[50px] text-start max-w-[70%]">
-                  {e.examName}
-                </p>
-              </div>
-            ))}
-        </div>
-        <Paging
-          currentPage={pageIndex}
-          pageSize={6}
-          setCurrentPage={setPageIndex}
-          totalItems={totalItemsCount}
-          totalPages={totalPages}
-        />
-      </div>
       <div className="flex items-center gap-4">
         <div className="rounded-2xl w-1/4 flex-shrink-0 border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
           <h4 className="font-bold text-gray-800 text-title-sm dark:text-white/90">
@@ -252,7 +254,68 @@ const Dashboard = () => {
           </div>
         </div>
       </div>
-      <Bar options={options} data={data} />
+      <div className="flex border-b overflow-auto">
+        {subjects &&
+          subjects.map((s, index) => (
+            <div
+              ref={(el) => {
+                subjectRefs.current[index] = el;
+              }}
+              key={s.id}
+              className={`w-fit flex-shrink-0 ${
+                active === s.id ? "border-b-2 border-[#1244A2]" : ""
+              }  cursor-pointer transition-all duration-500 ease-in-out p-2`}
+              onClick={() => handleSubjectClick(s.id, index)}
+            >
+              <div className="flex flex-col items-center gap-2">
+                <div>
+                  <div className="font-bold text-sm text-center">
+                    {s.subjectName}
+                  </div>
+                  {/* <p className="line-clamp-2">{s.subjectDescription}</p> */}
+                </div>
+              </div>
+            </div>
+          ))}
+      </div>
+      <div>
+        <div className="grid grid-cols-3 gap-4">
+          {exam &&
+            exam.map((e: any, index) => (
+              <div
+                className={`${
+                  examActive === e.id
+                    ? "bg-blue-500/50 text-white"
+                    : "bg-white text-black"
+                } transition-all duration-300 flex flex-col gap-4 border w-full border-[#D0D5DD] rounded-xl p-4`}
+                key={e.id}
+                onClick={() => setExamActive(e.id)}
+              >
+                <p className="font-bold h-[50px] text-start max-w-[70%]">
+                  {e.examName}
+                </p>
+              </div>
+            ))}
+        </div>
+        <Paging
+          currentPage={pageIndex}
+          pageSize={6}
+          setCurrentPage={setPageIndex}
+          totalItems={totalItemsCount}
+          totalPages={totalPages}
+        />
+      </div>
+      <div className="grid grid-cols-2 gap-4">
+        <div className="shadow-lg rounded-lg p-4 bg-white dark:bg-white/[0.03]">
+          <Bar options={options} data={data} />
+        </div>
+        <div className="shadow-lg rounded-lg p-4 bg-white dark:bg-white/[0.03]">
+          <Line options={options2} data={data2} />
+        </div>
+        <div className="shadow-lg rounded-lg p-4 bg-white dark:bg-white/[0.03]">
+          <Line options={options3} data={data3} />
+        </div>
+      </div>
     </div>
   );
 };

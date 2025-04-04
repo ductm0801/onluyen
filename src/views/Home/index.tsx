@@ -34,7 +34,7 @@ const Home = () => {
   const [subjects, setSubjects] = useState<Subject[]>([]);
   const { setLoading } = useLoading();
   const [active, setActive] = useState("");
-  const { user } = useAuth();
+
   const [open, setOpen] = useState(false);
   const subjectRefs = useRef<(HTMLDivElement | null)[]>([]);
   const examDetail = useRef<any>();
@@ -173,7 +173,10 @@ const Home = () => {
             returnUrl: `${process.env.NEXT_PUBLIC_DOMAIN}/student/home`,
             amount: item.price,
           });
-          if (response) router.push(response.data);
+          if (response) {
+            toast.info(`Đang chuyển hướng tới trang thanh toán`);
+            router.push(response.data);
+          }
         }
       } catch (err: any) {
         toast.error(err.response?.data?.message || "Có lỗi xảy ra");
@@ -235,7 +238,7 @@ const Home = () => {
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex justify-end items-center">
+      {/* <div className="flex justify-end items-center">
         <div className="flex gap-2 items-center border border-[#D0D5DD] rounded-full py-2 px-4">
           <img src={IMAGES.searchIcon} alt="search" className="text-sm" />
           <input
@@ -244,74 +247,77 @@ const Home = () => {
             className="border-none outline-none bg-white dark:bg-black ring-0"
           />
         </div>
-      </div>
-      <div className="relative">
-        <Swiper
-          slidesPerView={3}
-          spaceBetween={12}
-          pagination={{
-            el: ".swiper-pagination",
-            clickable: true,
-            renderBullet: renderBullet,
-          }}
-          modules={[Autoplay, Pagination, Navigation]}
-          slidesPerGroup={3}
-          ref={sliderRef}
-        >
-          {items.map((item, index) => (
-            <SwiperSlide key={index} className="pb-4">
-              <div className="flex items-center gap-6 border border-[#D0D5DD] rounded-xl px-4">
-                <CircularProgess
-                  className="flex-shrink-0 w-[96px] aspect-square"
-                  gaugePrimaryColor="#FDB022"
-                  gaugeSecondaryColor="#1244A2"
-                  max={100}
-                  min={0}
-                  value={Math.round(item.progress)}
-                />
-                <div className="flex flex-col gap-4">
-                  <div>
-                    <div className="font-bold text-lg line-clamp-1">
-                      {item.title}
+      </div> */}
+      {items.length > 0 && (
+        <div className="relative">
+          <Swiper
+            slidesPerView={3}
+            spaceBetween={12}
+            pagination={{
+              el: ".swiper-pagination",
+              clickable: true,
+              renderBullet: renderBullet,
+            }}
+            modules={[Autoplay, Pagination, Navigation]}
+            slidesPerGroup={3}
+            ref={sliderRef}
+          >
+            {items.map((item, index) => (
+              <SwiperSlide key={index} className="pb-4">
+                <div className="flex items-center gap-6 border border-[#D0D5DD] rounded-xl px-4">
+                  <CircularProgess
+                    className="flex-shrink-0 w-[96px] aspect-square"
+                    gaugePrimaryColor="#FDB022"
+                    gaugeSecondaryColor="#1244A2"
+                    max={100}
+                    min={0}
+                    value={Math.round(item.progress)}
+                  />
+                  <div className="flex flex-col gap-4">
+                    <div>
+                      <div className="font-bold text-lg line-clamp-1">
+                        {item.title}
+                      </div>
+                      <p className="line-clamp-1 text-xs">{item.description}</p>
                     </div>
-                    <p className="line-clamp-1 text-xs">{item.description}</p>
-                  </div>
-                  <div className="font-bold  text-xs text-[#FDB022] flex items-center gap-[6px] mt-auto cursor-pointer">
-                    <p
-                      className="border-b border-[#FDB022] "
-                      onClick={() =>
-                        router.push(`/student/learning/${item.courseId}`)
-                      }
-                    >
-                      Tiếp tục chương trình
-                    </p>
-                    <img src={IMAGES.arrowRight} alt="right" />
+                    <div className="font-bold  text-xs text-[#FDB022] flex items-center gap-[6px] mt-auto cursor-pointer">
+                      <p
+                        className="border-b border-[#FDB022] "
+                        onClick={() =>
+                          router.push(`/student/learning/${item.courseId}`)
+                        }
+                      >
+                        Tiếp tục chương trình
+                      </p>
+                      <img src={IMAGES.arrowRight} alt="right" />
+                    </div>
                   </div>
                 </div>
-              </div>
-            </SwiperSlide>
-          ))}
-          <div className="swiper-pagination"></div>
-        </Swiper>
+              </SwiperSlide>
+            ))}
+            <div className="swiper-pagination"></div>
+          </Swiper>
 
-        <img
-          src={IMAGES.arrowRight}
-          alt="left"
-          className="rotate-180 bg-[#1244A2] rounded-full absolute z-10 top-[40%] -translate-y-1/2 -left-2 cursor-pointer"
-          onClick={() => slideLeft()}
-        />
-        <img
-          src={IMAGES.arrowRight}
-          alt="right"
-          className="bg-[#1244A2] rounded-full cursor-pointer absolute z-10 top-[40%] -translate-y-1/2 -right-2"
-          onClick={() => slideRight()}
-        />
-      </div>
+          <img
+            src={IMAGES.arrowRight}
+            alt="left"
+            className="rotate-180 bg-[#1244A2] rounded-full absolute z-10 top-[40%] -translate-y-1/2 -left-2 cursor-pointer"
+            onClick={() => slideLeft()}
+          />
+          <img
+            src={IMAGES.arrowRight}
+            alt="right"
+            className="bg-[#1244A2] rounded-full cursor-pointer absolute z-10 top-[40%] -translate-y-1/2 -right-2"
+            onClick={() => slideRight()}
+          />
+        </div>
+      )}
+
       <div className="flex flex-col gap-6">
         <div className="text-2xl font-bold">Môn học</div>
         <div className="flex gap-4 flex-wrap">
           {cSubject &&
-            cSubject.map((s, index) => (
+            cSubject.map((s) => (
               <div
                 key={s.id}
                 className={` border cursor-pointer hover:border-blue-600 transition-all duration-300 rounded-lg px-4 py-[21px] w-[112px] h-[138px] flex flex-col items-center gap-2`}
@@ -351,37 +357,53 @@ const Home = () => {
               </div>
             ))}
         </div>
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-4 gap-4">
           {exam &&
-            exam.map((e: any, index) => (
+            exam.map((e: any) => (
               <div
-                className="flex flex-col gap-4 border w-full border-[#D0D5DD] rounded-xl p-4"
+                className="flex justify-between border w-full border-[#D0D5DD] rounded-xl p-4"
                 key={e.id}
               >
-                <p className="font-bold h-[50px] text-start max-w-[70%]">
-                  {e.examName}
-                </p>
-                <div className="flex items-center justify-between">
-                  <p className="line-clamp-1 text-md">
+                <div className="flex flex-col justify-items-center gap-2">
+                  <p className="font-bold h-[50px] text-start">{e.examName}</p>
+                  <p className="line-clamp-1 text-md flex items-center gap-1">
+                    <img
+                      src={IMAGES.clockIcon}
+                      alt="icon"
+                      className="w-[20px]"
+                    />
+                    {e.maxTestLength} phút
+                  </p>
+                  <p className="line-clamp-1 text-md flex items-center gap-1">
+                    <img
+                      src={IMAGES.priceIcon}
+                      alt="icon"
+                      className="w-[20px]"
+                    />
                     {e.price.toLocaleString("vi-VN")}đ
                   </p>
+                </div>
+                <div className="self-end">
                   {e.enrollmentId ? (
-                    <CustomButton
-                      text="Vào thi ngay"
-                      textHover="Đừng ngại"
+                    <img
+                      src={IMAGES.arrowRight}
+                      alt="icon"
                       onClick={() => handleOpenPopup(e)}
+                      className=" bg-[#1244A2] w-[30px]  p-0.5 rounded-full cursor-pointer"
                     />
                   ) : e.freeAttempts > 0 ? (
-                    <CustomButton
-                      text="Nhận mã thi"
-                      textHover="Đừng ngại"
+                    <img
+                      src={IMAGES.arrowRight}
+                      alt="icon"
                       onClick={() => handleOpenPopup(e)}
+                      className=" bg-[#1244A2] w-[30px] p-0.5 rounded-full cursor-pointer"
                     />
                   ) : (
-                    <CustomButton
-                      text="Mua mã thi"
-                      textHover="Đừng ngại"
+                    <img
+                      src={IMAGES.arrowRight}
+                      alt="icon"
                       onClick={() => handleBuyExamCode(e)}
+                      className=" bg-[#1244A2] w-[30px] p-0.5 rounded-full cursor-pointer"
                     />
                   )}
                 </div>

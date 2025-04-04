@@ -6,6 +6,7 @@ import {
   pendingExamEnum,
   questionEnum,
   statusEnum,
+  userRoleEnum,
 } from "@/constants/enum";
 
 export type ILoginRequest = {
@@ -77,7 +78,7 @@ export type IAccount = {
   gender: string;
   imageUrl?: string;
   phoneNumber: string;
-  role: string;
+  role: keyof typeof userRoleEnum;
   isDelete: boolean;
 };
 export type IRegist = {

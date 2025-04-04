@@ -73,3 +73,10 @@ export const examResultEnum = {
   1: "Chưa đạt",
   0: "Đạt",
 };
+export const userRoleEnum = {
+  Student: "Học viên",
+  Instructor: "Giáo viên",
+  Admin: "Quản trị viên",
+  Consultant: "Tư vấn viên",
+  ExamManager: "Quản lý đề thi",
+};
