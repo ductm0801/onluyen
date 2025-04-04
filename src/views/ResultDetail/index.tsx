@@ -1,6 +1,7 @@
 "use client";
 import CircularProgess from "@/components/CircularProgress";
 import { questionEnum } from "@/constants/enum";
+import { IMAGES } from "@/constants/images";
 import { IExam } from "@/models";
 import { useLoading } from "@/providers/loadingProvider";
 import { examResult } from "@/services";
@@ -43,7 +44,7 @@ const ResultDetail = () => {
   if (!exam) return;
   const currentQuestion = exam.questions[currentQuestionIndex];
   return (
-    <div className="bg-white min-h-[50rem] w-full rounded-[10px] shadow-[0px_0px_5px_rgba(0, 0, 0, 0.1)]">
+    <div className="bg-white h-[80vh] flex flex-col w-full rounded-[10px] shadow-[0px_0px_5px_rgba(0, 0, 0, 0.1)]">
       <div className="flex justify-between items-center pb-16">
         <div className="flex items-center gap-4"></div>
       </div>
@@ -60,39 +61,44 @@ const ResultDetail = () => {
           <span>{questionEnum[currentQuestion.type]}</span>
           <ul className="flex flex-wrap gap-8 mt-4">
             {currentQuestion.answers.map((answer, index) => {
-              const isSelected = answer.isSelected;
-              const isCorrect = answer.isCorrect;
+              const { isSelected, isCorrect, content, id } = answer;
               const isWrongSelected = isSelected && !isCorrect;
+              const isRightSelected =
+                (isSelected && isCorrect) || currentQuestion.type === 2;
+              const isNotSelected =
+                !isSelected && isCorrect && currentQuestion.type !== 2;
 
               return (
                 <li
-                  key={answer.id}
-                  className={`w-[40%] py-4 px-8 shadow-[0px_0px_3px_rgba(0,0,0,0.3)] rounded-xl cursor-pointer flex items-center
-          ${
-            isCorrect
-              ? "bg-green-100 text-green-500 border-green-500"
-              : isWrongSelected
-              ? "bg-red-100 text-red-500 border-red-500"
-              : "bg-gray-100 text-gray-500 border-gray-300"
-          }`}
+                  key={id}
+                  className={`w-[40%] py-4 px-8 shadow-[0px_0px_3px_rgba(0,0,0,0.3)] rounded-xl cursor-pointer flex items-center border
+        ${
+          isRightSelected
+            ? "bg-[#DBFAE6] text-green-500 border-green-500"
+            : isWrongSelected
+            ? "bg-red-100 text-red-500 border-red-500"
+            : isNotSelected
+            ? "bg-[#FEF0C7] text-yellow-600 border-yellow-500"
+            : "bg-gray-100 text-gray-500 border-gray-300"
+        }`}
                 >
+                  {isRightSelected ? (
+                    <img src={IMAGES.correct} alt="correct" />
+                  ) : isWrongSelected ? (
+                    <img src={IMAGES.notCorrect} alt="correct" />
+                  ) : isNotSelected ? null : null}
                   {currentQuestion.type !== 2 && (
-                    <span>{String.fromCharCode(65 + index)}.</span>
+                    <span className="ml-2">
+                      {String.fromCharCode(65 + index)}.
+                    </span>
                   )}
                   <span
                     className="ml-4"
-                    dangerouslySetInnerHTML={{ __html: answer.content }}
+                    dangerouslySetInnerHTML={{ __html: content }}
                   ></span>
                 </li>
               );
             })}
-            {!currentQuestion.answers.some(
-              (answer) => answer.isSelected || answer.isCorrect
-            ) && (
-              <p className="w-full text-center text-red-500 font-semibold mt-4">
-                Bạn chưa chọn đáp án nào!
-              </p>
-            )}
           </ul>
           {currentQuestion.type === 2 && (
             <textarea
@@ -155,6 +161,24 @@ const ResultDetail = () => {
         >
           Câu sau
         </button>
+      </div>
+      <div className="flex gap-4 mt-auto items-center mb-8">
+        <div className="flex items-center gap-[6px]">
+          <div className="w-6 aspect-square bg-[#DBFAE6] border border-[#D0D5DD] rounded-[4px]" />
+          Câu chọn đúng
+        </div>
+        <div className="flex items-center gap-[6px]">
+          <div className="w-6 aspect-square bg-[#FEEFC6] border border-[#D0D5DD] rounded-[4px]" />
+          Câu không chọn nhưng đúng
+        </div>
+        <div className="flex items-center gap-[6px]">
+          <div className="w-6 aspect-square bg-[#FEE4E2] border border-[#D0D5DD] rounded-[4px]" />
+          Câu chọn sai
+        </div>
+        <div className="flex items-center gap-[6px]">
+          <div className="w-6 aspect-square bg-white border border-[#D0D5DD] rounded-[4px]" />
+          Câu chưa chọn
+        </div>
       </div>
     </div>
   );
