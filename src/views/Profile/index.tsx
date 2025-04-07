@@ -2,15 +2,21 @@
 import { IUSer } from "@/models";
 import { useAuth } from "@/providers/authProvider";
 import { useLoading } from "@/providers/loadingProvider";
-import { getUserProfile, updateUserProfile, uploadImg } from "@/services";
+import {
+  getAIRecommendation,
+  getUserProfile,
+  updateUserProfile,
+  uploadImg,
+} from "@/services";
 import { LoadingOutlined } from "@ant-design/icons";
-import { Button, DatePicker, Form, Input, Radio, Upload } from "antd";
+import { Button, DatePicker, Form, Input, Modal, Radio, Upload } from "antd";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { Chart, registerables } from "chart.js/auto";
 
 import { Radar } from "react-chartjs-2";
+import CustomButton from "@/components/CustomButton";
 Chart.register(...registerables);
 
 const genderOptions = [
@@ -132,6 +138,30 @@ const Profile = () => {
       setLoading(false);
     }
   };
+  const getAIRecommend = async () => {
+    try {
+      setLoading(true);
+      const res = await getAIRecommendation();
+      toast.success("Lấy đề xuất từ AI thành công!");
+      Modal.info({
+        title: "Đề xuất từ AI",
+        content: (
+          <div
+            className="max-h-[500px] overflow-y-auto text-xl font-bold"
+            dangerouslySetInnerHTML={{
+              __html: res.data.replace(/\n/g, "<br/>"),
+            }}
+          />
+        ),
+      });
+    } catch (error: any) {
+      setLoading(false);
+      console.error(error);
+      toast.error(error.response.data.message);
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <div className="flex flex-col items-start">
       <Form
@@ -241,8 +271,17 @@ const Profile = () => {
         </Form.Item>
       </Form>
       {user?.student && (
-        <div className="w-1/2 self-center">
-          <Radar data={data} options={options} />
+        <div className="w-full flex flex-col items-center gap-4">
+          <div className="w-1/2">
+            <Radar data={data} options={options} />
+          </div>
+          <div className="self-end">
+            <CustomButton
+              text="Nhận phân tích từ AI"
+              textHover="Đừng ngại"
+              onClick={() => getAIRecommend()}
+            />
+          </div>
         </div>
       )}
     </div>

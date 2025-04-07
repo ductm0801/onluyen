@@ -78,7 +78,7 @@ const ResultDetail = () => {
             : isWrongSelected
             ? "bg-red-100 text-red-500 border-red-500"
             : isNotSelected
-            ? "bg-[#FEF0C7] text-yellow-600 border-yellow-500"
+            ? "bg-[#DBFAE6] text-green-500 border-green-500"
             : "bg-gray-100 text-gray-500 border-gray-300"
         }`}
                 >
@@ -165,19 +165,11 @@ const ResultDetail = () => {
       <div className="flex gap-4 mt-auto items-center mb-8">
         <div className="flex items-center gap-[6px]">
           <div className="w-6 aspect-square bg-[#DBFAE6] border border-[#D0D5DD] rounded-[4px]" />
-          Câu chọn đúng
-        </div>
-        <div className="flex items-center gap-[6px]">
-          <div className="w-6 aspect-square bg-[#FEEFC6] border border-[#D0D5DD] rounded-[4px]" />
-          Câu không chọn nhưng đúng
+          Đáp án đúng
         </div>
         <div className="flex items-center gap-[6px]">
           <div className="w-6 aspect-square bg-[#FEE4E2] border border-[#D0D5DD] rounded-[4px]" />
-          Câu chọn sai
-        </div>
-        <div className="flex items-center gap-[6px]">
-          <div className="w-6 aspect-square bg-white border border-[#D0D5DD] rounded-[4px]" />
-          Câu chưa chọn
+          Đáp án sai
         </div>
       </div>
     </div>

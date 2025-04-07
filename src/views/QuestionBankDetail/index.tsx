@@ -174,7 +174,6 @@ const BankDetail = () => {
     }
   };
   const handlePreview = async (values: any) => {
-    console.log(values);
     try {
       setLoading(true);
       const formData = new FormData();
@@ -209,15 +208,20 @@ const BankDetail = () => {
       setLoading(true);
       await createBulkQuestion(validQuestion, params.id);
       toast.success("Tạo câu hỏi thành công");
-      setCreateBulk(false);
+      handleCloseCreateBulk();
     } catch (error: any) {
       setLoading(false);
       toast.error(error.response.data.message);
     } finally {
       setLoading(false);
-      setCreateBulk(false);
+      handleCloseCreateBulk();
       fetchQuestion();
     }
+  };
+  const handleCloseCreateBulk = () => {
+    setCreateBulk(false);
+    setValidQuestion([]);
+    setInvalidQuestion([]);
   };
 
   return (
@@ -394,7 +398,7 @@ const BankDetail = () => {
               : "Tạo câu hỏi từ excel"
           }
           open={createBulk}
-          onCancel={() => setCreateBulk(false)}
+          onCancel={() => handleCloseCreateBulk()}
           footer={null}
         >
           <>
