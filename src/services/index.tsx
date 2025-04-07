@@ -547,3 +547,9 @@ export const getAIRecommendation = async () => {
   const res = await axiosClient.post(`/api/students/getRecommendationFromAI`);
   return res.data;
 };
+export const revokeTest = async (id: string, reason: string) => {
+  const res = await axiosClient.patch(`/api/test/revokeTest/${id}`, {
+    params: { reason },
+  });
+  return res.data;
+};

@@ -1,12 +1,12 @@
 "use client";
 import ModaReviewTest from "@/components/ModalReviewExam";
 import Paging from "@/components/Paging";
-import { examEnum } from "@/constants/enum";
 import { IExam } from "@/models";
 import { useLoading } from "@/providers/loadingProvider";
-import { getExamByTestBank } from "@/services";
-import { useParams, useRouter } from "next/navigation";
-import React, { useEffect, useRef, useState } from "react";
+import { getExamByTestBank, revokeTest } from "@/services";
+import { Modal } from "antd";
+import { useParams } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 const cols = [
   {
@@ -47,9 +47,10 @@ const TestBankDetail = () => {
   const [totalItems, setTotalItems] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
   const params = useParams();
+
   // const [create, setCreate] = useState(false);
   const [detail, setDetail] = useState(false);
-  const router = useRouter();
+
   const examDetail = useRef<IExam | null>(null);
   // const [confirm, setConfirm] = useState(false);
   // const [examId, setExamId] = useState("");
@@ -78,6 +79,43 @@ const TestBankDetail = () => {
     setDetail(false);
     examDetail.current = null;
   };
+  const handleConfirmRevoke = (items: IExam) => {
+    let reasonValue = "";
+
+    Modal.confirm({
+      title: "Nhập lý do thu hồi",
+      content: (
+        <textarea
+          className="border border-gray-300 rounded-lg p-2 w-full mt-2"
+          placeholder="Nhập lý do thu hồi"
+          onChange={(e) => {
+            reasonValue = e.target.value;
+          }}
+        />
+      ),
+      onOk: () => {
+        if (!reasonValue.trim()) {
+          toast.error("Vui lòng nhập lý do thu hồi!");
+          return Promise.reject(); // ngăn đóng modal nếu chưa nhập
+        }
+        return handleRevolkTest(items, reasonValue);
+      },
+    });
+  };
+
+  const handleRevolkTest = async (items: IExam, reason: string) => {
+    setLoading(true);
+    try {
+      const res = await revokeTest(items.id, reason);
+      if (res) toast.success(res.message);
+      fetchExam();
+    } catch (err: any) {
+      toast.error(err?.response?.data?.message || "Đã xảy ra lỗi");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="relative overflow-x-auto">
       <div className="flex justify-between items-center  flex-column flex-wrap md:flex-row space-y-4 md:space-y-0 pb-4">
@@ -142,7 +180,13 @@ const TestBankDetail = () => {
 
                   <td className="px-6 py-4">{a.description}</td>
                   <td className="px-6 py-4">{a.totalGrade}</td>
-                  <td className="px-6 py-4 flex items-center">
+                  <td className="px-6 py-4 flex items-center gap-4">
+                    <div
+                      className="font-medium whitespace-nowrap text-red-600 dark:text-red-500 hover:underline cursor-pointer"
+                      onClick={() => handleConfirmRevoke(a)}
+                    >
+                      Thu hồi
+                    </div>
                     <div
                       className="font-medium whitespace-nowrap text-blue-600 dark:text-blue-500 hover:underline cursor-pointer"
                       onClick={() => handleOpenDetail(a)}
