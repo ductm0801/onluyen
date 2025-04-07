@@ -553,3 +553,7 @@ export const revokeTest = async (id: string, reason: string) => {
   });
   return res.data;
 };
+export const updateBankAccount = async (body: any) => {
+  const res = await axiosClient.put(`/api/instructors/update_instructor`, body);
+  return res.data;
+};
