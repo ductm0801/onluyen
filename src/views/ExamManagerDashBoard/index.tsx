@@ -347,10 +347,10 @@ const Dashboard = () => {
         </div>
 
         <div className="shadow-lg col-span-2 rounded-lg p-4 bg-white dark:bg-white/[0.03]">
-          <Line options={options2} data={data2} />
+          <Line options={options2} data={data2} className="w-full" />
         </div>
         <div className="shadow-lg col-span-2 rounded-lg p-4 bg-white dark:bg-white/[0.03]">
-          <Line options={options3} data={data3} />
+          <Line options={options3} data={data3} className="w-full" />
         </div>
       </div>
     </div>

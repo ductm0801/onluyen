@@ -36,7 +36,7 @@ const TakeExam = () => {
     const fetchExam = async () => {
       try {
         setLoading(true);
-        const res = await getTest(params.id, 0, 60);
+        const res = await getTest(params.id, 0, 200);
         setExam(res.data);
 
         const storedAnswers = localStorage.getItem(`exam-${params.id}`);
