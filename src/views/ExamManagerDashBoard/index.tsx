@@ -14,22 +14,11 @@ const Dashboard = () => {
   const { setLoading } = useLoading();
   const [active, setActive] = useState("");
   const subjectRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const [totalPages, setTotalPages] = useState(0);
-  const [totalItemsCount, setTotalItemsCount] = useState(0);
+
   const [examActive, setExamActive] = useState("");
+  const [year, setYear] = useState(new Date().getFullYear());
 
   const [analyzeData, setAnalyzeData] = useState<any | null>(null);
-  const handleSubjectClick = (id: string, index: number) => {
-    setActive(id);
-    setPageIndex(0);
-    if (subjectRefs.current[index]) {
-      subjectRefs.current[index]?.scrollIntoView({
-        behavior: "smooth",
-        block: "center",
-        inline: "center",
-      });
-    }
-  };
 
   const fetchSubject = async () => {
     try {
@@ -61,8 +50,6 @@ const Dashboard = () => {
       if (res) {
         setExam(res.data.items);
         setExamActive(res.data.items[0].id);
-        setTotalItemsCount(res.data.totalItemsCount);
-        setTotalPages(res.data.totalPageCount);
       }
     } catch (err) {
       console.error(err);
@@ -78,7 +65,7 @@ const Dashboard = () => {
     if (!examActive) return;
     try {
       setLoading(true);
-      const res = await getExamAnalyze(examActive);
+      const res = await getExamAnalyze(examActive, year);
       if (res) {
         setAnalyzeData(res.data);
       }
@@ -91,7 +78,7 @@ const Dashboard = () => {
   };
   useEffect(() => {
     fetchAnalyze();
-  }, [examActive]);
+  }, [examActive, year]);
 
   const options = {
     responsive: true,
@@ -108,7 +95,7 @@ const Dashboard = () => {
       y: {
         beginAtZero: true,
         ticks: {
-          stepSize: 100,
+          stepSize: 1000,
         },
       },
     },
@@ -206,6 +193,15 @@ const Dashboard = () => {
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-end gap-4">
         <Select
+          options={Array.from({ length: 10 }, (_, i) => ({
+            value: 2025 - i,
+            label: `${2025 - i}`,
+          }))}
+          value={year}
+          onChange={(value) => setYear(value)}
+        />
+
+        <Select
           options={subjectOptions}
           value={active}
           onChange={(value) => setActive(value)}
@@ -216,73 +212,144 @@ const Dashboard = () => {
           onChange={(value) => setExamActive(value)}
         />
       </div>
+
       <div className="grid grid-cols-4 gap-4">
-        <div className="rounded-2xl  flex-shrink-0 border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-4">
-          <h4 className="font-bold text-gray-800 text-nase dark:text-white/90">
-            Tổng lợi nhuận
-          </h4>
-          <div className="flex items-end justify-between mt-4 sm:mt-5">
-            <div className="flex items-center gap-1">
-              <span className="inline-flex items-center px-2.5 py-0.5 justify-center gap-1 rounded-full font-medium text-theme-xs bg-success-50 text-success-600 dark:bg-success-500/15 dark:text-success-500">
-                {analyzeData?.totalRevenue.toLocaleString("vi-VN")}đ
-              </span>
+        <div className="shadow-lg col-span-3 rounded-lg p-4 bg-white dark:bg-white/[0.03]">
+          <Bar options={options} data={data} className="!h-full" />
+        </div>
+        <div className="grid grid-cols-1 gap-4">
+          <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
+            <h4 className="font-bold text-gray-800 text-title-sm dark:text-white/90">
+              {analyzeData?.totalRevenue.toLocaleString("vi-VN")}đ
+            </h4>
+            <div className="flex items-end justify-between mt-4 sm:mt-5">
+              <div>
+                <p className="text-gray-700 text-theme-sm dark:text-gray-400">
+                  Lợi nhuận
+                </p>
+              </div>
+              <div className="flex items-center gap-1">
+                <span
+                  className={` ${
+                    analyzeData?.totalRevenueChangePercent > 0
+                      ? "text-green-500"
+                      : "text-red-500"
+                  } inline-flex items-center px-2.5 py-0.5 justify-center gap-1 rounded-full font-medium text-theme-xs bg-success-50 text-success-600 dark:bg-success-500/15 dark:text-success-500`}
+                >
+                  <span className="text-xl">
+                    {analyzeData?.totalRevenueChangePercent > 0
+                      ? "\u2191"
+                      : "\u2193"}{" "}
+                  </span>
+                  {analyzeData?.totalRevenueChangePercent}%
+                </span>
+                {/* <span className="text-gray-500 text-theme-xs dark:text-gray-400">
+                năm trước
+              </span> */}
+              </div>
+            </div>
+          </div>
+          <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
+            <h4 className="font-bold text-gray-800 text-title-sm dark:text-white/90">
+              {analyzeData?.totalPassCount}
+            </h4>
+            <div className="flex items-end justify-between mt-4 sm:mt-5">
+              <div>
+                <p className="text-gray-700 text-theme-sm dark:text-gray-400">
+                  Đậu
+                </p>
+              </div>
+              <div className="flex items-center gap-1">
+                <span
+                  className={` ${
+                    analyzeData?.totalPassCountChangePercent > 0
+                      ? "text-green-500"
+                      : "text-red-500"
+                  } inline-flex items-center px-2.5 py-0.5 justify-center gap-1 rounded-full font-medium text-theme-xs bg-success-50 text-success-600 dark:bg-success-500/15 dark:text-success-500`}
+                >
+                  <span className="text-xl">
+                    {analyzeData?.totalPassCountChangePercent > 0
+                      ? "\u2191"
+                      : "\u2193"}{" "}
+                  </span>
+                  {analyzeData?.totalPassCountChangePercent}%
+                </span>
+                {/* <span className="text-gray-500 text-theme-xs dark:text-gray-400">
+                năm trước
+              </span> */}
+              </div>
+            </div>
+          </div>
+
+          <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
+            <h4 className="font-bold text-gray-800 text-title-sm dark:text-white/90">
+              {analyzeData?.totalFailCount}
+            </h4>
+            <div className="flex items-end justify-between mt-4 sm:mt-5">
+              <div>
+                <p className="text-gray-700 text-theme-sm dark:text-gray-400">
+                  Không đậu
+                </p>
+              </div>
+              <div className="flex items-center gap-1">
+                <span
+                  className={` ${
+                    analyzeData?.totalFailCountChangePercent > 0
+                      ? "text-green-500"
+                      : "text-red-500"
+                  } inline-flex items-center px-2.5 py-0.5 justify-center gap-1 rounded-full font-medium text-theme-xs bg-success-50 text-success-600 dark:bg-success-500/15 dark:text-success-500`}
+                >
+                  <span className="text-xl">
+                    {analyzeData?.totalFailCountChangePercent > 0
+                      ? "\u2191"
+                      : "\u2193"}{" "}
+                  </span>
+                  {analyzeData?.totalFailCountChangePercent}%
+                </span>
+                {/* <span className="text-gray-500 text-theme-xs dark:text-gray-400">
+                năm trước
+              </span> */}
+              </div>
+            </div>
+          </div>
+
+          <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
+            <h4 className="font-bold text-gray-800 text-title-sm dark:text-white/90">
+              {analyzeData?.totalStudentTakeExam}
+            </h4>
+            <div className="flex items-end justify-between mt-4 sm:mt-5">
+              <div>
+                <p className="text-gray-700 text-theme-sm dark:text-gray-400">
+                  Học sinh thi
+                </p>
+              </div>
+              <div className="flex items-center gap-1">
+                <span
+                  className={`${
+                    analyzeData?.totalTestsTakenChangePercent > 0
+                      ? "text-green-500"
+                      : "text-red-500"
+                  } inline-flex items-center px-2.5 py-0.5 justify-center gap-1 rounded-full font-medium text-theme-xs bg-success-50 text-success-600 dark:bg-success-500/15 dark:text-success-500`}
+                >
+                  <span className="text-xl">
+                    {analyzeData?.totalTestsTakenChangePercent > 0
+                      ? "\u2191"
+                      : "\u2193"}{" "}
+                  </span>
+                  {analyzeData?.totalTestsTakenChangePercent}%
+                </span>
+                {/* <span className="text-gray-500 text-theme-xs dark:text-gray-400">
+                năm trước
+              </span> */}
+              </div>
             </div>
           </div>
         </div>
-        <div className="rounded-2xl  flex-shrink-0 border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-4">
-          <h4 className="font-bold text-gray-800 text-base dark:text-white/90">
-            Số học sinh đậu
-          </h4>
-          <div className="flex items-end justify-between mt-4 sm:mt-5">
-            <div className="flex items-center gap-1">
-              <span className="inline-flex items-center px-2.5 py-0.5 justify-center gap-1 rounded-full font-medium text-theme-xs bg-success-50 text-success-600 dark:bg-success-500/15 dark:text-success-500">
-                {analyzeData?.totalPassCount}
-              </span>
-              <span className="text-gray-500 text-theme-xs dark:text-gray-400">
-                Học sinh
-              </span>
-            </div>
-          </div>
-        </div>
-        <div className="rounded-2xl  flex-shrink-0 border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-4">
-          <h4 className="font-bold text-gray-800 text-base dark:text-white/90">
-            Số học sinh không đậu
-          </h4>
-          <div className="flex items-end justify-between mt-4 sm:mt-5">
-            <div className="flex items-center gap-1">
-              <span className="inline-flex items-center px-2.5 py-0.5 justify-center gap-1 rounded-full font-medium text-theme-xs bg-success-50 text-success-600 dark:bg-success-500/15 dark:text-success-500">
-                {analyzeData?.totalFailCount}
-              </span>
-              <span className="text-gray-500 text-theme-xs dark:text-gray-400">
-                học sinh
-              </span>
-            </div>
-          </div>
-        </div>
-        <div className="rounded-2xl  flex-shrink-0 border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-4">
-          <h4 className="font-bold text-gray-800 text-base dark:text-white/90">
-            Số học sinh tham gia
-          </h4>
-          <div className="flex items-end justify-between mt-4 sm:mt-5">
-            <div className="flex items-center gap-1">
-              <span className="inline-flex items-center px-2.5 py-0.5 justify-center gap-1 rounded-full font-medium text-theme-xs bg-success-50 text-success-600 dark:bg-success-500/15 dark:text-success-500">
-                {analyzeData?.totalStudentTakeExam}
-              </span>
-              <span className="text-gray-500 text-theme-xs dark:text-gray-400">
-                học sinh
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="grid grid-cols-2 gap-4">
-        <div className="shadow-lg rounded-lg p-4 bg-white dark:bg-white/[0.03]">
-          <Bar options={options} data={data} />
-        </div>
-        <div className="shadow-lg rounded-lg p-4 bg-white dark:bg-white/[0.03]">
+
+        <div className="shadow-lg col-span-2 rounded-lg p-4 bg-white dark:bg-white/[0.03]">
           <Line options={options2} data={data2} />
         </div>
-        <div className="shadow-lg rounded-lg p-4 bg-white dark:bg-white/[0.03]">
+        <div className="shadow-lg col-span-2 rounded-lg p-4 bg-white dark:bg-white/[0.03]">
           <Line options={options3} data={data3} />
         </div>
       </div>

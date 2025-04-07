@@ -535,7 +535,15 @@ export const getTransactionList = async (
   return res.data;
 };
 
-export const getExamAnalyze = async (id: string) => {
-  const res = await axiosClient.get(`/api/exam/analyse/${id}`);
+export const getExamAnalyze = async (id: string, year: number) => {
+  const res = await axiosClient.get(`/api/exam/analyse/${id}`, {
+    params: {
+      year,
+    },
+  });
+  return res.data;
+};
+export const getAIRecommendation = async () => {
+  const res = await axiosClient.post(`/api/students/getRecommendationFromAI`);
   return res.data;
 };

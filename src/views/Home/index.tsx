@@ -258,8 +258,12 @@ const Home = () => {
               clickable: true,
               renderBullet: renderBullet,
             }}
+            breakpoints={{
+              0: { slidesPerView: 1, spaceBetween: 12 },
+              1024: { slidesPerView: 3, spaceBetween: 12 },
+            }}
             modules={[Autoplay, Pagination, Navigation]}
-            slidesPerGroup={3}
+            // slidesPerGroup={3}
             ref={sliderRef}
           >
             {items.map((item, index) => (
@@ -357,7 +361,7 @@ const Home = () => {
               </div>
             ))}
         </div>
-        <div className="grid grid-cols-4 gap-4">
+        <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-4">
           {exam &&
             exam.map((e: any) => (
               <div
@@ -365,7 +369,9 @@ const Home = () => {
                 key={e.id}
               >
                 <div className="flex flex-col justify-items-center gap-2">
-                  <p className="font-bold h-[50px] text-start">{e.examName}</p>
+                  <p className="font-bold min-h-[50px] text-start">
+                    {e.examName}
+                  </p>
                   <p className="line-clamp-1 text-md flex items-center gap-1">
                     <img
                       src={IMAGES.clockIcon}
@@ -383,27 +389,24 @@ const Home = () => {
                     {e.price.toLocaleString("vi-VN")}đ
                   </p>
                 </div>
-                <div className="self-end">
+                <div className="self-end flex-shrink-0">
                   {e.enrollmentId ? (
-                    <img
-                      src={IMAGES.arrowRight}
-                      alt="icon"
+                    <CustomButton
+                      text="Vào thi ngay"
+                      textHover="Đừng ngại"
                       onClick={() => handleOpenPopup(e)}
-                      className=" bg-[#1244A2] w-[30px]  p-0.5 rounded-full cursor-pointer"
                     />
                   ) : e.freeAttempts > 0 ? (
-                    <img
-                      src={IMAGES.arrowRight}
-                      alt="icon"
+                    <CustomButton
+                      text="Nhận mã thi"
+                      textHover="Đừng ngại"
                       onClick={() => handleOpenPopup(e)}
-                      className=" bg-[#1244A2] w-[30px] p-0.5 rounded-full cursor-pointer"
                     />
                   ) : (
-                    <img
-                      src={IMAGES.arrowRight}
-                      alt="icon"
+                    <CustomButton
+                      text="Mua mã thi"
+                      textHover="Đừng ngại"
                       onClick={() => handleBuyExamCode(e)}
-                      className=" bg-[#1244A2] w-[30px] p-0.5 rounded-full cursor-pointer"
                     />
                   )}
                 </div>
