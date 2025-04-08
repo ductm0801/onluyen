@@ -21,7 +21,7 @@ export const statusEnum = {
   1: "Tạm ngưng",
   2: "Chờ duyệt",
   3: "Thành công",
-  4: "Thất bại",
+  4: "Từ chối",
 };
 export const pendingExamEnum = {
   0: "Bản Nháp",

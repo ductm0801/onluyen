@@ -588,3 +588,20 @@ export const instructorWithdraw = async (amount: number) => {
   );
   return res.data;
 };
+export const adminUpdatePendingTransaction = async (
+  id: string,
+  status: number,
+  amount: number
+) => {
+  const res = await axiosClient.put(
+    `/api/instructor_transaction/confirm_withdrawal_order`,
+    {
+      params: {
+        InstructorTransactionId: id,
+        Status: status,
+        Amount: amount,
+      },
+    }
+  );
+  return res.data;
+};
