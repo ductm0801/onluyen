@@ -77,10 +77,8 @@ const CourseDetail = () => {
           <div className="flex items-center gap-2 text-[#667085]">
             <img src={IMAGES.lessonIcon} alt="lesson" />
             Tổng số
-            <span className="text-[#101828] font-bold">
-              {course?.lessons.items.length}
-            </span>{" "}
-            bài học
+            <span className="text-[#101828] font-bold">{totalItems}</span> bài
+            học
           </div>
           <div className="flex items-center gap-2 text-[#667085]">
             <img src={IMAGES.priceIcon} alt="lesson" className="w-[25px]" />

@@ -564,3 +564,20 @@ export const getInstructorDashboard = async (filterType: string) => {
   );
   return res.data;
 };
+export const getInstructorTransactionHistory = async (
+  pageIndex: number,
+  pageSize: number
+) => {
+  const res = await axiosClient.get(
+    `/api/instructor_transaction/get_all_instructor_transaction`,
+    {
+      params: {
+        SortBy: "string",
+        SortAscending: false,
+        pageIndex,
+        pageSize,
+      },
+    }
+  );
+  return res.data;
+};
