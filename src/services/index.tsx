@@ -581,3 +581,10 @@ export const getInstructorTransactionHistory = async (
   );
   return res.data;
 };
+export const instructorWithdraw = async (amount: number) => {
+  const res = await axiosClient.post(
+    `/api/instructor_transaction/create_withdraw_order`,
+    { params: { Amount: amount } }
+  );
+  return res.data;
+};
