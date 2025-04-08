@@ -9,6 +9,7 @@ import { Modal } from "antd";
 import { useRouter } from "next/navigation";
 
 import React, { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 const cols = [
   {
     name: "Tên",
@@ -56,10 +57,11 @@ const TestBank = () => {
       await deleteExamBank(examBankId);
       setConfirm(false);
       setExamBankId("");
+      toast.success("Xóa ngân hàng đề thành công!");
       fetchExamBank();
-    } catch (error) {
+    } catch (error: any) {
       setLoading(false);
-      console.error(error);
+      toast.error(error.response.data.message);
     } finally {
       setLoading(false);
     }
@@ -206,7 +208,7 @@ const TestBank = () => {
           okText="Đồng ý"
           cancelText="Hủy"
         >
-          Bạn có chắc muốn xóa câu hỏi này?
+          Bạn có chắc muốn xóa bộ câu hỏi này?
         </Modal>
       )}
     </div>

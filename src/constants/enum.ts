@@ -33,7 +33,12 @@ export const pendingExamEnum = {
 
 export const courseStatusEnum = {
   0: "Bản nháp",
-  1: "Công khai",
+  1: "Sắp ra mắt",
+  2: "Công khai",
+  3: "Đã lên lịch",
+  4: "Tạm ngưng",
+  5: "Đã xóa",
+  6: "Đã hoàn thành",
 };
 
 export const renderBgColorStatus = (status: keyof typeof statusEnum) => {

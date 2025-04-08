@@ -1,7 +1,9 @@
 "use client";
 import CircularProgess from "@/components/CircularProgress";
 import { examEnum, questionEnum } from "@/constants/enum";
+
 import { IExam } from "@/models";
+import { useExamLeave } from "@/providers/examProvider";
 import { useLoading } from "@/providers/loadingProvider";
 import { getTest, saveExam, submitExam } from "@/services";
 import { Image, Modal } from "antd";
@@ -74,7 +76,7 @@ const TakeExam = () => {
   useEffect(() => {
     const autoSaveInterval = setInterval(() => {
       autoSaveExam();
-    }, 30000);
+    }, 3000);
 
     return () => clearInterval(autoSaveInterval);
   }, [selectedAnswers]);
@@ -174,6 +176,14 @@ const TakeExam = () => {
       setLoading(false);
     }
   };
+  const { setExamId } = useExamLeave();
+
+  useEffect(() => {
+    setExamId(params.id);
+    return () => {
+      setExamId(null);
+    };
+  }, [params.id, setExamId]);
 
   if (!exam) return <></>;
 

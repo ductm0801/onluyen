@@ -9,6 +9,7 @@ import DefaultLayout from "@/components/DefaultLayout";
 import ProtectedRoute from "@/providers/protectredRoute";
 import { AuthProvider } from "@/providers/authProvider";
 import { ThemeProvider } from "@/providers/themeProvider";
+import { ExamLeaveProvider } from "@/providers/examProvider";
 
 const fahwang = Fahkwang({
   weight: ["200", "300", "400", "500", "600", "700"],
@@ -35,9 +36,11 @@ export default function RootLayout({
           <AuthProvider>
             <ProtectedRoute>
               <LoadingProvider>
-                <ToastContainer />
+                <ExamLeaveProvider>
+                  <ToastContainer />
 
-                <DefaultLayout>{children}</DefaultLayout>
+                  <DefaultLayout>{children}</DefaultLayout>
+                </ExamLeaveProvider>
               </LoadingProvider>
             </ProtectedRoute>
           </AuthProvider>

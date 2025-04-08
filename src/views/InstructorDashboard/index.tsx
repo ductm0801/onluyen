@@ -115,7 +115,7 @@ const InstructorDashboard = () => {
           </div> */}
         </div>
       </div>
-      <div className="flex gap-4 mt-4">
+      <div className="flex gap-4 mt-4 justify-end ">
         <button
           onClick={() => setFilterType("month")}
           className={`rounded-lg border px-4 py-2 text-sm font-medium ${
