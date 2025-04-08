@@ -557,3 +557,10 @@ export const updateBankAccount = async (body: any) => {
   const res = await axiosClient.put(`/api/instructors/update_instructor`, body);
   return res.data;
 };
+export const getInstructorDashboard = async (filterType: string) => {
+  const res = await axiosClient.get(
+    `/api/instructor_transaction/get_list_monthly_revenue`,
+    { params: { filterType } }
+  );
+  return res.data;
+};

@@ -36,6 +36,7 @@ export type IUSer = {
     yearOfExperience: number;
     specialization: string;
     availableBalance: number;
+    pendingBalance: number;
   };
   id: string;
   imageUrl: string;
@@ -278,6 +279,8 @@ export type IInstructorDetail = {
     certificate: string;
     yearOfExperience: number;
     specialization: string;
+    pendingBalance: number;
+    availableBalance: number;
   };
   courses: ICourse[];
   subject: {
