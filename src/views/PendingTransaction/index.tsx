@@ -1,24 +1,20 @@
 "use client";
 import Paging from "@/components/Paging";
+import { statusEnum } from "@/constants/enum";
 import { useLoading } from "@/providers/loadingProvider";
-import { getTransactionList } from "@/services";
+import { adminUpdatePendingTransaction, getTransactionList } from "@/services";
 import { Modal } from "antd";
 import React, { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 const cols = [
   {
-    name: "Tiêu đề",
+    name: "Người yêu cầu",
     className:
       "px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white rounded-s-lg",
   },
   {
-    name: "Thời lượng",
-    className:
-      "px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white",
-  },
-
-  {
-    name: "Mô tả",
+    name: "Số tiền",
     className:
       "px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white",
   },
@@ -27,12 +23,6 @@ const cols = [
     className:
       "px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white",
   },
-  {
-    name: "Tổng Điểm",
-    className:
-      "px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white",
-  },
-
   {
     name: "Hành động",
     className:
@@ -79,6 +69,31 @@ const PendingTransaction = () => {
   useEffect(() => {
     fetchTransaction();
   }, [currentPage]);
+
+  const handleUpdateTransactionStatus = (
+    status: number,
+    id: string,
+    amount: number
+  ) => {
+    Modal.confirm({
+      title: "Xác nhận duyệt giao dịch?",
+      content: "Bạn có chắc chắn muốn cập nhật trạng thái giao dịch này không?",
+      okText: "Xác nhận",
+      cancelText: "Hủy",
+      onOk: async () => {
+        try {
+          setLoading(true);
+          await adminUpdatePendingTransaction(id, status, amount);
+          toast.success("Cập nhật trạng thái thành công");
+        } catch (e: any) {
+          toast.error(e.response.data.message);
+        } finally {
+          setLoading(false);
+        }
+      },
+    });
+  };
+
   return (
     <div className="relative overflow-x-auto">
       <div className="flex justify-between items-center  flex-column flex-wrap md:flex-row space-y-4 md:space-y-0 pb-4">
@@ -120,7 +135,7 @@ const PendingTransaction = () => {
         </thead>
         <tbody>
           {transaction &&
-            transaction.map((a, idx) => (
+            transaction.map((a: any, idx) => (
               <tr
                 className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600"
                 key={idx}
@@ -129,38 +144,33 @@ const PendingTransaction = () => {
                   scope="row"
                   className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white"
                 >
-                  {/* <div className="text-base font-semibold">{a.testName}</div> */}
+                  <div className="text-base font-semibold">{a?.fullName}</div>
                 </th>
-                {/* <td className="px-6 py-4">{a.length} phút</td> */}
-                {/* <td className="px-6 py-4">{examEnum[a.testType]}</td> */}
-                {/* <td className="px-6 py-4">{a.description}</td> */}
-                {/* <td className="px-6 py-4">
-                  <p
-                    className={`bg-gradient-to-br rounded-lg text-white py-0.5 px-2 ${renderBgColorStatus(
-                      a.testApprovalStatus
-                    )}`}
-                  >
-                    {
-                      pendingExamEnum[
-                        a.testApprovalStatus as keyof typeof pendingExamEnum
-                      ]
-                    }
-                  </p>
-                </td> */}
-                {/* <td className="px-6 py-4">{a.totalGrade}</td> */}
+                <td className="px-6 py-4">
+                  {a.amount.toLocaleString("vi-VN")}đ
+                </td>
+                <td className="px-6 py-4">
+                  {statusEnum[a.status as keyof typeof statusEnum] ||
+                    "Unknown Status"}
+                </td>
+
                 <td className="px-6 py-4 flex items-center">
-                  {/* <div
+                  <div
                     className="font-medium whitespace-nowrap text-blue-600 dark:text-blue-500 hover:underline cursor-pointer"
-                    onClick={() => router.push(`/instructor/exam/${a.id}`)}
+                    onClick={() =>
+                      handleUpdateTransactionStatus(3, a?.id, a.amount)
+                    }
                   >
-                    Chi tiết
-                  </div> */}
-                  {/* <div
+                    Duyệt
+                  </div>
+                  <div
                     className="font-medium text-red-600 dark:text-red-500 hover:underline cursor-pointer ms-3"
-                    onClick={() => handleOpenConfirm(a.id)}
+                    onClick={() =>
+                      handleUpdateTransactionStatus(4, a?.id, a.amount)
+                    }
                   >
-                    Xóa
-                  </div> */}
+                    Từ chối
+                  </div>
                 </td>
               </tr>
             ))}
