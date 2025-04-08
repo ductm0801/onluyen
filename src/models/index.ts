@@ -37,6 +37,7 @@ export type IUSer = {
     specialization: string;
     availableBalance: number;
     pendingBalance: number;
+    totalBalance: number;
   };
   id: string;
   imageUrl: string;

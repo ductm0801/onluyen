@@ -6,7 +6,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 interface ExamLeaveContextType {
   setExamId: (id: string | string[] | null) => void;
@@ -28,7 +28,7 @@ export const ExamLeaveProvider = ({
   const prevPathRef = useRef<string | null>(null);
 
   const examPath = examId ? `/student/exam/${examId}` : null;
-
+  const router = useRouter();
   const submitExam = () => {
     if (!examId) return;
 
@@ -59,6 +59,8 @@ export const ExamLeaveProvider = ({
       );
       if (confirmLeave) {
         submitExam();
+      } else {
+        router.replace(`/student/exam/${examId}`);
       }
     };
 
