@@ -84,6 +84,7 @@ const PendingTransaction = () => {
         try {
           setLoading(true);
           await adminUpdatePendingTransaction(id, status, amount);
+          fetchTransaction();
           toast.success("Cập nhật trạng thái thành công");
         } catch (e: any) {
           toast.error(e.response.data.message);

@@ -584,7 +584,7 @@ export const getInstructorTransactionHistory = async (
 export const instructorWithdraw = async (amount: number) => {
   const res = await axiosClient.post(
     `/api/instructor_transaction/create_withdraw_order`,
-    { params: { Amount: amount } }
+    { amount }
   );
   return res.data;
 };
@@ -595,12 +595,11 @@ export const adminUpdatePendingTransaction = async (
 ) => {
   const res = await axiosClient.put(
     `/api/instructor_transaction/confirm_withdrawal_order`,
+
     {
-      params: {
-        InstructorTransactionId: id,
-        Status: status,
-        Amount: amount,
-      },
+      instructorTransactionId: id,
+      status,
+      amount,
     }
   );
   return res.data;
