@@ -604,3 +604,20 @@ export const adminUpdatePendingTransaction = async (
   );
   return res.data;
 };
+export const getInstructorTransaction = async (
+  pageIndex: number,
+  pageSize: number
+) => {
+  const res = await axiosClient.get(
+    `/api/instructor_transaction/get_all_instructor_transaction`,
+    {
+      params: {
+        SortBy: "string",
+        SortAscending: false,
+        pageIndex,
+        pageSize,
+      },
+    }
+  );
+  return res.data;
+};

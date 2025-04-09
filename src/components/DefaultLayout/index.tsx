@@ -9,7 +9,7 @@ import { useAuth } from "@/providers/authProvider";
 import { useTheme } from "@/providers/themeProvider";
 import { Moon, Sun } from "lucide-react";
 import path from "path";
-import { Avatar, Form } from "antd";
+import { Avatar, Form, Modal } from "antd";
 import { useLoading } from "@/providers/loadingProvider";
 import { getChat, getNoti, sendMessage } from "@/services";
 import { collection, onSnapshot } from "firebase/firestore";
@@ -34,6 +34,8 @@ const DefaultLayout: React.FC<props> = ({ children }) => {
   const [openNoti, setOpenNoti] = useState(false);
   const router = useRouter();
   const [form] = Form.useForm();
+  const [notiDetail, setNotiDetail] = useState(false);
+  const notiRef = useRef<any>(null);
 
   const fetchChat = async () => {
     try {
@@ -89,6 +91,14 @@ const DefaultLayout: React.FC<props> = ({ children }) => {
 
   const closeSidebar = () => {
     setSidebarOpen(!sidebarOpen);
+  };
+  const handleOpenNoti = (noti: any) => {
+    setNotiDetail(true);
+    notiRef.current = noti;
+  };
+  const handleCloseNoti = () => {
+    setNotiDetail(false);
+    notiRef.current = null;
   };
 
   useEffect(() => {
@@ -218,7 +228,10 @@ const DefaultLayout: React.FC<props> = ({ children }) => {
                                   <p className="text-[#344054] line-clamp-2 text-sm">
                                     {noti.body}
                                   </p>
-                                  <div className="text-[#2E90FA] text-sm cursor-pointer">
+                                  <div
+                                    className="text-[#2E90FA] text-sm cursor-pointer"
+                                    onClick={() => handleOpenNoti(noti)}
+                                  >
                                     Xem thêm
                                   </div>
                                 </div>
@@ -379,6 +392,32 @@ const DefaultLayout: React.FC<props> = ({ children }) => {
           />
         )}
       </div>
+      {openNoti && notiDetail && (
+        <Modal
+          open={openNoti}
+          onCancel={handleCloseNoti}
+          footer={null}
+          title="Chi tiết thông báo"
+        >
+          <div className="flex flex-col gap-4 p-4">
+            <div className="flex items-start gap-2">
+              <img
+                src={IMAGES.systemAva}
+                alt="ava"
+                className=" aspect-square"
+              />
+              <div className="flex flex-col gap-[6px]">
+                <p className="text-[#101828] text-xl font-bold">
+                  {notiRef.current?.title}
+                </p>
+                <p className="text-[#344054] text-sm">
+                  {notiRef.current?.body}
+                </p>
+              </div>
+            </div>
+          </div>
+        </Modal>
+      )}
     </div>
   );
 };
