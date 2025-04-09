@@ -73,7 +73,7 @@ const Nav: React.FC<props> = ({ sidebarOpen, closeSidebar }) => {
                   pathName.startsWith(item.path) ? "opacity-100" : "opacity-50"
                 }`}
               />
-              <p className="text-base">{item.label}</p>
+              <p className="text-base whitespace-nowrap">{item.label}</p>
             </div>
           ))}
         </div>

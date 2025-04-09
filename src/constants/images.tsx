@@ -55,4 +55,5 @@ export const IMAGES = {
   clockIcon: "/assets/clock.png",
   correct: "/assets/correct.png",
   notCorrect: "/assets/notCorrect.png",
+  pendingIcon: "/assets/pending.svg",
 };

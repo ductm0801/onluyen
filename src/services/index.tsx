@@ -631,3 +631,26 @@ export const getInstructorTransaction = async (
   );
   return res.data;
 };
+export const getInstructorPending = async () => {
+  const res = await axiosClient.get(`/api/users/get_userInactiveStatus`);
+  return res.data;
+};
+export const updateInstructorPending = async (id: string, status: string) => {
+  const res = await axiosClient.post(`/api/user-registration/status/${id}`, {
+    status,
+  });
+  return res.data;
+};
+export const getAdminTransactionDashboard = async (filter: string) => {
+  const res = await axiosClient.get(
+    `/api/instructor_transaction/get_all_bymonth_and_byday_revenue`,
+    { params: { filter } }
+  );
+  return res.data;
+};
+export const getAdminRevenue = async () => {
+  const res = await axiosClient.get(
+    `/api/instructor_transaction/get_all_revenue`
+  );
+  return res.data;
+};
