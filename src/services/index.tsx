@@ -58,8 +58,15 @@ export const getUser = async (pageIndex: number, pageSize: number) => {
   });
   return res.data;
 };
-export const updateUserStatus = async (id: string) => {
-  const res = await axiosClient.put(`/api/user-registration/status/${id}`);
+export const updateUserStatus = async (
+  id: string,
+  reason: string,
+  status: string
+) => {
+  const res = await axiosClient.post(`/api/users/status/${id}`, {
+    reason,
+    status,
+  });
   return res.data;
 };
 
@@ -520,7 +527,8 @@ export const getStudentCourseProgress = async () => {
 };
 export const getTransactionList = async (
   pageIndex: number,
-  pageSize: number
+  pageSize: number,
+  status?: number
 ) => {
   const res = await axiosClient.get(
     `/api/instructor_transaction/get_list_pending`,
@@ -529,6 +537,8 @@ export const getTransactionList = async (
         pageIndex,
         pageSize,
         SortBy: "string",
+        Status: status,
+        SortAscending: false,
       },
     }
   );

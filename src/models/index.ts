@@ -29,6 +29,7 @@ export type IUSer = {
     phoneNumber: number;
     address: string;
     gender: string;
+    status: number;
   };
   instructor: {
     id: string;
@@ -47,6 +48,7 @@ export type IUSer = {
   address: string;
   gender: string;
   subjects: IUserSubject[] | IUserSubject;
+  status: number;
 };
 export type IUserSubject = {
   id: string;
@@ -74,6 +76,7 @@ export type Subject = {
 
 export type IAccount = {
   address: string;
+  userId: string;
   dateOfBirth: string;
   email: string;
   fullName: string;
@@ -82,6 +85,7 @@ export type IAccount = {
   phoneNumber: string;
   role: keyof typeof userRoleEnum;
   isDelete: boolean;
+  status: number;
 };
 export type IRegist = {
   email: string;

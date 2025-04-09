@@ -71,7 +71,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     window.addEventListener("storage", handleStorageChange);
     return () => window.removeEventListener("storage", handleStorageChange);
   }, [router, update]);
-
+  useEffect(() => {
+    if (user?.user?.status === 1) {
+      toast.warn("Tài khoản của bạn đã bị khóa, vui lòng liên hệ admin.");
+      localStorage.removeItem("token");
+      setUser(null);
+      router.replace("/login");
+      return;
+    }
+  }, [user, router, update]);
   const logout = () => {
     localStorage.removeItem("token");
     setUser(null);

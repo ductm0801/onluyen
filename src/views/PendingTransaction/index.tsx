@@ -3,7 +3,8 @@ import Paging from "@/components/Paging";
 import { statusEnum } from "@/constants/enum";
 import { useLoading } from "@/providers/loadingProvider";
 import { adminUpdatePendingTransaction, getTransactionList } from "@/services";
-import { Modal } from "antd";
+import { Modal, Select } from "antd";
+import { stat } from "fs";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
@@ -16,25 +17,26 @@ const cols = [
   {
     name: "Số tiền",
     className:
-      "px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white",
+      "px-6 py-4 font-medium text-right text-gray-900 whitespace-nowrap dark:text-white",
   },
   {
     name: "Trạng thái",
     className:
-      "px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white",
+      "px-6 py-4 font-medium text-center text-gray-900 whitespace-nowrap dark:text-white",
   },
   {
     name: "Hành động",
     className:
-      "px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white rounded-e-lg",
+      "px-6 py-4 font-medium text-center text-gray-900 whitespace-nowrap dark:text-white rounded-e-lg",
   },
 ];
+
 export const renderBgColorStatus = (status: any) => {
   switch (status) {
     case 1:
       return "from-orange-600 to-orange-300";
     case 2:
-      return "from-emerald-600 to-emerald-400";
+      return "from-orange-600 to-orange-300";
     case 4:
       return "from-red-600 to-red-300";
     case 3:
@@ -45,6 +47,11 @@ export const renderBgColorStatus = (status: any) => {
       return "from-emerald-500 to-teal-400";
   }
 };
+export const statusOptions = [
+  { value: 2, label: "Chờ duyệt" },
+  { value: 3, label: "Thành công" },
+  { value: 4, label: "Từ chối" },
+];
 const PendingTransaction = () => {
   const [transaction, setTransaction] = useState([]);
   const { setLoading } = useLoading();
@@ -52,10 +59,11 @@ const PendingTransaction = () => {
   const [pageSize, setPageSize] = useState(10);
   const [totalItems, setTotalItems] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
+  const [status, setStatus] = useState<number | undefined>(undefined);
   const fetchTransaction = async () => {
     try {
       setLoading(true);
-      const res = await getTransactionList(currentPage, pageSize);
+      const res = await getTransactionList(currentPage, pageSize, status);
       setTransaction(res.data.items);
       setTotalItems(res.data.totalItemsCount);
       setTotalPages(res.data.totalPageCount);
@@ -68,7 +76,7 @@ const PendingTransaction = () => {
   };
   useEffect(() => {
     fetchTransaction();
-  }, [currentPage]);
+  }, [currentPage, status]);
 
   const handleUpdateTransactionStatus = (
     status: number,
@@ -98,7 +106,7 @@ const PendingTransaction = () => {
   return (
     <div className="relative overflow-x-auto">
       <div className="flex justify-between items-center  flex-column flex-wrap md:flex-row space-y-4 md:space-y-0 pb-4">
-        <div className="relative">
+        {/* <div className="relative">
           <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
             <svg
               className="w-4 h-4 text-gray-500 dark:text-gray-400"
@@ -122,7 +130,15 @@ const PendingTransaction = () => {
             className="block p-2 ps-10 text-sm focus:ring-0 focus:outline-none text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white "
             placeholder="Tìm kiếm"
           />
-        </div>
+        </div> */}
+        <Select
+          options={statusOptions}
+          value={status}
+          size="large"
+          allowClear
+          placeholder="Trạng thái"
+          onChange={(value: number) => setStatus(value)}
+        />
       </div>
       <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
         <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
@@ -147,31 +163,45 @@ const PendingTransaction = () => {
                 >
                   <div className="text-base font-semibold">{a?.fullName}</div>
                 </th>
-                <td className="px-6 py-4">
+                <td className="px-6 text-right py-4  text-lg">
                   {a.amount.toLocaleString("vi-VN")}đ
                 </td>
-                <td className="px-6 py-4">
-                  {statusEnum[a.status as keyof typeof statusEnum] ||
-                    "Unknown Status"}
+                <td
+                  className={`p-2 text-sm leading-normal text-center align-middle shadow-transparent `}
+                >
+                  <span
+                    className={`px-2 text-sm rounded-lg py-1 font-bold text-white bg-gradient-to-tl ${renderBgColorStatus(
+                      a.status
+                    )}`}
+                  >
+                    {statusEnum[a.status as keyof typeof statusEnum] ||
+                      "Unknown Status"}
+                  </span>
                 </td>
 
-                <td className="px-6 py-4 flex items-center">
-                  <div
-                    className="font-medium whitespace-nowrap text-blue-600 dark:text-blue-500 hover:underline cursor-pointer"
-                    onClick={() =>
-                      handleUpdateTransactionStatus(3, a?.id, a.amount)
-                    }
-                  >
-                    Duyệt
-                  </div>
-                  <div
-                    className="font-medium text-red-600 dark:text-red-500 hover:underline cursor-pointer ms-3"
-                    onClick={() =>
-                      handleUpdateTransactionStatus(4, a?.id, a.amount)
-                    }
-                  >
-                    Từ chối
-                  </div>
+                <td className="px-6 py-4 flex items-center justify-center">
+                  {a.status === 2 ? (
+                    <>
+                      <div
+                        className="font-medium whitespace-nowrap text-blue-600 dark:text-blue-500 hover:underline cursor-pointer"
+                        onClick={() =>
+                          handleUpdateTransactionStatus(3, a?.id, a.amount)
+                        }
+                      >
+                        Duyệt
+                      </div>
+                      <div
+                        className="font-medium text-red-600 dark:text-red-500 hover:underline cursor-pointer ms-3"
+                        onClick={() =>
+                          handleUpdateTransactionStatus(4, a?.id, a.amount)
+                        }
+                      >
+                        Từ chối
+                      </div>
+                    </>
+                  ) : (
+                    "\u2014"
+                  )}
                 </td>
               </tr>
             ))}
