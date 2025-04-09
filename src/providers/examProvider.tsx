@@ -69,32 +69,6 @@ export const ExamLeaveProvider = ({
     }
 
     prevPathRef.current = pathname;
-
-    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-      if (pathname === examPath) {
-        e.preventDefault();
-        e.returnValue = "";
-      }
-    };
-
-    const handleVisibilityChange = () => {
-      if (document.visibilityState === "hidden" && pathname === examPath) {
-        const confirmLeave = window.confirm(
-          "Bạn sắp rời khỏi trang. Bài sẽ được nộp. Đồng ý?"
-        );
-        if (confirmLeave) {
-          submitExam();
-        }
-      }
-    };
-
-    window.addEventListener("beforeunload", handleBeforeUnload);
-    document.addEventListener("visibilitychange", handleVisibilityChange);
-
-    return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-      document.removeEventListener("visibilitychange", handleVisibilityChange);
-    };
   }, [pathname, examPath]);
 
   return (

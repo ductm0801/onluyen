@@ -92,9 +92,9 @@ const TakeExam = () => {
 
     try {
       await saveExam({ studentAnswers: formattedAnswers }, params.id);
-      console.log("Bài làm đã được lưu tự động.");
+      // console.log("Bài làm đã được lưu tự động.");
     } catch (err: any) {
-      toast.error("Lỗi khi lưu bài làm tự động.");
+      // toast.error("Lỗi khi lưu bài làm tự động.");
     }
   };
 
