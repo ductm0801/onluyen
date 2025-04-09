@@ -29,6 +29,12 @@ export const menus: Record<
       icon: IMAGES.transactionIcon,
       isShow: true,
     },
+    {
+      label: "Tài khoản chờ duyệt",
+      path: "/admin/pending-instructor",
+      icon: IMAGES.pendingIcon,
+      isShow: true,
+    },
   ],
   Student: [
     {
