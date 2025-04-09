@@ -43,6 +43,10 @@ const StudentResult = () => {
   const [pageSize, setPageSize] = useState(6);
   const [totalItems, setTotalItems] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
+  const [currentDetailPage, setCurrentDetailPage] = useState(0);
+  const [detailpageSize, setDetailPageSize] = useState(6);
+  const [detailTotalItems, setDetailTotalItems] = useState(0);
+  const [detailTotalPages, setDetailTotalPages] = useState(1);
   const [sortType, setSortType] = useState(true);
   const detail = useRef<IEXamResult | null>(null);
   const [viewDetail, setViewDetail] = useState(false);
@@ -79,8 +83,14 @@ const StudentResult = () => {
     if (!detail.current) return;
     try {
       setLoading(true);
-      const res = await getHistoryExamDetail(detail.current?.id, 0, 10);
+      const res = await getHistoryExamDetail(
+        detail.current?.id,
+        currentDetailPage,
+        detailpageSize
+      );
       if (res) setResultDetail(res.data);
+      setDetailTotalItems(res.data.totalItemsCount);
+      setDetailTotalPages(res.data.totalPageCount);
     } catch (error) {
       setLoading(false);
       console.log(error);
@@ -245,6 +255,13 @@ const StudentResult = () => {
               </div>
             ))}
           </div>
+          <Paging
+            setCurrentPage={setCurrentDetailPage}
+            currentPage={currentDetailPage}
+            pageSize={detailpageSize}
+            totalItems={detailTotalItems}
+            totalPages={detailTotalPages}
+          />
         </Modal>
       )}
     </div>

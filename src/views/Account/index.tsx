@@ -5,6 +5,7 @@ import { IMAGES } from "@/constants/images";
 import { IAccount } from "@/models";
 import { useLoading } from "@/providers/loadingProvider";
 import { getUser, updateUserStatus } from "@/services";
+import { Modal } from "antd";
 import React, { use, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
@@ -29,11 +30,11 @@ const cols = [
     className:
       "px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white",
   },
-  {
-    name: "Địa chỉ",
-    className:
-      "px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white",
-  },
+  // {
+  //   name: "Địa chỉ",
+  //   className:
+  //     "px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white",
+  // },
   {
     name: "Hành động",
     className:
@@ -74,10 +75,14 @@ const Account = () => {
     fetchAccount();
   }, [currentPage]);
 
-  const onConfirm = async () => {
+  const onConfirm = async (
+    items: IAccount,
+    reasonValue: string,
+    status: string
+  ) => {
     try {
       setLoading(true);
-      await updateUserStatus(userId);
+      await updateUserStatus(items.userId, reasonValue, status);
       toast.success("Cập nhật trạng thái thành công!");
       setConfirm(false);
       fetchAccount();
@@ -86,6 +91,29 @@ const Account = () => {
       toast.error("Cập nhật trạng thái thất bại!");
       console.error(error);
     }
+  };
+  const handleConfirm = (items: IAccount, status: string) => {
+    let reasonValue = "";
+
+    Modal.confirm({
+      title: "Nhập lý do",
+      content: (
+        <textarea
+          className="border border-gray-300 rounded-lg p-2 w-full mt-2"
+          placeholder="Nhập lý do"
+          onChange={(e) => {
+            reasonValue = e.target.value;
+          }}
+        />
+      ),
+      onOk: () => {
+        if (!reasonValue.trim()) {
+          toast.error("Vui lòng nhập lý do!");
+          return Promise.reject();
+        }
+        return onConfirm(items, reasonValue, status);
+      },
+    });
   };
   return (
     <div className="relative overflow-x-auto">
@@ -150,7 +178,7 @@ const Account = () => {
                 <td className="px-6 py-4">{userRoleEnum[a.role]}</td>
                 {/* <td className="px-6 py-4">{a.phoneNumber}</td> */}
                 <td className="px-6 py-4">
-                  {a.isDelete ? (
+                  {a.status ? (
                     <div className="flex items-center">
                       <div className="h-2.5 w-2.5 rounded-full bg-red-500 me-2"></div>{" "}
                       Tạm ngưng
@@ -162,17 +190,23 @@ const Account = () => {
                     </div>
                   )}
                 </td>
-                <td className="px-6 py-4">{a.address}</td>
+                {/* <td className="px-6 py-4">{a.address}</td> */}
                 <td className="px-6 py-4">
-                  {/* <div className="font-medium text-blue-600 dark:text-blue-500 hover:underline cursor-pointer">
-                    Sửa
-                  </div> */}
-                  <div
-                    className="font-medium text-red-600 dark:text-red-500 hover:underline cursor-pointer ms-3"
-                    // onClick={() => openConfirm(a.id)}
-                  >
-                    Ẩn người dùng
-                  </div>
+                  {a.status ? (
+                    <div
+                      className="font-medium text-blue-600 dark:text-blue-500 hover:underline cursor-pointer"
+                      onClick={() => handleConfirm(a, "Active")}
+                    >
+                      Hiện người dùng
+                    </div>
+                  ) : (
+                    <div
+                      className="font-medium text-red-600 dark:text-red-500 hover:underline cursor-pointer ms-3"
+                      onClick={() => handleConfirm(a, "Inactive")}
+                    >
+                      Ẩn người dùng
+                    </div>
+                  )}
                 </td>
               </tr>
             ))}
@@ -185,36 +219,6 @@ const Account = () => {
         totalPages={totalPages}
         setCurrentPage={setCurrentPage}
       />
-      {confirm && (
-        <div className="fixed z-50 inset-0 bg-black/50 ">
-          <div className="flex items-center justify-center min-h-screen px-4 text-center">
-            <div className="inline-block bg-white rounded-lg px-8 py-6 shadow-md text-left w-[350px]">
-              <div className="flex items-center justify-between">
-                <h3 className="text-lg text-black font-bold">Xác nhận xoá</h3>
-              </div>
-              <p className="mt-4 text-sm text-gray-600">
-                Bạn có chắc muốn xoá tài khoản này?
-              </p>
-              <div className="flex justify-end mt-4">
-                <button
-                  className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-500"
-                  onClick={() => setConfirm(false)}
-                >
-                  Hủy
-                </button>
-                <button
-                  className="ml-4 px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-500"
-                  onClick={() => {
-                    onConfirm();
-                  }}
-                >
-                  Xoá
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

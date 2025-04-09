@@ -18,18 +18,33 @@ const InstructorForm = ({
   const [imageUrl, setImageUrl] = useState<string>();
   const [loadingImg, setLoadingImg] = useState(false);
   const [subject, setSubject] = useState<Subject[]>([]);
+
+  const generateRandomPassword = (length = 8) => {
+    const chars =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    let password = "";
+    for (let i = 0; i < length; i++) {
+      password += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return password;
+  };
   const onFinish = async (values: any) => {
+    const password = generateRandomPassword();
     try {
       setLoading(true);
       await instructorRegist({
         ...values,
         role: "Instructor",
         gender: values.gender || "Male",
+        username: values.email,
+        password,
+        email: values.email,
         resumeUrl: "string",
       });
       toast.success("Đăng ký thành công!");
       setIsRegist(false);
     } catch (err: any) {
+      toast.error(err.response.data.message);
       setLoading(false);
     } finally {
       setLoading(false);

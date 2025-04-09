@@ -32,9 +32,9 @@ const StudentForm: React.FC<props> = ({ setIsRegist }) => {
         toast.success("Đăng ký thành công");
         setIsRegist(false);
       }
-    } catch (e) {
+    } catch (e: any) {
       setLoading(false);
-      console.error("Error:", e);
+      toast.error(e.response?.data?.message);
     } finally {
       setLoading(false);
     }

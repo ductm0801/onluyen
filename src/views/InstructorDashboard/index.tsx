@@ -28,7 +28,7 @@ export const renderBgColorStatus = (status: keyof typeof statusEnum) => {
     case 1:
       return "from-orange-600 to-orange-300";
     case 2:
-      return "from-emerald-600 to-emerald-400";
+      return "from-orange-600 to-orange-300";
     case 4:
       return "from-red-600 to-red-300";
     case 3:
@@ -279,7 +279,7 @@ const InstructorDashboard = () => {
                         : "text-green-500"
                     }`}
                   >
-                    {a.transactionType === "Withdraw" ? "\u2193" : "\u2191"}
+                    {a.transactionType === "Withdraw" ? "-" : "+"}
                     {a.amount.toLocaleString("vi-VN")}đ
                   </td>
                   <td
