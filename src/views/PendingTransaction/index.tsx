@@ -4,6 +4,7 @@ import { statusEnum } from "@/constants/enum";
 import { useLoading } from "@/providers/loadingProvider";
 import { adminUpdatePendingTransaction, getTransactionList } from "@/services";
 import { Modal, Select } from "antd";
+import dayjs from "dayjs";
 import { stat } from "fs";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
@@ -21,6 +22,11 @@ const cols = [
   },
   {
     name: "Trạng thái",
+    className:
+      "px-6 py-4 font-medium text-center text-gray-900 whitespace-nowrap dark:text-white",
+  },
+  {
+    name: "Ngày yêu cầu",
     className:
       "px-6 py-4 font-medium text-center text-gray-900 whitespace-nowrap dark:text-white",
   },
@@ -178,6 +184,14 @@ const PendingTransaction = () => {
                       "Unknown Status"}
                   </span>
                 </td>
+                <td className="px-6 py-4 ">
+                  <div className="flex flex-col items-center">
+                    <p>{dayjs(a.transactionDate).format("DD/MM/YYYY")}</p>
+                    <p className="text-xs">
+                      {dayjs(a.transactionDate).format("HH:mm:ss")}
+                    </p>
+                  </div>
+                </td>
 
                 <td className="px-6 py-4 flex items-center justify-center">
                   {a.status === 2 ? (
@@ -214,24 +228,6 @@ const PendingTransaction = () => {
         totalPages={totalPages}
         setCurrentPage={setCurrentPage}
       />
-      {/* {create && (
-    <ModalCreateExam
-      onClose={() => setCreate(false)}
-      fetchExam={fetchExam}
-    />
-  )} */}
-      {/* {confirm && (
-        <Modal
-          title="Xóa đề"
-          open={confirm}
-          onOk={handleDeleteExam}
-          onCancel={handleCloseConfirm}
-          okText="Đồng ý"
-          cancelText="Hủy"
-        >
-          Bạn có chắc muốn xóa đề này?
-        </Modal>
-      )} */}
     </div>
   );
 };
