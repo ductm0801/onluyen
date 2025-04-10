@@ -56,4 +56,5 @@ export const IMAGES = {
   correct: "/assets/correct.png",
   notCorrect: "/assets/notCorrect.png",
   pendingIcon: "/assets/pending.svg",
+  courseEmpty: "/assets/courseEmpty.jpg",
 };
