@@ -158,6 +158,7 @@ const Profile = () => {
       toast.success("Lấy đề xuất từ AI thành công!");
       Modal.info({
         title: "Đề xuất từ AI",
+        width: "600px",
         content: (
           <div
             className="max-h-[500px] overflow-y-auto text-xl font-bold"
