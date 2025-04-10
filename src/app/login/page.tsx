@@ -37,7 +37,7 @@ const Login = () => {
         router.push(firstMenuItem);
       }
     } catch (e: any) {
-      toast.error(e.response.data.message);
+      toast.error(e.response?.data.message);
       console.log(e);
     } finally {
       setLoading(false);
