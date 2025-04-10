@@ -41,19 +41,23 @@ const StudentCourse = () => {
         {course.map((c) => (
           <div
             key={c.courseId}
-            className="flex flex-col gap-6 items-start cursor-pointer"
+            className="flex flex-col overflow-hidden    group gap-6 items-start cursor-pointer"
             onClick={() => router.push(`/course/${c.courseId}`)}
           >
-            <img
-              src={c.imageUrl}
-              alt={`img-${c.courseId}`}
-              className="rounded-2xl w-full h-full object-cover"
-            />
+            <div className="w-full h-full relative  rounded-2xl overflow-hidden">
+              <img
+                src={c.imageUrl}
+                alt={`img-${c.courseId}`}
+                className="rounded-2xl  group-hover:scale-110 transition-all duration-300 w-full h-full object-cover"
+              />
+            </div>
             <div>
-              <h2 className="text-[#101828] text-[20px] font-bold line-clamp-1">
+              <h2 className="text-[#101828] group-hover:text-blue-500 transition-all duration-300 text-[20px] font-bold line-clamp-1">
                 {c.title}
               </h2>
-              <p className="text-[#2E90FA] text-lg">{c.instructorName}</p>
+              <p className="text-[#2E90FA] group-hover:text-red-500 transition-all duration-300 text-lg">
+                {c.instructorName}
+              </p>
             </div>
           </div>
         ))}
