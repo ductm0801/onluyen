@@ -36,8 +36,8 @@ const Login = () => {
 
         router.push(firstMenuItem);
       }
-    } catch (e) {
-      toast.error("Đăng nhập thất bại!");
+    } catch (e: any) {
+      toast.error(e.response.data.message);
       console.log(e);
     } finally {
       setLoading(false);
