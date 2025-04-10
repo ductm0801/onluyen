@@ -37,7 +37,7 @@ const StudentCourse = () => {
       <h1 className="text-4xl text-[#1244A2] font-bold text-center">
         Danh sách khóa học {course[0]?.subjectName}
       </h1>
-      <div className="grid grid-cols-4">
+      <div className="grid grid-cols-4 gap-4">
         {course.map((c) => (
           <div
             key={c.courseId}
@@ -47,10 +47,10 @@ const StudentCourse = () => {
             <img
               src={c.imageUrl}
               alt={`img-${c.courseId}`}
-              className="rounded-2xl"
+              className="rounded-2xl w-full h-full object-cover"
             />
             <div>
-              <h2 className="text-[#101828] text-[20px] font-bold">
+              <h2 className="text-[#101828] text-[20px] font-bold line-clamp-1">
                 {c.title}
               </h2>
               <p className="text-[#2E90FA] text-lg">{c.instructorName}</p>
