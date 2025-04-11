@@ -91,6 +91,7 @@ const ExamDetail = () => {
           setExamCurrentPage={setPageIndex}
           totalExamItem={totalItems}
           totalExamPage={totalPage}
+          fetchExam={fetchExam}
         />
       ),
     },
