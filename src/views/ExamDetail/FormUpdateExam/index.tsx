@@ -29,7 +29,7 @@ type Props = {
 const type = [
   { label: "Chọn một", value: 0 },
   { label: "Chọn nhiều", value: 1 },
-  { label: "Tự luận", value: 2 },
+  // { label: "Tự luận", value: 2 },
 ];
 const difficulty = [
   { label: "Cơ bản", value: 0 },

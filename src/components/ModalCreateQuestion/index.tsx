@@ -35,7 +35,7 @@ const typeOptions = [
     label: "Chọn nhiều",
     value: 1,
   },
-  { icon: <FormOutlined />, label: "Tự luận", value: 2 },
+  // { icon: <FormOutlined />, label: "Tự luận", value: 2 },
 ];
 
 const ModalCreateQuestion: React.FC<props> = ({
@@ -369,108 +369,108 @@ const ModalCreateQuestion: React.FC<props> = ({
             </div>
           </Form>
         );
-      case 2:
-        return (
-          <Form
-            className="p-4"
-            form={form}
-            onFinish={(values) => {
-              const formattedValues = {
-                ...values,
-                answers: Array.isArray(values.answers)
-                  ? values.answers
-                  : [values.answers],
-              };
-              onFinish(formattedValues);
-            }}
-          >
-            <div className="flex flex-col items-center w-full">
-              {user?.Role === "ExamManager" && (
-                <Form.Item
-                  className="w-full"
-                  name="subjectId"
-                  label="Môn học"
-                  labelCol={{ span: 24 }}
-                  rules={[
-                    {
-                      required: true,
-                      message: "Vui lòng chọn Môn học",
-                    },
-                  ]}
-                >
-                  <Select
-                    size="large"
-                    options={subjectOptions}
-                    className=" text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full  dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                    placeholder="Môn học"
-                  />
-                </Form.Item>
-              )}
-              <Form.Item
-                name="title"
-                label="Câu hỏi"
-                labelCol={{ span: 24 }}
-                rules={[{ required: true, message: "Vui lòng nhập câu hỏi" }]}
-                className="w-full"
-              >
-                <MathEditor />
-              </Form.Item>
-              <Form.Item name="imageUrl">
-                <Upload
-                  listType="picture-card"
-                  maxCount={1}
-                  onChange={(info) => handleChangeImage(info, "imageUrl")}
-                >
-                  Thêm hình
-                </Upload>
-              </Form.Item>
-            </div>
-            <Form.Item
-              name="difficulty"
-              label="Độ khó"
-              labelCol={{ span: 24 }}
-              rules={[{ required: true, message: "Vui lòng chọn độ khó" }]}
-            >
-              <Select
-                options={difficultyOptions}
-                placeholder="Chọn độ khó"
-                allowClear
-              />
-            </Form.Item>
-            <Form.List name="answers">
-              {(fields, { add, remove }) => (
-                <>
-                  <Form.Item
-                    name="content"
-                    label="Câu trả lời mẫu"
-                    labelCol={{ span: 24 }}
-                    rules={[
-                      {
-                        required: true,
-                        message: "Vui lòng nhập câu trả lời mẫu",
-                      },
-                    ]}
-                  >
-                    <MathEditor />
-                  </Form.Item>
-                  <Form.Item name="isCorrect" initialValue={true} hidden>
-                    <Input type="hidden" />
-                  </Form.Item>
-                </>
-              )}
-            </Form.List>
-            <div className="flex justify-end">
-              <Form.Item>
-                <button
-                  type="submit"
-                  className="text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                >
-                  Lưu thay đổi
-                </button>
-              </Form.Item>
-            </div>
-          </Form>
-        );
+      // case 2:
+      // return (
+      //   <Form
+      //     className="p-4"
+      //     form={form}
+      //     onFinish={(values) => {
+      //       const formattedValues = {
+      //         ...values,
+      //         answers: Array.isArray(values.answers)
+      //           ? values.answers
+      //           : [values.answers],
+      //       };
+      //       onFinish(formattedValues);
+      //     }}
+      //   >
+      //     <div className="flex flex-col items-center w-full">
+      //       {user?.Role === "ExamManager" && (
+      //         <Form.Item
+      //           className="w-full"
+      //           name="subjectId"
+      //           label="Môn học"
+      //           labelCol={{ span: 24 }}
+      //           rules={[
+      //             {
+      //               required: true,
+      //               message: "Vui lòng chọn Môn học",
+      //             },
+      //           ]}
+      //         >
+      //           <Select
+      //             size="large"
+      //             options={subjectOptions}
+      //             className=" text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full  dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+      //             placeholder="Môn học"
+      //           />
+      //         </Form.Item>
+      //       )}
+      //       <Form.Item
+      //         name="title"
+      //         label="Câu hỏi"
+      //         labelCol={{ span: 24 }}
+      //         rules={[{ required: true, message: "Vui lòng nhập câu hỏi" }]}
+      //         className="w-full"
+      //       >
+      //         <MathEditor />
+      //       </Form.Item>
+      //       <Form.Item name="imageUrl">
+      //         <Upload
+      //           listType="picture-card"
+      //           maxCount={1}
+      //           onChange={(info) => handleChangeImage(info, "imageUrl")}
+      //         >
+      //           Thêm hình
+      //         </Upload>
+      //       </Form.Item>
+      //     </div>
+      //     <Form.Item
+      //       name="difficulty"
+      //       label="Độ khó"
+      //       labelCol={{ span: 24 }}
+      //       rules={[{ required: true, message: "Vui lòng chọn độ khó" }]}
+      //     >
+      //       <Select
+      //         options={difficultyOptions}
+      //         placeholder="Chọn độ khó"
+      //         allowClear
+      //       />
+      //     </Form.Item>
+      //     <Form.List name="answers">
+      //       {(fields, { add, remove }) => (
+      //         <>
+      //           <Form.Item
+      //             name="content"
+      //             label="Câu trả lời mẫu"
+      //             labelCol={{ span: 24 }}
+      //             rules={[
+      //               {
+      //                 required: true,
+      //                 message: "Vui lòng nhập câu trả lời mẫu",
+      //               },
+      //             ]}
+      //           >
+      //             <MathEditor />
+      //           </Form.Item>
+      //           <Form.Item name="isCorrect" initialValue={true} hidden>
+      //             <Input type="hidden" />
+      //           </Form.Item>
+      //         </>
+      //       )}
+      //     </Form.List>
+      //     <div className="flex justify-end">
+      //       <Form.Item>
+      //         <button
+      //           type="submit"
+      //           className="text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+      //         >
+      //           Lưu thay đổi
+      //         </button>
+      //       </Form.Item>
+      //     </div>
+      //   </Form>
+      // );
       default:
         return "";
     }
