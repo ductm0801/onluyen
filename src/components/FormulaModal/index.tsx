@@ -60,7 +60,11 @@ const FormulaModal: React.FC<Props> = ({ onSelect, onClose }) => {
       <div className="bg-white p-6 rounded-lg w-full max-w-2xl shadow-lg max-h-[80vh] overflow-hidden">
         <div className="flex justify-between mb-4 items-center">
           <h2 className="text-lg font-semibold">Chọn công thức mẫu</h2>
-          <button onClick={onClose} className="text-gray-500 hover:text-black">
+          <button
+            type="button"
+            onClick={onClose}
+            className="text-gray-500 hover:text-black"
+          >
             ✕
           </button>
         </div>
@@ -68,6 +72,7 @@ const FormulaModal: React.FC<Props> = ({ onSelect, onClose }) => {
         <div className="flex gap-3 mb-4">
           {Object.keys(formulaTemplatesBySubject).map((subject) => (
             <button
+              type="button"
               key={subject}
               onClick={() =>
                 setActiveSubject(
@@ -97,6 +102,7 @@ const FormulaModal: React.FC<Props> = ({ onSelect, onClose }) => {
           {filteredFormulas.length > 0 ? (
             filteredFormulas.map((item, idx) => (
               <button
+                type="button"
                 key={idx}
                 onClick={() => onSelect(`$${item.latex}$`)}
                 className="text-left p-2 border rounded hover:bg-blue-50"

@@ -1,5 +1,6 @@
 import Paging from "@/components/Paging";
 import { IMAGES } from "@/constants/images";
+import { renderMathContent } from "@/constants/utils";
 import { IExam, IQuestion, IQuestionBank } from "@/models";
 import { useLoading } from "@/providers/loadingProvider";
 import {
@@ -23,6 +24,7 @@ type Props = {
   setExamCurrentPage: React.Dispatch<React.SetStateAction<number>>;
   totalExamItem: number;
   totalExamPage: number;
+  fetchExam: () => Promise<void>;
 };
 const type = [
   { label: "Chọn một", value: 0 },
@@ -44,6 +46,7 @@ const FormUpdateExam: React.FC<Props> = ({
   setExamCurrentPage,
   totalExamItem,
   totalExamPage,
+  fetchExam,
 }) => {
   const [dataQuestion, setDataQuestion] = useState<IQuestion[]>([]);
   const [questionBank, setQuestionBank] = useState<IQuestionBank[]>([]);
@@ -60,6 +63,9 @@ const FormUpdateExam: React.FC<Props> = ({
   );
   const [isDraggingOverExam, setIsDraggingOverExam] = useState(false);
   const [isDraggingOverBank, setIsDraggingOverBank] = useState(false);
+  const [totalQuestionInExam, setTotalQuestionInExam] = useState(
+    exam?.totalItemsCount
+  );
   const [filter, setFilter] = useState({
     type: "",
     difficulty: "",
@@ -168,6 +174,7 @@ const FormUpdateExam: React.FC<Props> = ({
       toast.error(error.response.data.message);
     } finally {
       setLoading(false);
+      fetchExam();
     }
   };
 
@@ -190,6 +197,9 @@ const FormUpdateExam: React.FC<Props> = ({
     }, 1000),
     []
   );
+  useEffect(() => {
+    setTotalQuestionInExam(examQuestions.length);
+  }, [examQuestions]);
   return (
     <div className="flex flex-col gap-8">
       <h1 className="text-3xl font-bold text-center">
@@ -292,7 +302,9 @@ const FormUpdateExam: React.FC<Props> = ({
                 >
                   <p
                     className="line-clamp-1"
-                    dangerouslySetInnerHTML={{ __html: question.title }}
+                    dangerouslySetInnerHTML={{
+                      __html: renderMathContent(question.title),
+                    }}
                   />{" "}
                   <img
                     src={IMAGES.editIcon}
@@ -316,7 +328,7 @@ const FormUpdateExam: React.FC<Props> = ({
           <div className="flex items-center justify-between">
             <p className="text-xl font-bold">Câu hỏi trong đề</p>
             <p>
-              tổng <b>{exam.totalItemsCount}</b> câu hỏi
+              tổng <b>{totalQuestionInExam}</b> câu hỏi
             </p>
           </div>
           <div
@@ -342,7 +354,9 @@ const FormUpdateExam: React.FC<Props> = ({
               >
                 <p
                   className="line-clamp-1"
-                  dangerouslySetInnerHTML={{ __html: question.title }}
+                  dangerouslySetInnerHTML={{
+                    __html: renderMathContent(question.title),
+                  }}
                 />
                 <img
                   src={IMAGES.editIcon}

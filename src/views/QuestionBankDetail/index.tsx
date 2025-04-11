@@ -19,6 +19,7 @@ import { Button, Form, Modal, Select, Upload } from "antd";
 import { InboxOutlined } from "@ant-design/icons";
 import _ from "lodash";
 import { toast } from "react-toastify";
+import { renderMathContent } from "@/constants/utils";
 
 const cols = [
   {
@@ -325,7 +326,7 @@ const BankDetail = () => {
                       <div
                         className="text-base font-semibold truncate"
                         dangerouslySetInnerHTML={{
-                          __html: `${a?.title}`,
+                          __html: renderMathContent(a?.title),
                         }}
                       ></div>
                     </th>

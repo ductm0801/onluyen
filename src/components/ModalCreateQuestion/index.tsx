@@ -12,6 +12,7 @@ import { Button, Checkbox, Form, Input, Radio, Select, Upload } from "antd";
 import React, { useEffect, useState } from "react";
 import "react-quill/dist/quill.snow.css";
 import { toast } from "react-toastify";
+import MathEditor from "../MathEditor";
 const { TextArea } = Input;
 
 type props = {
@@ -132,7 +133,7 @@ const ModalCreateQuestion: React.FC<props> = ({
                 rules={[{ required: true, message: "Vui lòng nhập câu hỏi" }]}
                 className="w-full"
               >
-                <TextArea />
+                <MathEditor />
               </Form.Item>
 
               <Form.Item name="imageUrl">
@@ -184,9 +185,9 @@ const ModalCreateQuestion: React.FC<props> = ({
                               message: "Vui lòng nhập câu trả lời",
                             },
                           ]}
-                          noStyle
+                          className="w-full"
                         >
-                          <TextArea placeholder="Nhập câu trả lời" />
+                          <MathEditor />
                         </Form.Item>
                         <Form.Item name={[name, "imageUrl"]} noStyle>
                           <Upload
@@ -272,7 +273,7 @@ const ModalCreateQuestion: React.FC<props> = ({
                 rules={[{ required: true, message: "Vui lòng nhập câu hỏi" }]}
                 className="w-full"
               >
-                <TextArea />
+                <MathEditor />
               </Form.Item>
               <Form.Item name="imageUrl">
                 <Upload
@@ -317,7 +318,7 @@ const ModalCreateQuestion: React.FC<props> = ({
                         <Checkbox value={index} />
                         <div className="flex flex-col gap-4 items-center w-full">
                           <Form.Item name={[name, "content"]} noStyle>
-                            <TextArea />
+                            <MathEditor />
                           </Form.Item>
 
                           <Form.Item name={[name, "imageUrl"]} noStyle>
@@ -412,7 +413,7 @@ const ModalCreateQuestion: React.FC<props> = ({
                 rules={[{ required: true, message: "Vui lòng nhập câu hỏi" }]}
                 className="w-full"
               >
-                <TextArea />
+                <MathEditor />
               </Form.Item>
               <Form.Item name="imageUrl">
                 <Upload
@@ -450,7 +451,7 @@ const ModalCreateQuestion: React.FC<props> = ({
                       },
                     ]}
                   >
-                    <TextArea />
+                    <MathEditor />
                   </Form.Item>
                   <Form.Item name="isCorrect" initialValue={true} hidden>
                     <Input type="hidden" />

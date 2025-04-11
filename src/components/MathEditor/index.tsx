@@ -1,78 +1,92 @@
 "use client";
 
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useEffect } from "react";
 import katex from "katex";
 import "katex/dist/katex.min.css";
 import "katex/contrib/mhchem";
 import FormulaModal from "@/components/FormulaModal";
 
-export default function MathEditor() {
-  const inputRef = useRef<HTMLDivElement>(null);
-  const [htmlContent, setHtmlContent] = useState("");
-  const [showModal, setShowModal] = useState(false);
-  const [savedRange, setSavedRange] = useState<Range | null>(null);
+interface MathEditorProps {
+  value?: string;
+  onChange?: (value: string) => void;
+}
 
+const MathEditor: React.FC<MathEditorProps> = ({ value, onChange }) => {
+  const inputRef = useRef<HTMLDivElement>(null);
+  const previewRef = useRef<HTMLDivElement>(null);
+  const savedRangeRef = useRef<Range | null>(null);
+  console.log(value, "value");
   const handleInput = () => {
     const text = inputRef.current?.innerText || "";
-    const rendered = text.replace(/\$(.*?)\$/g, (_, formula) => {
-      try {
-        return katex.renderToString(formula, {
-          throwOnError: false,
-        });
-      } catch {
-        return `${formula}`;
-      }
-    });
-    setHtmlContent(rendered);
+    onChange?.(text); // cập nhật cho AntD Form
+    renderPreview(text);
   };
 
-  // Ghi lại vị trí con trỏ
+  const renderPreview = (text: string) => {
+    const rendered = text.replace(/\$(.*?)\$/g, (_, formula) => {
+      try {
+        return katex.renderToString(formula, { throwOnError: false });
+      } catch {
+        return formula;
+      }
+    });
+
+    if (previewRef.current) {
+      previewRef.current.innerHTML = rendered;
+    }
+  };
+
   const handleSaveRange = () => {
     const selection = window.getSelection();
     if (selection && selection.rangeCount > 0) {
-      setSavedRange(selection.getRangeAt(0));
+      savedRangeRef.current = selection.getRangeAt(0);
     }
   };
 
   const insertFormula = (formula: string) => {
     const selection = window.getSelection();
 
-    if (inputRef.current && savedRange) {
-      // Đặt lại selection về vị trí cũ
+    if (inputRef.current && savedRangeRef.current) {
       selection?.removeAllRanges();
-      selection?.addRange(savedRange);
+      selection?.addRange(savedRangeRef.current);
 
       const span = document.createElement("span");
-      span.textContent = `${formula}`;
+      span.textContent = formula;
 
-      savedRange.deleteContents(); // Xoá đoạn được bôi đen (nếu có)
-      savedRange.insertNode(span);
+      savedRangeRef.current.deleteContents();
+      savedRangeRef.current.insertNode(span);
 
-      // Tạo khoảng trắng sau công thức và đặt lại con trỏ
       const space = document.createTextNode(" ");
       span.parentNode?.insertBefore(space, span.nextSibling);
 
       const newRange = document.createRange();
       newRange.setStartAfter(space);
       newRange.collapse(true);
-
       selection?.removeAllRanges();
       selection?.addRange(newRange);
-      setSavedRange(newRange);
+      savedRangeRef.current = newRange;
     }
 
-    handleInput(); // cập nhật lại xem trước
+    handleInput(); // cập nhật lại cho Form và preview
     setShowModal(false);
   };
 
+  const [showModal, setShowModal] = React.useState(false);
+
+  // Set nội dung contentEditable khi value thay đổi từ bên ngoài
   useEffect(() => {
-    handleInput(); // Lần đầu khởi tạo xem trước
-  }, []);
+    if (inputRef.current && inputRef.current.innerText !== value) {
+      inputRef.current.innerText = value || "";
+      renderPreview(value || "");
+    }
+    console.log(value);
+  }, [value]);
 
   return (
-    <div>
+    <div className="w-full">
       <div className="flex justify-between mb-2">
         <button
+          type="button"
           className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700"
           onClick={() => setShowModal(true)}
         >
@@ -92,7 +106,7 @@ export default function MathEditor() {
 
       <div className="p-3 border rounded bg-gray-100">
         <h3 className="font-semibold mb-2">Xem trước:</h3>
-        <div dangerouslySetInnerHTML={{ __html: htmlContent }} />
+        <div ref={previewRef} />
       </div>
 
       {showModal && (
@@ -103,4 +117,6 @@ export default function MathEditor() {
       )}
     </div>
   );
-}
+};
+
+export default MathEditor;
