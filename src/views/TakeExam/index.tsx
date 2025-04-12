@@ -1,6 +1,7 @@
 "use client";
 import CircularProgess from "@/components/CircularProgress";
 import { examEnum, questionEnum } from "@/constants/enum";
+import { renderMathContent } from "@/constants/utils";
 
 import { IExam } from "@/models";
 import { useExamLeave } from "@/providers/examProvider";
@@ -216,8 +217,13 @@ const TakeExam = () => {
           </h5>
           <p
             className="text-2xl font-bold"
+            // dangerouslySetInnerHTML={{
+            //   __html: currentQuestion.title.replace(/\n/g, "<br/>"),
+            // }}
             dangerouslySetInnerHTML={{
-              __html: currentQuestion.title.replace(/\n/g, "<br/>"),
+              __html: renderMathContent(
+                currentQuestion.title.replace(/\n/g, "<br/>")
+              ),
             }}
           />
 
@@ -253,8 +259,13 @@ const TakeExam = () => {
                   <span>{String.fromCharCode(65 + index)}.</span>
                   <span
                     className="ml-4"
+                    // dangerouslySetInnerHTML={{
+                    //   __html: answer.content.replace(/\n/g, "<br/>"),
+                    // }}
                     dangerouslySetInnerHTML={{
-                      __html: answer.content.replace(/\n/g, "<br/>"),
+                      __html: renderMathContent(
+                        answer.content.replace(/\n/g, "<br/>")
+                      ),
                     }}
                   />
                 </p>

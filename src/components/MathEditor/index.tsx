@@ -15,21 +15,25 @@ const MathEditor: React.FC<MathEditorProps> = ({ value, onChange }) => {
   const inputRef = useRef<HTMLDivElement>(null);
   const previewRef = useRef<HTMLDivElement>(null);
   const savedRangeRef = useRef<Range | null>(null);
-  console.log(value, "value");
+
   const handleInput = () => {
     const text = inputRef.current?.innerText || "";
-    onChange?.(text); // cập nhật cho AntD Form
+    onChange?.(text);
     renderPreview(text);
   };
 
   const renderPreview = (text: string) => {
-    const rendered = text.replace(/\$(.*?)\$/g, (_, formula) => {
+    // Replace $...$ with rendered formula
+    let rendered = text.replace(/\$(.*?)\$/g, (_, formula) => {
       try {
         return katex.renderToString(formula, { throwOnError: false });
       } catch {
         return formula;
       }
     });
+
+    // Replace newline with <br>
+    rendered = rendered.replace(/\n/g, "<br>");
 
     if (previewRef.current) {
       previewRef.current.innerHTML = rendered;
