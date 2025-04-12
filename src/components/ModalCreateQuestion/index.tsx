@@ -7,6 +7,8 @@ import {
   CheckSquareOutlined,
   FormOutlined,
   FullscreenExitOutlined,
+  MinusCircleOutlined,
+  PlusOutlined,
 } from "@ant-design/icons";
 import { Button, Checkbox, Form, Input, Radio, Select, Upload } from "antd";
 import React, { useEffect, useState } from "react";
@@ -205,17 +207,26 @@ const ModalCreateQuestion: React.FC<props> = ({
                           </Upload>
                         </Form.Item>
                       </div>
-                      <Button type="link" danger onClick={() => remove(name)}>
-                        Xoá
-                      </Button>
+                      {fields.length > 1 && (
+                        <MinusCircleOutlined
+                          onClick={() => remove(name)}
+                          style={{ color: "red" }}
+                        />
+                      )}
                     </div>
                   ))}
-                  <Button
-                    type="dashed"
-                    onClick={() => add({ content: "", isCorrect: false })}
-                  >
-                    Thêm câu trả lời
-                  </Button>
+                  {fields.length < 4 && (
+                    <div className="flex w-fit justify-end">
+                      <Button
+                        type="dashed"
+                        onClick={() => add({ content: "", isCorrect: false })}
+                        block
+                        icon={<PlusOutlined />}
+                      >
+                        Thêm câu trả lời
+                      </Button>
+                    </div>
+                  )}
                 </Radio.Group>
               )}
             </Form.List>
@@ -337,23 +348,28 @@ const ModalCreateQuestion: React.FC<props> = ({
                             </Upload>
                           </Form.Item>
                         </div>
-                        <div
-                          style={{ cursor: "pointer", color: "red" }}
-                          onClick={() => remove(name)}
-                        >
-                          Xoá
-                        </div>
+
+                        {fields.length > 1 && (
+                          <MinusCircleOutlined
+                            onClick={() => remove(name)}
+                            style={{ color: "red" }}
+                          />
+                        )}
                       </div>
                     </Form.Item>
                   ))}
-                  <div className="flex justify-end">
-                    <Button
-                      type="dashed"
-                      onClick={() => add({ content: "", isCorrect: false })}
-                    >
-                      Thêm câu trả lời
-                    </Button>
-                  </div>
+                  {fields.length < 4 && (
+                    <div className="flex justify-end">
+                      <Button
+                        type="dashed"
+                        onClick={() => add({ content: "", isCorrect: false })}
+                        block
+                        icon={<PlusOutlined />}
+                      >
+                        Thêm câu trả lời
+                      </Button>
+                    </div>
+                  )}
                 </Checkbox.Group>
               )}
             </Form.List>
