@@ -28,6 +28,7 @@ export const ExamLeaveProvider = ({
   const prevPathRef = useRef<string | null>(null);
 
   const examPath = examId ? `/student/exam/${examId}` : null;
+  const resultPath = examId ? `/student/exam/result/${examId}` : null;
   const router = useRouter();
   const submitExam = () => {
     if (!examId) return;
@@ -53,6 +54,9 @@ export const ExamLeaveProvider = ({
   };
 
   useEffect(() => {
+    if (pathname === resultPath) {
+      return;
+    }
     const confirmSubmit = () => {
       const confirmLeave = window.confirm(
         "Bạn có chắc chắn muốn rời khỏi? Bài làm sẽ được nộp."
