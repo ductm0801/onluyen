@@ -177,7 +177,9 @@ const PendingInstructor = () => {
                 >
                   <p>{a.user.gender === "Male" ? "Nam" : "Nữ"}</p>
                 </td>
-                <td className="px-6 py-4">{a.subject.subjectName}</td>
+                <td className="px-6 py-4 text-center">
+                  {a.subject.subjectName}
+                </td>
 
                 <td
                   className={`p-2 text-sm leading-normal text-center align-middle shadow-transparent`}
