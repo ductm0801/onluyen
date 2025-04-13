@@ -60,19 +60,24 @@ const ModalCreateLesson = ({
       setLoading(false);
     }
   };
-  // useEffect(() => {
-  //   if (data) {
-  //     const initialImg = {
-  //       uid: `-${data.courseId}`,
-  //       name: `image${data.courseId}.png`,
-  //       status: "done" as const,
-  //       url: data.imageUrl,
-  //     };
-  //     // const bannerMerge = initialBanner.at(0);
-  //     setImageUrl(initialImg);
-  //     //   setImageUrl(data.imageUrl);
-  //   }
-  // }, []);
+  const handleChangeVideo = async ({ file }: { file: any }) => {
+    setLoading(true);
+    const formData = new FormData();
+    formData.append("file", file.originFileObj);
+    setImageUrl(file);
+    try {
+      const res = await uploadImg(formData);
+
+      form.setFieldValue("videoUrl", res.url);
+
+      setLoading(false);
+    } catch (error: any) {
+      setLoading(false);
+      toast.error(error.response.data.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div
@@ -168,10 +173,17 @@ const ModalCreateLesson = ({
                   },
                 ]}
               >
-                <Input
-                  className="rounded-md w-full bg-white"
-                  placeholder="Đường dẫn video"
-                />
+                <Upload
+                  listType="picture-card"
+                  onChange={handleChangeVideo}
+                  accept="video/*"
+                  maxCount={1}
+                  // fileList={imageUrl ? [imageUrl] : []}
+                >
+                  {typeof form.getFieldValue(["videoUrl"]) === "string"
+                    ? "Đổi video"
+                    : "Thêm video"}
+                </Upload>
               </Form.Item>
               <Form.Item
                 className="col-span-2 mb-0"
