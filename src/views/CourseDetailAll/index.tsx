@@ -82,8 +82,11 @@ const CourseDetail = () => {
       setLoading(true);
       const res = await handleTrialCourse(params.id);
       console.log(res);
-    } catch (error) {
+    } catch (error: any) {
       setLoading(false);
+      if (error.response.status === 400) {
+        router.replace(`/student/learning/${course?.studentCourseId}`);
+      }
     } finally {
       setLoading(false);
     }
