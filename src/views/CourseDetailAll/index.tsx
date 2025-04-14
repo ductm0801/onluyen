@@ -4,7 +4,12 @@ import { IMAGES } from "@/constants/images";
 import { ICourse } from "@/models";
 import { useAuth } from "@/providers/authProvider";
 import { useLoading } from "@/providers/loadingProvider";
-import { getCourseDetail, paymentCourse, startCourse } from "@/services";
+import {
+  getCourseDetail,
+  handleTrialCourse,
+  paymentCourse,
+  startCourse,
+} from "@/services";
 import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
@@ -67,6 +72,21 @@ const CourseDetail = () => {
     }
     await startCourse(course?.studentCourseId || "");
     router.push(`/student/learning/${course?.courseId}`);
+  };
+  const handleTrial = async () => {
+    if (!user) {
+      toast.warning("Vui lòng đăng nhập để học thử!");
+      return;
+    }
+    try {
+      setLoading(true);
+      const res = await handleTrialCourse(params.id);
+      console.log(res);
+    } catch (error) {
+      setLoading(false);
+    } finally {
+      setLoading(false);
+    }
   };
   return (
     <div className="grid grid-cols-3 gap-x-8">
@@ -134,11 +154,19 @@ const CourseDetail = () => {
             Vào học <img src={IMAGES.arrowRight} alt="right" />
           </div>
         ) : (
-          <div
-            className="bg-[#1244A2] text-white rounded-lg text-center py-3 cursor-pointer flex items-center gap-3 justify-center"
-            onClick={() => handlePayment()}
-          >
-            Đăng ký <img src={IMAGES.arrowRight} alt="right" />
+          <div className="flex items-center gap-3 w-full">
+            <div
+              className="bg-[#FDB022] w-full text-white rounded-lg text-center py-3 cursor-pointer flex items-center gap-3 justify-center"
+              onClick={() => handleTrial()}
+            >
+              Học thử
+            </div>
+            <div
+              className="bg-[#1244A2] w-full text-white rounded-lg text-center py-3 cursor-pointer flex items-center gap-3 justify-center"
+              onClick={() => handlePayment()}
+            >
+              Đăng ký <img src={IMAGES.arrowRight} alt="right" />
+            </div>
           </div>
         )}
       </div>

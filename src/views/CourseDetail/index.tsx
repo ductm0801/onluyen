@@ -59,8 +59,8 @@ const CourseDetail = () => {
   ];
   const handleConfirm = () => {
     Modal.confirm({
-      title: "Xác nhận công khai khóa học",
-      content: `Bạn có chắc muốn công khai khóa học không? Sau khi công khai sẽ không được sửa khóa học.`,
+      title: "Xác nhận chuyển trạng thái chờ duyệt",
+      content: `Bạn có chắc muốn chuyển khóa học sang trạng thái chờ duyệt không? Sau khi chuyển trạng thái sẽ không được sửa khóa học.`,
       okText: "Xác nhận",
       cancelText: "Hủy",
       onOk: async () => {
@@ -75,7 +75,7 @@ const CourseDetail = () => {
       setLoading(true);
       await publishCourse(params.id);
       fetchCourseDetail();
-      toast.success("Công khai khóa học thành công!");
+      toast.success("Thay đổi trạng thái khóa học thành công!");
     } catch (error: any) {
       toast.error(error.response.data.message);
     } finally {
@@ -91,7 +91,7 @@ const CourseDetail = () => {
             className="bg-blue-600 text-white text-sm px-3 py-2 rounded-lg font-bold cursor-pointer"
             onClick={() => handleConfirm()}
           >
-            Công khai khóa học
+            Chuyển sang chờ duyệt
           </div>
         )}
       </div>

@@ -35,6 +35,12 @@ export const menus: Record<
       icon: IMAGES.pendingIcon,
       isShow: true,
     },
+    {
+      label: "Khoá học chờ duyệt",
+      path: "/admin/pending-course",
+      icon: IMAGES.coursePending,
+      isShow: true,
+    },
   ],
   Student: [
     {

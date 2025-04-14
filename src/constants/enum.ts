@@ -33,8 +33,8 @@ export const pendingExamEnum = {
 
 export const courseStatusEnum = {
   0: "Bản nháp",
-  1: "Sắp ra mắt",
-  2: "Công khai",
+  1: "Chờ duyệt",
+  2: "Đã duyệt",
   3: "Đã lên lịch",
   4: "Tạm ngưng",
   5: "Đã xóa",
