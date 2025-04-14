@@ -42,7 +42,7 @@ const Profile = () => {
   const { isLoading, setLoading } = useLoading();
   const { setUpdate } = useAuth();
   const [form] = Form.useForm();
-
+  const [form2] = Form.useForm();
   const data = {
     labels: Array.isArray(user?.subjects)
       ? user.subjects.map((a) => a.subjectName)
@@ -178,6 +178,7 @@ const Profile = () => {
   };
   const onUpdateBankAccount = async (values: any) => {
     try {
+      console.log(values);
       setLoading(true);
       await updateBankAccount(values);
       toast.success("Cập nhật thông tin thành công!");
@@ -359,7 +360,7 @@ const Profile = () => {
       label: "Thông tin ngân hàng",
       children: (
         <Form
-          form={form}
+          form={form2}
           onFinish={onUpdateBankAccount}
           initialValues={user?.instructor}
         >
@@ -413,7 +414,7 @@ const Profile = () => {
               },
             ]}
           >
-            <Input className="w-full" min={0} />
+            <Input className="w-full" />
           </Form.Item>
           <Form.Item className="flex justify-end">
             <button

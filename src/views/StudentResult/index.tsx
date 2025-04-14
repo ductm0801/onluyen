@@ -100,7 +100,7 @@ const StudentResult = () => {
   };
   useEffect(() => {
     fetchResultDetail();
-  }, [detail.current]);
+  }, [detail.current, currentDetailPage]);
 
   return (
     <div>

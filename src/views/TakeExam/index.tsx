@@ -49,8 +49,14 @@ const TakeExam = () => {
           setSelectedAnswers(JSON.parse(storedAnswers));
         }
       } catch (error: any) {
-        if (error.response.data.message === "Bài làm đã xong.")
-          router.push(`/student/exam/result/${params.id}`);
+        if (error.response.data.message === "Bài làm đã xong.") {
+          router.replace(`/student/exam/result/${params.id}`);
+          return;
+        }
+        if (error.response.data.message === "Không tìm thấy bàì làm với ID.") {
+          router.replace(`/student`);
+          return;
+        }
       } finally {
         setLoading(false);
       }

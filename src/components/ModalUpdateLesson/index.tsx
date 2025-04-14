@@ -1,3 +1,4 @@
+import { getVideoDuration } from "@/constants/utils";
 import { ICourse, ILesson } from "@/models";
 import { useLoading } from "@/providers/loadingProvider";
 import { updateLesson, uploadImg } from "@/services";
@@ -15,9 +16,17 @@ const ModalUpdateLesson = ({
   lesson: ILesson | null | undefined;
 }) => {
   const [form] = Form.useForm();
-  const [loadingImg, setLoadingImg] = useState(false);
 
   const [imageUrl, setImageUrl] = useState<
+    | {
+        uid: string;
+        name: string;
+        status: "uploading" | "done" | "error" | "removed";
+        url: string;
+      }
+    | undefined
+  >();
+  const [videoUrl, setVideoUrl] = useState<
     | {
         uid: string;
         name: string;
@@ -60,6 +69,29 @@ const ModalUpdateLesson = ({
       setLoading(false);
     }
   };
+  const handleChangeVideo = async ({ file }: { file: any }) => {
+    setLoading(true);
+    const formData = new FormData();
+    const rawFile = file.originFileObj;
+
+    // 1. Lấy duration
+    const videoDuration = await getVideoDuration(rawFile);
+    console.log(videoDuration);
+    formData.append("file", file.originFileObj);
+    // setImageUrl(file);
+    try {
+      const res = await uploadImg(formData);
+
+      form.setFieldValue("videoUrl", res.url);
+
+      setLoading(false);
+    } catch (error: any) {
+      setLoading(false);
+      toast.error(error.response.data.message);
+    } finally {
+      setLoading(false);
+    }
+  };
   useEffect(() => {
     if (lesson) {
       const initialImg = {
@@ -68,8 +100,16 @@ const ModalUpdateLesson = ({
         status: "done" as const,
         url: lesson.imageUrl,
       };
+      const initialVideo = {
+        uid: `-${lesson.lessonId}`,
+        name: `image${lesson.lessonId}.png`,
+        status: "done" as const,
+        url: lesson.videoUrl,
+      };
       // const bannerMerge = initialBanner.at(0);
       setImageUrl(initialImg);
+      // form.setFieldValue("videoUrl", initialVideo);
+      setVideoUrl(initialVideo);
       //   setImageUrl(data.imageUrl);
     }
   }, []);
@@ -173,10 +213,16 @@ const ModalUpdateLesson = ({
                   },
                 ]}
               >
-                <Input
-                  className="rounded-md w-full bg-white"
-                  placeholder="Đường dẫn video"
-                />
+                <Upload
+                  listType="picture-card"
+                  onChange={handleChangeVideo}
+                  maxCount={1}
+                  fileList={videoUrl ? [videoUrl] : []}
+                >
+                  {typeof form.getFieldValue(["videoUrl"]) === "string"
+                    ? "Đổi video"
+                    : "Thêm video"}
+                </Upload>
               </Form.Item>
               <Form.Item
                 className="col-span-2 mb-0"

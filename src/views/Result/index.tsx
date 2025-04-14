@@ -2,9 +2,11 @@
 import { IMAGES } from "@/constants/images";
 import { IExam } from "@/models";
 import { useLoading } from "@/providers/loadingProvider";
-import { examResult } from "@/services";
+import { examResult, getExamAIAnalyze } from "@/services";
+import { Modal } from "antd";
 import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 const Result = () => {
   const [result, setResult] = useState<IExam>();
@@ -30,6 +32,31 @@ const Result = () => {
   useEffect(() => {
     fetchResult();
   }, []);
+  const getAIRecommend = async () => {
+    try {
+      setLoading(true);
+      const res = await getExamAIAnalyze(params.id);
+      toast.success("Lấy đề xuất từ AI thành công!");
+      Modal.info({
+        title: "Đề xuất từ AI",
+        width: "600px",
+        content: (
+          <div
+            className="max-h-[500px] overflow-y-auto text-xl font-bold"
+            dangerouslySetInnerHTML={{
+              __html: res.data.replace(/\n/g, "<br/>"),
+            }}
+          />
+        ),
+      });
+    } catch (error: any) {
+      setLoading(false);
+      console.error(error);
+      toast.error(error.response.data.message);
+    } finally {
+      setLoading(false);
+    }
+  };
   if (!result) return;
 
   return (
@@ -48,7 +75,7 @@ const Result = () => {
             <div className="flex flex-col items-center gap-2">
               <p>Câu hỏi </p>
               <p className="text-[#101828] text-4xl">
-                {result.questions.length}
+                {result.totalItemsCount}
               </p>{" "}
             </div>
             <div className="flex flex-col items-center gap-2">
@@ -63,16 +90,25 @@ const Result = () => {
               </p>{" "}
             </div>
           </div>
-
-          <div className="flex items-center gap-4">
-            <div
-              className="text-white bg-[#1244A2] px-6 py-3 rounded-xl cursor-pointer"
-              onClick={() => router.push(`/student/result-detail/${params.id}`)}
-            >
-              Xem lại bài làm
+          <div className="flex flex-col gap-4">
+            <div className="flex items-center gap-4">
+              <div
+                className="text-white bg-[#1244A2] px-6 py-3 rounded-xl cursor-pointer"
+                onClick={() =>
+                  router.push(`/student/result-detail/${params.id}`)
+                }
+              >
+                Xem lại bài làm
+              </div>
+              <div
+                className="text-white bg-[#FDB022] px-6 py-3 rounded-xl cursor-pointer"
+                onClick={() => getAIRecommend()}
+              >
+                Nhận tư vấn
+              </div>
             </div>
             <div
-              className="text-white bg-[#FDB022] px-6 py-3 rounded-xl cursor-pointer"
+              className="text-blue-500 cursor-pointer underline place-self-center"
               onClick={() => router.push("/student/home")}
             >
               Về trang chủ
