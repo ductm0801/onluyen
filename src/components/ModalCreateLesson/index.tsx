@@ -1,3 +1,4 @@
+import { getVideoDuration } from "@/constants/utils";
 import { ICourse } from "@/models";
 import { useLoading } from "@/providers/loadingProvider";
 import { createLesson, updateCourse, uploadImg } from "@/services";
@@ -63,8 +64,13 @@ const ModalCreateLesson = ({
   const handleChangeVideo = async ({ file }: { file: any }) => {
     setLoading(true);
     const formData = new FormData();
+    const rawFile = file.originFileObj;
+
+    // 1. Lấy duration
+    const videoDuration = await getVideoDuration(rawFile);
+    console.log(videoDuration);
     formData.append("file", file.originFileObj);
-    setImageUrl(file);
+    // setImageUrl(file);
     try {
       const res = await uploadImg(formData);
 

@@ -15,3 +15,21 @@ export const renderMathContent = (text: string): string => {
     }
   });
 };
+
+export const getVideoDuration = (file: File): Promise<number> => {
+  return new Promise((resolve, reject) => {
+    const video = document.createElement("video");
+    video.preload = "metadata";
+
+    video.onloadedmetadata = () => {
+      URL.revokeObjectURL(video.src);
+      resolve(video.duration);
+    };
+
+    video.onerror = () => {
+      reject("Không thể đọc metadata của video");
+    };
+
+    video.src = URL.createObjectURL(file);
+  });
+};

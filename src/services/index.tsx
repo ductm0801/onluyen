@@ -654,3 +654,7 @@ export const getAdminRevenue = async () => {
   );
   return res.data;
 };
+export const getExamAIAnalyze = async (id: string | string[]) => {
+  const res = await axiosClient.get(`/api/exam/analyseWeakness/${id}`);
+  return res.data;
+};
