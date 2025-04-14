@@ -57,4 +57,5 @@ export const IMAGES = {
   notCorrect: "/assets/notCorrect.png",
   pendingIcon: "/assets/pending.svg",
   courseEmpty: "/assets/courseEmpty.jpg",
+  coursePending: "/assets/course-pending.svg",
 };

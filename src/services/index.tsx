@@ -256,6 +256,14 @@ export const uploadImg = async (formData: FormData) => {
   });
   return res.data;
 };
+export const uploadVideo = async (formData: FormData) => {
+  const res = await axiosClient.post(`/api/image/upload-video`, formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+  return res.data;
+};
 
 export const createCourse = async (body: ICourse) => {
   const res = await axiosClient.post(`/api/courses`, body);
@@ -472,7 +480,7 @@ export const getCourseByStudent = async (
   return res.data;
 };
 export const publishCourse = async (id: string | string[]) => {
-  const res = await axiosClient.put(`/api/courses/status/${id}`, { status: 2 });
+  const res = await axiosClient.put(`/api/courses/status/${id}`, { status: 1 });
   return res.data;
 };
 export const getListChat = async () => {
@@ -656,5 +664,13 @@ export const getAdminRevenue = async () => {
 };
 export const getExamAIAnalyze = async (id: string | string[]) => {
   const res = await axiosClient.get(`/api/exam/analyseWeakness/${id}`);
+  return res.data;
+};
+export const getUniversity = async () => {
+  const res = await axiosClient.get(`/api/university`);
+  return res.data;
+};
+export const handleTrialCourse = async (id: string | string[]) => {
+  const res = await axiosClient.post(`/api/student-course/student-trial${id}`);
   return res.data;
 };

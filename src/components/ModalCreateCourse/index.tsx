@@ -1,10 +1,14 @@
-import { Form, InputNumber, Upload } from "antd";
+import { Form, InputNumber, Select, Upload } from "antd";
 import React, { useState } from "react";
 import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
 import { useLoading } from "@/providers/loadingProvider";
 import { createCourse, uploadImg } from "@/services";
 
 import { toast } from "react-toastify";
+const typeOptions = [
+  { label: "Tự học", value: 0 },
+  { label: "Dạy kèm", value: 1 },
+];
 
 const ModalCreateCourse = ({
   onClose,
@@ -138,9 +142,22 @@ const ModalCreateCourse = ({
                   placeholder="Tên khoá học"
                 />
               </Form.Item>
-
               <Form.Item
-                className="col-span-2 mb-0"
+                className="col-span-1 mb-0"
+                name="courseType"
+                label="Dạng khoá học"
+                labelCol={{ span: 24 }}
+                rules={[
+                  {
+                    required: true,
+                    message: "Vui lòng chọn dạng khoá học",
+                  },
+                ]}
+              >
+                <Select options={typeOptions} placeholder="Dạng khoá học" />
+              </Form.Item>
+              <Form.Item
+                className="col-span-1 mb-0"
                 name="coursePrice"
                 label="Giá khoá học"
                 labelCol={{ span: 24 }}

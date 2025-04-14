@@ -1,6 +1,6 @@
 import { Subject } from "@/models";
 import { useLoading } from "@/providers/loadingProvider";
-import { createExamBank, getSubject } from "@/services";
+import { createExamBank, getSubject, getUniversity } from "@/services";
 import { Form, Select } from "antd";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
@@ -14,10 +14,13 @@ const ModalCreateExamBank: React.FC<props> = ({ onClose, fetchExamBank }) => {
   const [form] = Form.useForm();
   const { setLoading } = useLoading();
   const [subjects, setSubjects] = useState<Subject[]>([]);
+  const [universities, setUniversites] = useState<any[]>([]);
+  const [selectedSubject, setSelectedSubject] = useState("");
+  console.log(selectedSubject);
   const onFinish = async (values: any) => {
     try {
       setLoading(true);
-      await createExamBank(values);
+      await createExamBank({ ...values, subjectId: values.subjectId.value });
       fetchExamBank();
       onClose();
     } catch (err: any) {
@@ -30,7 +33,7 @@ const ModalCreateExamBank: React.FC<props> = ({ onClose, fetchExamBank }) => {
   const fetchSubject = async () => {
     try {
       setLoading(true);
-      const res = await getSubject();
+      const res = await getSubject(true);
       if (res) {
         setSubjects(res.data);
       }
@@ -41,13 +44,32 @@ const ModalCreateExamBank: React.FC<props> = ({ onClose, fetchExamBank }) => {
       setLoading(false);
     }
   };
+  const fetchUniversity = async () => {
+    try {
+      setLoading(true);
+      const res = await getUniversity();
+      if (res) {
+        setUniversites(res.data);
+      }
+    } catch (err) {
+      console.error(err);
+      setLoading(false);
+    } finally {
+      setLoading(false);
+    }
+  };
   useEffect(() => {
     fetchSubject();
+    fetchUniversity();
   }, []);
 
   if (!subjects) return <></>;
   const subjectOptions = subjects.map((subject: Subject) => {
     return { label: subject.subjectName, value: subject.id };
+  });
+  if (!universities) return <></>;
+  const univerOption = universities.map((u: any) => {
+    return { label: u.universityName, value: u.id };
   });
 
   return (
@@ -144,8 +166,31 @@ const ModalCreateExamBank: React.FC<props> = ({ onClose, fetchExamBank }) => {
                   options={subjectOptions}
                   className="bg-gray-50 border  text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full  dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                   placeholder="Môn học"
+                  labelInValue
+                  onChange={(value) => setSelectedSubject(value.label)}
                 />
               </Form.Item>
+              {selectedSubject === "Tổng hợp" && (
+                <Form.Item
+                  className="col-span-2 mb-0"
+                  name="universityId"
+                  label="Trường đại học"
+                  labelCol={{ span: 24 }}
+                  rules={[
+                    {
+                      required: true,
+                      message: "Vui lòng chọn trường đại học",
+                    },
+                  ]}
+                >
+                  <Select
+                    size="large"
+                    options={univerOption}
+                    className="bg-gray-50 border  text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full  dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                    placeholder="Trường đại học"
+                  />
+                </Form.Item>
+              )}
             </div>
             <button
               type="submit"
