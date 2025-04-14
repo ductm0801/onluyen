@@ -256,6 +256,14 @@ export const uploadImg = async (formData: FormData) => {
   });
   return res.data;
 };
+export const uploadVideo = async (formData: FormData) => {
+  const res = await axiosClient.post(`/api/image/upload-video`, formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+  return res.data;
+};
 
 export const createCourse = async (body: ICourse) => {
   const res = await axiosClient.post(`/api/courses`, body);

@@ -1,7 +1,7 @@
 import { getVideoDuration } from "@/constants/utils";
 import { ICourse, ILesson } from "@/models";
 import { useLoading } from "@/providers/loadingProvider";
-import { updateLesson, uploadImg } from "@/services";
+import { updateLesson, uploadImg, uploadVideo } from "@/services";
 import { Form, Input, Upload } from "antd";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
@@ -80,14 +80,14 @@ const ModalUpdateLesson = ({
     formData.append("file", file.originFileObj);
     // setImageUrl(file);
     try {
-      const res = await uploadImg(formData);
+      const res = await uploadVideo(formData);
 
       form.setFieldValue("videoUrl", res.url);
 
       setLoading(false);
     } catch (error: any) {
       setLoading(false);
-      toast.error(error.response.data.message);
+      toast.error(error?.response?.data.message);
     } finally {
       setLoading(false);
     }
@@ -102,7 +102,7 @@ const ModalUpdateLesson = ({
       };
       const initialVideo = {
         uid: `-${lesson.lessonId}`,
-        name: `image${lesson.lessonId}.png`,
+        name: `image${lesson.lessonId}.mp4`,
         status: "done" as const,
         url: lesson.videoUrl,
       };
