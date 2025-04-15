@@ -170,5 +170,11 @@ export const menus: Record<
       icon: IMAGES.chatIcon,
       isShow: true,
     },
+    {
+      label: "Yêu cầu tư vấn",
+      path: "/consultant/consult-request",
+      icon: IMAGES.consultantIcon,
+      isShow: true,
+    },
   ],
 };
