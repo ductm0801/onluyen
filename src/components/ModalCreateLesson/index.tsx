@@ -1,7 +1,7 @@
 import { getVideoDuration } from "@/constants/utils";
 import { ICourse } from "@/models";
 import { useLoading } from "@/providers/loadingProvider";
-import { createLesson, updateCourse, uploadImg } from "@/services";
+import { createLesson, updateCourse, uploadImg, uploadVideo } from "@/services";
 import { Form, Input, InputNumber, Upload } from "antd";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -72,14 +72,19 @@ const ModalCreateLesson = ({
     formData.append("file", file.originFileObj);
     // setImageUrl(file);
     try {
-      const res = await uploadImg(formData);
+      const res = await uploadVideo(formData);
 
       form.setFieldValue("videoUrl", res.url);
 
       setLoading(false);
     } catch (error: any) {
       setLoading(false);
-      toast.error(error.response.data.message);
+      // console.log(error);
+      // if (error.response.status === 413) {
+      //   toast.error("Video quá lớn, vui lòng chọn video khác!");
+      //   return;
+      // }
+      toast.error(error?.response?.data.message);
     } finally {
       setLoading(false);
     }
