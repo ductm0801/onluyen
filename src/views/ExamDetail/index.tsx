@@ -44,7 +44,7 @@ const ExamDetail = () => {
   const fetchExam = async () => {
     try {
       setLoading(true);
-      const res = await getExamDetail(params.id, pageIndex, 10);
+      const res = await getExamDetail(params.id, pageIndex, 200);
       setExam(res.data);
       setTotalItems(res.data.totalItemsCount);
       setTotalPage(res.data.totalPageCount);
