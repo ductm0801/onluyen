@@ -208,14 +208,14 @@ const FormUpdateExam: React.FC<Props> = ({
       <div className="flex items-stretch justify-between gap-4">
         <div className="w-full flex flex-col gap-2">
           <p className="text-xl font-bold">Câu hỏi</p>
-          <Select
-            options={bankOptions}
-            value={activeQuestionBank.value}
-            onChange={(value) =>
-              setActiveQuestionBank({ ...activeQuestionBank, value: value })
-            }
-          />
           <div className="flex items-center gap-2">
+            <Select
+              options={bankOptions}
+              value={activeQuestionBank.value}
+              onChange={(value) =>
+                setActiveQuestionBank({ ...activeQuestionBank, value: value })
+              }
+            />{" "}
             <Select
               placeholder="Độ khó"
               options={difficulty}
@@ -238,6 +238,8 @@ const FormUpdateExam: React.FC<Props> = ({
                 })
               }
             />
+          </div>
+          <div className="flex items-center gap-2">
             <div className="relative">
               <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
                 <svg
@@ -366,13 +368,13 @@ const FormUpdateExam: React.FC<Props> = ({
                 />
               </div>
             ))}
-            <Paging
+            {/* <Paging
               pageSize={10}
               currentPage={examCurrentPage}
               totalItems={totalExamItem}
               totalPages={totalExamPage}
               setCurrentPage={setExamCurrentPage}
-            />
+            /> */}
           </div>
         </div>
       </div>
