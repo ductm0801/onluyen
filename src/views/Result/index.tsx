@@ -2,7 +2,7 @@
 import { IMAGES } from "@/constants/images";
 import { IExam } from "@/models";
 import { useLoading } from "@/providers/loadingProvider";
-import { examResult, getExamAIAnalyze } from "@/services";
+import { examResult, getExamAIAnalyze, postConsultRequest } from "@/services";
 import { Modal } from "antd";
 import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
@@ -38,17 +38,59 @@ const Result = () => {
       const res = await getExamAIAnalyze(params.id);
       toast.success("Lấy đề xuất từ AI thành công!");
       Modal.info({
-        title: "Đề xuất từ AI",
+        icon: null,
+        footer: (
+          <div className="flex border-t mt-8 pt-8 items-center gap-4 justify-end">
+            <button
+              className="bg-[#FDB022] text-white w-[128px] flex flex-col gap-0 items-center py-3  rounded-xl"
+              onClick={() => handlePostConsultRequest()}
+            >
+              <span className="leading-none font-bold"> Nhận tư vấn</span>
+              <span className="text-xs leading-none">(Đặt lịch chat)</span>
+            </button>
+            <button
+              className="bg-[#1244A2] font-bold text-white w-[128px] text-center py-3 rounded-xl"
+              onClick={() => Modal.destroyAll()}
+            >
+              OK
+            </button>
+          </div>
+        ),
+        title: (
+          <div className="flex items-center gap-4 ">
+            {" "}
+            <img
+              src={IMAGES.robotImg}
+              className="w-12 aspect-square"
+              alt="robot"
+            />
+            <p className="text-4xl font-bold"> Đề xuất từ AI</p>
+          </div>
+        ),
         width: "600px",
         content: (
           <div
-            className="max-h-[500px] overflow-y-auto text-xl font-bold"
+            className="max-h-[500px] pt-8 overflow-y-auto"
             dangerouslySetInnerHTML={{
               __html: res.data.replace(/\n/g, "<br/>"),
             }}
           />
         ),
       });
+    } catch (error: any) {
+      setLoading(false);
+      console.error(error);
+      toast.error(error.response.data.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+  const handlePostConsultRequest = async () => {
+    try {
+      setLoading(true);
+      await postConsultRequest("", params.id);
+      toast.success("Tạo yêu cầu tư vấn thành công!");
+      Modal.destroyAll();
     } catch (error: any) {
       setLoading(false);
       console.error(error);

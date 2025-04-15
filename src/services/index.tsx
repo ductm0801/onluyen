@@ -11,6 +11,7 @@ import {
   IUSer,
   Subject,
 } from "@/models";
+import { message } from "antd";
 
 export const login = async (body: ILoginRequest) => {
   const res = await axiosClient.post("/api/accounts/login", body);
@@ -672,5 +673,25 @@ export const getUniversity = async () => {
 };
 export const handleTrialCourse = async (id: string | string[]) => {
   const res = await axiosClient.post(`/api/student-course/student-trial${id}`);
+  return res.data;
+};
+export const postConsultRequest = async (
+  message: string,
+  testAttemptId: string | string[]
+) => {
+  const res = await axiosClient.post(`/api/consultRequest`, {
+    message,
+    testAttemptId,
+  });
+  return res.data;
+};
+export const getConsultRequest = async (
+  pageIndex: number,
+  pageSize: number,
+  status?: number
+) => {
+  const res = await axiosClient.get(`/api/consultRequest/paging`, {
+    params: { pageIndex, pageSize, consultRequestStatus: status },
+  });
   return res.data;
 };

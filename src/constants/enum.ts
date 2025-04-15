@@ -40,6 +40,12 @@ export const courseStatusEnum = {
   5: "Đã xóa",
   6: "Đã hoàn thành",
 };
+export const consultEnum = {
+  0: "Chờ duyệt",
+  1: "Đang xử lí",
+  2: "Từ chối ",
+  3: "Hoàn thành",
+};
 
 export const renderBgColorStatus = (status: keyof typeof statusEnum) => {
   switch (status) {
