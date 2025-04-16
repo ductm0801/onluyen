@@ -2,7 +2,7 @@
 import { IMAGES } from "@/constants/images";
 import { ICourse, ILesson } from "@/models";
 import { useLoading } from "@/providers/loadingProvider";
-import { getCourseDetail } from "@/services";
+import { getCourseDetail, getCourseLearning } from "@/services";
 import "plyr-react/plyr.css";
 import dynamic from "next/dynamic";
 import { useParams } from "next/navigation";
@@ -29,7 +29,7 @@ const Learning = () => {
   const fetchCourseDetail = async () => {
     try {
       setLoading(true);
-      const res = await getCourseDetail(params.id, currentPage, pageSize);
+      const res = await getCourseLearning(params.id, currentPage, pageSize);
       setTotalItems(res.data.lessons.totalItemsCount);
       setTotalPages(res.data.lessons.totalPageCount);
       if (res) {
@@ -58,6 +58,7 @@ const Learning = () => {
       }
     }
   }, [isSaveProgress]);
+  if (!course) return null;
 
   return (
     <div className="grid grid-cols-1 xl:grid-cols-12 gap-[30px]">
@@ -69,7 +70,10 @@ const Learning = () => {
           <li className="accordion mb-[25px] overflow-hidden">
             <div className=" border  rounded-t-md">
               <button className=" flex justify-between items-center text-xl  font-bold w-full px-5 py-[18px] leading-[20px]">
-                <span>{course?.title}</span>
+                <span>
+                  {course?.title}{" "}
+                  {course?.participationType === 0 ? "(Học thử)" : ""}
+                </span>
               </button>
 
               <div>
@@ -94,7 +98,7 @@ const Learning = () => {
                           {/* <p className="font-medium">{item.title}</p> */}
                           Bài học {item.order}
                         </h4>
-                        {item.progress.isCompleted && (
+                        {item?.progress?.isCompleted && (
                           <div className=" flex items-center gap-2 bg-[#ABEFC6] rounded-full text-[#067647] px-2 py-0.5">
                             <svg
                               width="16"
@@ -180,7 +184,7 @@ const Learning = () => {
             <VideoPlayer
               setIsSaveProgress={setIsSaveProgress}
               videoSrc={activeLesson?.videoUrl || ""}
-              progressId={activeLesson?.progress.id}
+              progressId={activeLesson?.progress?.id}
               videoRef={videoPlayerRef}
             />
           </div>

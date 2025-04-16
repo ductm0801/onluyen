@@ -60,4 +60,5 @@ export const IMAGES = {
   coursePending: "/assets/course-pending.svg",
   robotImg: "/assets/robotImg.png",
   consultantIcon: "/assets/consultantIcon.svg",
+  peopleIcon: "/assets/peopleIcon.svg",
 };
