@@ -70,12 +70,17 @@ const CourseDetail = () => {
       router.push(`/student/learning/${course?.courseId}`);
       return;
     }
-    await startCourse(course?.studentCourseId || "");
-    router.push(`/student/learning/${course?.courseId}`);
+
+    await startCourse(course?.paidCourse.id || "");
+    router.push(`/student/learning/${course?.paidCourse.id}`);
   };
   const handleTrial = async () => {
     if (!user) {
       toast.warning("Vui lòng đăng nhập để học thử!");
+      return;
+    }
+    if (!course?.trialAllowance) {
+      router.replace(`/student/learning/${course?.trialCourse.id}`);
       return;
     }
     try {
@@ -84,9 +89,7 @@ const CourseDetail = () => {
       console.log(res);
     } catch (error: any) {
       setLoading(false);
-      if (error.response.status === 400) {
-        router.replace(`/student/learning/${course?.studentCourseId}`);
-      }
+      toast.error(error?.response?.data?.message || "Có lỗi xảy ra!");
     } finally {
       setLoading(false);
     }
@@ -108,6 +111,13 @@ const CourseDetail = () => {
             Giá
             <span className="text-[#101828] font-bold">
               {course?.coursePrice.toLocaleString("vi-VN")}đ
+            </span>{" "}
+          </div>
+          <div className="flex items-center gap-2 text-[#667085]">
+            <img src={IMAGES.peopleIcon} alt="lesson" className="w-[25px]" />
+            Số người tham gia
+            <span className="text-[#101828] font-bold">
+              {course?.totalParticipants}
             </span>{" "}
           </div>
         </div>

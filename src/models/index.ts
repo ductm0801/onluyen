@@ -188,6 +188,17 @@ export type ICourse = {
   instructorName: string;
   lessons: ILessons;
   studentCourseId: string;
+  trialAllowance: boolean;
+  participationType: number;
+  trialCourse: {
+    id: string;
+    participationType: number;
+  };
+  paidCourse: {
+    id: string;
+    participationType: number;
+  };
+  totalParticipants: number;
 };
 export type ILessons = {
   totalItemsCount: number;
@@ -300,4 +311,58 @@ export type ICourseProgress = {
   isStarted: boolean;
   progress: number;
   studentCourseId: string;
+};
+export type IConsultRequest = {
+  id: string;
+  studentInfo: {
+    user: {
+      id: string;
+      imageUrl: string;
+      fullName: string;
+      email: string;
+      phoneNumber: number;
+      address: string;
+      gender: string;
+      dateOfBirth: Date;
+      status: number;
+    };
+    student: {
+      education: string;
+      level: string;
+      gpa: number;
+      certificate: string;
+    };
+    subjects: [
+      {
+        id: string;
+        subjectName: string;
+        subjectDescription: string;
+        imageUrl: string;
+        averageScorePercentage: number;
+      }
+    ];
+  };
+  message: string;
+  testAttemptInfo: {
+    testAttemptId: string;
+    examName: string;
+    subjectName: string;
+    attemptDate: Date;
+    publishedDate: Date;
+    testTotalGrade: number;
+    testLength: number;
+    grade: number;
+    subjectScores: [
+      {
+        subjectName: string;
+        studentCorrectAnswers: number;
+        totalQuestions: number;
+      }
+    ];
+    isPass: false;
+  };
+
+  status: number;
+  isDeleted: boolean;
+  creationDate: Date;
 };

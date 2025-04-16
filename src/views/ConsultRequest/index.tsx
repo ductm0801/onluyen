@@ -5,6 +5,7 @@ import { useLoading } from "@/providers/loadingProvider";
 import { getConsultRequest } from "@/services";
 import { Select } from "antd";
 import dayjs from "dayjs";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 const renderBgColorStatus = (status: keyof typeof consultEnum) => {
   switch (status) {
@@ -70,6 +71,7 @@ const ConsultRequest = () => {
   const [totalPages, setTotalPages] = useState(0);
   const [status, setStatus] = useState<number | undefined>(undefined);
   const [consultData, setConsultData] = useState<any[]>([]);
+  const router = useRouter();
   const fetchConsultRequest = async () => {
     try {
       setLoading(true);
@@ -139,16 +141,18 @@ const ConsultRequest = () => {
                 </td>
                 <td className="px-6 py-4 ">
                   <div className="flex flex-col items-center">
-                    <p>{dayjs(a.expiredDate).format("DD/MM/YYYY")}</p>
+                    <p>{dayjs(a.creationDate).format("DD/MM/YYYY")}</p>
                     <p className="text-xs">
-                      {dayjs(a.expiredDate).format("HH:mm:ss")}
+                      {dayjs(a.creationDate).format("HH:mm:ss")}
                     </p>
                   </div>
                 </td>
                 <td className="px-6 py-4 flex justify-center items-center">
                   <div
                     className="font-medium text-blue-600 dark:text-blue-500 hover:underline cursor-pointer"
-                    // onClick={() => handleOpen(a)}
+                    onClick={() =>
+                      router.push(`/consultant/consult-request/${a.id}`)
+                    }
                   >
                     Chi tiết
                   </div>

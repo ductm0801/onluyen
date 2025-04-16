@@ -695,3 +695,17 @@ export const getConsultRequest = async (
   });
   return res.data;
 };
+export const getConsultRequestDetail = async (id: string | string[]) => {
+  const res = await axiosClient.get(`/api/consultRequest/${id}`);
+  return res.data;
+};
+export const getCourseLearning = async (
+  id: string | string[],
+  pageIndex: number,
+  pageSize: number
+) => {
+  const res = await axiosClient.get(`/api/student-course/student/${id}`, {
+    params: { pageIndex, pageSize },
+  });
+  return res.data;
+};
