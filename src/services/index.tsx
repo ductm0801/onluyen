@@ -709,3 +709,28 @@ export const getCourseLearning = async (
   });
   return res.data;
 };
+export const getCoursePending = async (pageIndex: number, pageSize: number) => {
+  const res = await axiosClient.get(`/api/courses/approval-required`, {
+    params: { pageIndex, pageSize },
+  });
+  return res.data;
+};
+export const getCoursePendingDetail = async (
+  id: string | string[],
+  pageIndex: number,
+  pageSize: number
+) => {
+  const res = await axiosClient.get(`/api/courses/${id}`, {
+    params: { pageIndex, pageSize },
+  });
+  return res.data;
+};
+export const adminUpdatePendingCourse = async (
+  id: string | string[],
+  status: string
+) => {
+  const res = await axiosClient.put(`/api/courses/approval/${id}`, {
+    status,
+  });
+  return res.data;
+};

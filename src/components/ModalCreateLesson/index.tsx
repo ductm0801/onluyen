@@ -17,7 +17,7 @@ const ModalCreateLesson = ({
   const [form] = Form.useForm();
   const [loadingImg, setLoadingImg] = useState(false);
   const params = useParams();
-  console.log(params.id);
+  const [videoLength, setVideoLength] = useState(0);
   const [imageUrl, setImageUrl] = useState<
     | {
         uid: string;
@@ -31,7 +31,7 @@ const ModalCreateLesson = ({
   const onFinish = async (values: ICourse) => {
     try {
       setLoading(true);
-      await createLesson({ ...values, courseId: params.id });
+      await createLesson({ ...values, courseId: params.id, videoLength });
       onClose();
       fetchCourseDetail();
       toast.success("Tạo bài học thành công!");
@@ -66,9 +66,8 @@ const ModalCreateLesson = ({
     const formData = new FormData();
     const rawFile = file.originFileObj;
 
-    // 1. Lấy duration
     const videoDuration = await getVideoDuration(rawFile);
-    console.log(videoDuration);
+    setVideoLength(videoDuration);
     formData.append("file", file.originFileObj);
     // setImageUrl(file);
     try {
