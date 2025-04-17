@@ -672,7 +672,7 @@ export const getUniversity = async () => {
   return res.data;
 };
 export const handleTrialCourse = async (id: string | string[]) => {
-  const res = await axiosClient.post(`/api/student-course/student-trial${id}`);
+  const res = await axiosClient.post(`/api/student-course/student-trial/${id}`);
   return res.data;
 };
 export const postConsultRequest = async (
@@ -727,7 +727,7 @@ export const getCoursePendingDetail = async (
 };
 export const adminUpdatePendingCourse = async (
   id: string | string[],
-  status: string
+  status: number
 ) => {
   const res = await axiosClient.put(`/api/courses/approval/${id}`, {
     status,

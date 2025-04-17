@@ -27,6 +27,7 @@ const FormUpdateLesson: React.FC<props> = ({
   const [create, setCreate] = useState(false);
   const [update, setUpdate] = useState(false);
   const detail = useRef<ILesson | null>();
+  const [open, setOpen] = useState("");
   const handleOpen = (item: ILesson) => {
     setUpdate(true);
     detail.current = item;
@@ -47,36 +48,61 @@ const FormUpdateLesson: React.FC<props> = ({
       <div className="flex flex-col gap-4">
         {lessons.map((lesson, index) => (
           <div
-            key={index}
-            className="border-b border-[#1244A2] pb-2 flex justify-between items-center"
+            key={lesson.lessonId}
+            className=" flex flex-col gap-4 bg-white rounded-lg shadow-sm px-4 py-2 cursor-pointer"
+            onClick={() => setOpen(lesson.lessonId)}
           >
-            <div className="flex items-center gap-4 ">
-              <Image
-                width={160}
-                height={90}
-                src={lesson.imageUrl}
-                alt={lesson.title}
-                className="object-cover aspect-video"
-              />
-              <div>
-                <p className="text-lg font-semibold">{lesson.title}</p>
-                <p className="text-[#333333a1] text-sm">{lesson.description}</p>
+            <div className="border-b border-[#1244A2] pb-2 flex justify-between items-center">
+              <div className="flex items-center gap-4 ">
+                <Image
+                  width={160}
+                  height={90}
+                  src={lesson.imageUrl}
+                  alt={lesson.title}
+                  className="object-cover aspect-video"
+                />
+                <div>
+                  <p className="text-lg font-semibold">{lesson.title}</p>
+                  <p className="text-[#333333a1] text-sm">
+                    {lesson.description}
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <Tooltip title="Chỉnh sửa bài học" className="cursor-pointer">
+                  <div
+                    className="p-2 rounded-lg bg-blue-500"
+                    onClick={() => handleOpen(lesson)}
+                  >
+                    <img src={IMAGES.editIcon} alt="edit" className="w-4  r" />
+                  </div>
+                </Tooltip>
+                <Tooltip title="Xóa bài học" className="cursor-pointer">
+                  <div className="p-2 rounded-lg bg-red-500 cursor-pointer">
+                    <img src={IMAGES.trashIcon} alt="edit" className="w-4   " />
+                  </div>
+                </Tooltip>
               </div>
             </div>
-            <div className="flex items-center gap-2">
-              <Tooltip title="Chỉnh sửa bài học" className="cursor-pointer">
-                <div
-                  className="p-2 rounded-lg bg-blue-500"
-                  onClick={() => handleOpen(lesson)}
-                >
-                  <img src={IMAGES.editIcon} alt="edit" className="w-4  r" />
-                </div>
-              </Tooltip>
-              <Tooltip title="Xóa bài học" className="cursor-pointer">
-                <div className="p-2 rounded-lg bg-red-500 cursor-pointer">
-                  <img src={IMAGES.trashIcon} alt="edit" className="w-4   " />
-                </div>
-              </Tooltip>
+            <div
+              className={`flex flex-col gap-4 mt-2  overflow-hidden transition-all duration-300 ease-in-out        ${
+                open === lesson.lessonId ? "max-h-screen" : "max-h-0"
+              }`}
+            >
+              <div className="flex items-center gap-4 px-8">
+                <p className="text-lg font-semibold">Video bài học</p>
+                <video
+                  controls
+                  className="w-[300px] aspect-video"
+                  src={lesson.videoUrl}
+                />
+              </div>
+              {lesson.content && (
+                <>
+                  <p className="text-lg font-semibold">Nội dung bài học</p>
+                  <p>{lesson.content}</p>
+                </>
+              )}
             </div>
           </div>
         ))}

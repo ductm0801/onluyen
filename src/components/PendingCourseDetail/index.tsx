@@ -15,11 +15,11 @@ export const renderBgColorStatus = (status: keyof typeof courseStatusEnum) => {
     case 1:
       return "from-orange-600 to-orange-300";
     case 2:
-      return "from-orange-600 to-orange-300";
+      return "from-emerald-600 to-emerald-400";
     case 4:
       return "from-red-600 to-red-300";
     case 3:
-      return "from-emerald-600 to-emerald-400";
+      return "from-red-600 to-red-400";
     case 0:
       return "from-slate-600 to-slate-300";
     default:
@@ -34,6 +34,7 @@ const PendingCourseDetail = () => {
   const [totalItems, setTotalItems] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
   const [pageSize, setPageSize] = useState(10);
+  const [open, setOpen] = useState("");
   const params = useParams();
   const fetchData = async () => {
     try {
@@ -56,8 +57,8 @@ const PendingCourseDetail = () => {
   useEffect(() => {
     fetchData();
   }, [currentPage]);
-  const handleConfirm = (status: string) => {
-    if (status === "DaDuyet") {
+  const handleConfirm = (status: number) => {
+    if (status === 2) {
       Modal.confirm({
         title: "Xác nhận duyệt khóa học",
         content: `Bạn có chắc muốn duyệt khóa học không?`,
@@ -69,7 +70,7 @@ const PendingCourseDetail = () => {
       });
       return;
     }
-    if (status === "TuChoi") {
+    if (status === 3) {
       Modal.confirm({
         title: "Xác nhận từ chối khóa học",
         content: `Bạn có chắc muốn từ chối khóa học không?`,
@@ -83,7 +84,7 @@ const PendingCourseDetail = () => {
     return;
   };
 
-  const handlePublishCourse = async (status: string) => {
+  const handlePublishCourse = async (status: number) => {
     try {
       setLoading(true);
       await adminUpdatePendingCourse(params.id, status);
@@ -108,47 +109,77 @@ const PendingCourseDetail = () => {
         >
           {courseStatusEnum[data?.courseStatus]}
         </span>
-        <div className="flex items-center gap-2 ml-auto">
-          <button
-            onClick={() => handleConfirm("DaDuyet")}
-            className="text-white bg-blue-500 px-3 py-2 rounded-xl"
-          >
-            Duyệt
-          </button>
-          <button
-            onClick={() => handleConfirm("TuChoi")}
-            className="text-white bg-red-600 px-3 py-2 rounded-xl"
-          >
-            {" "}
-            Từ Chối
-          </button>
-        </div>
+        {data.courseStatus === 1 && (
+          <div className="flex items-center gap-2 ml-auto">
+            <button
+              onClick={() => handleConfirm(2)}
+              className="text-white bg-blue-500 px-3 py-2 rounded-xl"
+            >
+              Duyệt
+            </button>
+            <button
+              onClick={() => handleConfirm(3)}
+              className="text-white bg-red-600 px-3 py-2 rounded-xl"
+            >
+              {" "}
+              Từ Chối
+            </button>
+          </div>
+        )}
       </div>
       <div className="flex flex-col gap-4">
         {data?.lessons.items.map((lesson, index) => (
           <div
-            key={index}
-            className="border-b border-[#1244A2] pb-2 flex justify-between items-center"
+            key={lesson.lessonId}
+            className=" flex flex-col gap-4 bg-white rounded-lg shadow-sm px-4 py-2 cursor-pointer"
+            onClick={() => setOpen(lesson.lessonId)}
           >
-            <div className="flex items-center gap-4 ">
-              <Image
-                width={160}
-                height={90}
-                src={lesson.imageUrl}
-                alt={lesson.title}
-                className="object-cover aspect-video"
-              />
-              <div>
-                <p className="text-lg font-semibold">{lesson.title}</p>
-                <p className="text-[#333333a1] text-sm">{lesson.description}</p>
+            <div className="flex justify-between items-center border-b border-[#1244A2] pb-2 ">
+              <div className="flex items-center gap-4">
+                <Image
+                  width={160}
+                  height={90}
+                  src={lesson.imageUrl}
+                  alt={lesson.title}
+                  className="object-cover aspect-video"
+                />
+                <div>
+                  <p className="text-lg font-semibold">{lesson.title}</p>
+                  <p className="text-[#333333a1] text-sm">
+                    {lesson.description}
+                  </p>
+                </div>
               </div>
+
+              <img
+                src={IMAGES.arrowDown}
+                alt="down"
+                className={`w-6 cursor-pointer transition-all duration-300 ease-in-out  ${
+                  open === lesson.lessonId ? "rotate-180" : "rotate-0"
+                }`}
+              />
             </div>
 
-            <img
-              src={IMAGES.arrowDown}
-              alt="down"
-              className="w-6 cursor-pointer"
-            />
+            <div
+              className={`flex flex-col gap-4 mt-2  overflow-hidden transition-all duration-300 ease-in-out        ${
+                open === lesson.lessonId ? "max-h-screen" : "max-h-0"
+              }`}
+            >
+              <div className="flex items-center gap-4 px-8">
+                <p className="text-lg font-semibold">Video bài học</p>
+                <video
+                  controls
+                  className="w-[300px] aspect-video"
+                  src={lesson.videoUrl}
+                />
+              </div>
+              {lesson.content && (
+                <>
+                  <p className="text-lg font-semibold">Nội dung bài học</p>
+                  <p>{lesson.content}</p>
+                </>
+              )}
+            </div>
           </div>
         ))}
         <Paging

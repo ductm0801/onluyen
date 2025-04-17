@@ -33,7 +33,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     sources: [
       {
         src: videoSrc,
-        provider: "youtube",
+        // provider: "youtube",
       },
     ],
   };
@@ -51,7 +51,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
       "settings", // Menu cài đặt
       "pip", // Chế độ hình trong hình (Safari)
       "airplay", // Airplay (Safari)
-      "download", // Nút tải xuống
+      // "download", // Nút tải xuống
       "fullscreen", // Toàn màn hình
       "play-large", // Nút phát lớn khi video dừng
     ],

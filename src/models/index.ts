@@ -189,6 +189,7 @@ export type ICourse = {
   lessons: ILessons;
   studentCourseId: string;
   trialAllowance: boolean;
+  totalVideosLength: number;
   participationType: number;
   trialCourse: {
     id: string;
@@ -220,6 +221,7 @@ export type ILesson = {
   courseId: string;
   courseName: string;
   progress: IProgress;
+  totalVideoLength: number;
 };
 export type IProgress = {
   id: string;

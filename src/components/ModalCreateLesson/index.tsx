@@ -31,7 +31,11 @@ const ModalCreateLesson = ({
   const onFinish = async (values: ICourse) => {
     try {
       setLoading(true);
-      await createLesson({ ...values, courseId: params.id, videoLength });
+      await createLesson({
+        ...values,
+        courseId: params.id,
+        videoLength: Math.ceil(videoLength),
+      });
       onClose();
       fetchCourseDetail();
       toast.success("Tạo bài học thành công!");
@@ -73,7 +77,7 @@ const ModalCreateLesson = ({
     try {
       const res = await uploadVideo(formData);
 
-      form.setFieldValue("videoUrl", res.url);
+      form.setFieldValue("videoUrl", res.videoUrl);
 
       setLoading(false);
     } catch (error: any) {
@@ -174,12 +178,12 @@ const ModalCreateLesson = ({
               <Form.Item
                 className="col-span-2 mb-0"
                 name="videoUrl"
-                label="Đường dẫn video"
+                label="Video bài học"
                 labelCol={{ span: 24 }}
                 rules={[
                   {
                     required: true,
-                    message: "Vui lòng nhập đường dẫn video",
+                    message: "Vui lòng chọn video",
                   },
                 ]}
               >

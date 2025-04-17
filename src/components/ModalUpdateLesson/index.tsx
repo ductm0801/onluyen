@@ -16,7 +16,7 @@ const ModalUpdateLesson = ({
   lesson: ILesson | null | undefined;
 }) => {
   const [form] = Form.useForm();
-
+  const [videoLength, setVideoLength] = useState(0);
   const [imageUrl, setImageUrl] = useState<
     | {
         uid: string;
@@ -39,7 +39,10 @@ const ModalUpdateLesson = ({
   const onFinish = async (values: ICourse) => {
     try {
       setLoading(true);
-      await updateLesson(values, lesson?.lessonId || "");
+      await updateLesson(
+        { ...values, videoLength: Math.ceil(videoLength) },
+        lesson?.lessonId || ""
+      );
       onClose();
       fetchCourseDetail();
       toast.success("Cập nhật bài học thành công!");
@@ -76,13 +79,13 @@ const ModalUpdateLesson = ({
 
     // 1. Lấy duration
     const videoDuration = await getVideoDuration(rawFile);
-    console.log(videoDuration);
+    setVideoLength(videoDuration);
     formData.append("file", file.originFileObj);
     // setImageUrl(file);
     try {
       const res = await uploadVideo(formData);
 
-      form.setFieldValue("videoUrl", res.url);
+      form.setFieldValue("videoUrl", res.videoUrl);
 
       setLoading(false);
     } catch (error: any) {
