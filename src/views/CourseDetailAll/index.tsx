@@ -99,7 +99,7 @@ const CourseDetail = () => {
       <div className="flex flex-col gap-4 col-span-2">
         <h1 className="text-4xl font-bold">{course?.title}</h1>
         <p className="text-base text-[#344054]">{course?.description}</p>
-        <div className="flex items-center gap-4">
+        <div className="grid grid-cols-2 items-center gap-4">
           <div className="flex items-center gap-2 text-[#667085]">
             <img src={IMAGES.lessonIcon} alt="lesson" />
             Tổng số
@@ -120,6 +120,14 @@ const CourseDetail = () => {
               {course?.totalParticipants}
             </span>{" "}
           </div>
+          <div className="flex items-center gap-2 text-[#667085]">
+            <img src={IMAGES.clockIcon} alt="lesson" className="w-[25px]" />
+            Tổng thời gian học
+            <span className="text-[#101828] font-bold">
+              {Math.floor((course?.totalVideosLength || 0) / 60)} phút{" "}
+              {(course?.totalVideosLength || 0) % 60} giây
+            </span>{" "}
+          </div>
         </div>
         <div className="flex flex-col gap-2 text-[#667085]">
           {course?.lessons.items.map((item, index) => (
@@ -128,15 +136,19 @@ const CourseDetail = () => {
               className="flex items-center justify-between gap-2 rounded-2xl border p-6 cursor-pointer"
               onClick={() => setActive(index)}
             >
-              <div className="flex flex-col">
+              <div className="flex flex-col w-full">
                 <p className="text-[#101828] font-bold">{item.title}</p>
-                <p
-                  className={`${
+                <div
+                  className={`flex items-center w-full justify-between ${
                     active === index ? "max-h-[500px]" : "max-h-0"
                   } overflow-hidden transition-all duration-300 `}
                 >
-                  {item.description}
-                </p>
+                  <p>{item.description}</p>
+                  <span className="text-[#101828] font-bold">
+                    {Math.floor((item?.totalVideoLength || 0) / 60)} phút{" "}
+                    {(item?.totalVideoLength || 0) % 60} giây
+                  </span>{" "}
+                </div>
               </div>
               <img
                 src={active === index ? IMAGES.minusIcon : IMAGES.plusIcon}

@@ -35,10 +35,8 @@ export const courseStatusEnum = {
   0: "Bản nháp",
   1: "Chờ duyệt",
   2: "Đã duyệt",
-  3: "Đã lên lịch",
+  3: "Từ chối",
   4: "Tạm ngưng",
-  5: "Đã xóa",
-  6: "Đã hoàn thành",
 };
 export const consultEnum = {
   0: "Chờ duyệt",
