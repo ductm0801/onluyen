@@ -30,6 +30,7 @@ import { toast } from "react-toastify";
 import CustomButton from "@/components/CustomButton";
 import banks from "@/constants/data/bank.json";
 import { Radar } from "react-chartjs-2";
+import { IMAGES } from "@/constants/images";
 Chart.register(...registerables);
 
 const genderOptions = [
@@ -157,11 +158,22 @@ const Profile = () => {
       const res = await getAIRecommendation();
       toast.success("Lấy đề xuất từ AI thành công!");
       Modal.info({
-        title: "Đề xuất từ AI",
+        icon: null,
+        title: (
+          <div className="flex items-center gap-4 ">
+            {" "}
+            <img
+              src={IMAGES.robotImg}
+              className="w-12 aspect-square"
+              alt="robot"
+            />
+            <p className="text-4xl font-bold"> Đề xuất từ AI</p>
+          </div>
+        ),
         width: "600px",
         content: (
           <div
-            className="max-h-[500px] overflow-y-auto text-xl font-bold"
+            className="max-h-[500px] pt-8 overflow-y-auto"
             dangerouslySetInnerHTML={{
               __html: res.data.replace(/\n/g, "<br/>"),
             }}

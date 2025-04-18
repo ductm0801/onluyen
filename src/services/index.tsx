@@ -769,3 +769,7 @@ export const updateConsultRequest = async (
   const res = await axiosClient.patch(`/api/consultRequest/${id}`, { status });
   return res.data;
 };
+export const createSchedule = async (body: any) => {
+  const res = await axiosClient.post(`/api/schedules`, body);
+  return res.data;
+};

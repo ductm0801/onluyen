@@ -147,6 +147,7 @@ export type IExam = {
   testApprovalStatus: keyof typeof pendingExamEnum;
   totalGrade: number;
   isDeleted: boolean;
+  subjectName: string;
   questions: IQuestion[];
   studentGrade: number;
   studentCorrectAnswers: number;

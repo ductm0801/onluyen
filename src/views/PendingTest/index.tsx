@@ -134,8 +134,8 @@ const PendingTest = () => {
                     <div className="text-base font-semibold">{a.testName}</div>
                   </th>
                   <td className="px-6 py-4">{a.description}</td>
-                  {/* <td className="px-6 py-4">{a.phoneNumber}</td> */}
-                  <td className="px-6 py-4">{examEnum[a.testType]}</td>
+                  <td className="px-6 py-4">{a.subjectName}</td>
+                  {/* <td className="px-6 py-4">{examEnum[a.testType]}</td> */}
                   <td className="px-6 py-4">
                     {pendingExamEnum[a.testApprovalStatus]}
                   </td>
