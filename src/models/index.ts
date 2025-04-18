@@ -182,6 +182,7 @@ export type ICourse = {
   subjectName: string;
   imageUrl: string;
   isJoined: boolean;
+  courseType: number;
   isStarted: boolean;
   coursePrice: number;
   courseStatus: keyof typeof courseStatusEnum;

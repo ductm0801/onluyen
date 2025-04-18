@@ -1,13 +1,12 @@
 "use client";
 import FormUpdateCourse from "@/components/FormUpdateCourse";
 import FormUpdateLesson from "@/components/FormUpdateLesson";
-import { IMAGES } from "@/constants/images";
 import { ICourse } from "@/models";
 import { useLoading } from "@/providers/loadingProvider";
-import { getCourseDetail, publishCourse } from "@/services";
-import { Image, Modal, Tabs, Tooltip } from "antd";
+import { getInstructorCourseDetail, publishCourse } from "@/services";
+import { Modal, Tabs } from "antd";
 import { useParams } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 const CourseDetail = () => {
@@ -21,7 +20,11 @@ const CourseDetail = () => {
   const fetchCourseDetail = async () => {
     try {
       setLoading(true);
-      const res = await getCourseDetail(params.id, currentPage, pageSize);
+      const res = await getInstructorCourseDetail(
+        params.id,
+        currentPage,
+        pageSize
+      );
       setDetail(res.data);
       setTotalItems(res.data.lessons.totalItemsCount);
       setTotalPages(res.data.lessons.totalPageCount);
@@ -41,7 +44,41 @@ const CourseDetail = () => {
       label: "Thông tin chung",
       children: <FormUpdateCourse course={detail} />,
     },
-    {
+    // {
+    //   value: 1,
+    //   label: "Danh sách bài học",
+    //   children: (
+    //     <FormUpdateLesson
+    //       lessons={detail.lessons.items}
+    //       fetchCourseDetail={fetchCourseDetail}
+    //       currentPage={currentPage}
+    //       pageSize={pageSize}
+    //       totalItems={totalItems}
+    //       totalPages={totalPages}
+    //       setCurrentPage={setCurrentPage}
+    //     />
+    //   ),
+    // },
+  ];
+  if (detail.courseType === 1) {
+    tab.push({
+      value: 1,
+      label: "Danh sách lịch học",
+      children: (
+        <FormUpdateLesson
+          lessons={detail.lessons.items}
+          fetchCourseDetail={fetchCourseDetail}
+          currentPage={currentPage}
+          pageSize={pageSize}
+          totalItems={totalItems}
+          totalPages={totalPages}
+          setCurrentPage={setCurrentPage}
+        />
+      ),
+    });
+  }
+  if (detail.courseType === 0) {
+    tab.push({
       value: 1,
       label: "Danh sách bài học",
       children: (
@@ -55,8 +92,8 @@ const CourseDetail = () => {
           setCurrentPage={setCurrentPage}
         />
       ),
-    },
-  ];
+    });
+  }
   const handleConfirm = () => {
     Modal.confirm({
       title: "Xác nhận chuyển trạng thái chờ duyệt",

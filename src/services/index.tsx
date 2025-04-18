@@ -345,6 +345,16 @@ export const getCourseDetail = async (
   });
   return res.data;
 };
+export const getInstructorCourseDetail = async (
+  id: string | string[],
+  pageIndex: number,
+  pageSize: number
+) => {
+  const res = await axiosClient.get(`/api/courses/${id}`, {
+    params: { pageIndex, pageSize },
+  });
+  return res.data;
+};
 export const getQuestionNotInExam = async (
   questionBankId: string,
   testId: string | string[],
