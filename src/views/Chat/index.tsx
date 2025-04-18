@@ -122,9 +122,9 @@ const Chat = () => {
 
         <div className="w-full px-5 flex flex-col justify-between">
           <div className="flex flex-col mt-5 overflow-y-auto">
-            {messages.map((m: any) =>
+            {messages.map((m: any, index) =>
               m.sender === user?.UserId ? (
-                <div className="flex justify-end mb-4">
+                <div className="flex justify-end mb-4" key={index}>
                   <div className="mr-2 py-3 px-4 bg-blue-400 rounded-bl-3xl rounded-tl-3xl rounded-tr-xl text-white">
                     {m?.text}
                   </div>
@@ -135,7 +135,7 @@ const Chat = () => {
                   />
                 </div>
               ) : (
-                <div className="flex justify-start mb-4">
+                <div className="flex justify-start mb-4" key={index}>
                   <img
                     src={m.senderImageUrl || IMAGES.defaultAvatar}
                     className="object-cover h-8 w-8 rounded-full"
