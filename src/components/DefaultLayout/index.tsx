@@ -39,6 +39,7 @@ const DefaultLayout: React.FC<props> = ({ children }) => {
 
   const fetchChat = async () => {
     try {
+      if (user?.Role === "Consultant") return;
       const res = await getChat("12FFC162-D2D0-420A-8806-647253B09E95");
       if (res) setMessages(res);
     } catch (err) {

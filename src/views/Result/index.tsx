@@ -37,13 +37,14 @@ const Result = () => {
       setLoading(true);
       const res = await getExamAIAnalyze(params.id);
       toast.success("Lấy đề xuất từ AI thành công!");
+
       Modal.info({
         icon: null,
         footer: (
           <div className="flex border-t mt-8 pt-8 items-center gap-4 justify-end">
             <button
               className="bg-[#FDB022] text-white w-[128px] flex flex-col gap-0 items-center py-3  rounded-xl"
-              onClick={() => handlePostConsultRequest()}
+              onClick={() => handlePostConsultRequest(res.data)}
             >
               <span className="leading-none font-bold"> Nhận tư vấn</span>
               <span className="text-xs leading-none">(Đặt lịch chat)</span>
@@ -85,10 +86,10 @@ const Result = () => {
       setLoading(false);
     }
   };
-  const handlePostConsultRequest = async () => {
+  const handlePostConsultRequest = async (message: string) => {
     try {
       setLoading(true);
-      await postConsultRequest("", params.id);
+      await postConsultRequest(message, params.id);
       toast.success("Tạo yêu cầu tư vấn thành công!");
       Modal.destroyAll();
     } catch (error: any) {
