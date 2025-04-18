@@ -58,6 +58,7 @@ const ConsultRequestDetail = () => {
   const [openChat, setOpenChat] = useState(false);
   const [messages, setMessages] = useState([]);
   const [form] = Form.useForm();
+  const [status, setStatus] = useState(0);
   const { user } = useAuth();
 
   const handleSubmit = async (values: any) => {
@@ -75,6 +76,7 @@ const ConsultRequestDetail = () => {
       const res = await getConsultRequestDetail(params.id);
       if (res) {
         setData(res.data);
+        setStatus(res.data.status);
       }
     } catch (e) {
       console.log(e);
@@ -175,7 +177,7 @@ const ConsultRequestDetail = () => {
             <button
               key={index}
               className={`${
-                data.status === item.value ? "bg-blue-600" : "bg-gray-200"
+                status === item.value ? "bg-blue-600" : "bg-gray-200"
               } text-white font-bold py-2 px-4 rounded-full`}
               onClick={() => handleUpdateRequest(item.value)}
             >
@@ -207,12 +209,14 @@ const ConsultRequestDetail = () => {
       <div className="mt-4 relative border rounded-xl shadow-md overflow-hidden">
         <div className="flex items-center justify-between px-8 py-[40px]">
           <p className="text-[#101828] font-bold text-2xl">Kết quả làm bài</p>
-          <button
-            className="bg-[#1244A2] text-white w-[200px] text-center  rounded-xl py-3 cursor-pointer"
-            onClick={() => setOpenChat((prev) => !prev)}
-          >
-            Liên hệ
-          </button>
+          {status === 1 && (
+            <button
+              className="bg-[#1244A2] text-white w-[200px] text-center  rounded-xl py-3 cursor-pointer"
+              onClick={() => setOpenChat((prev) => !prev)}
+            >
+              Liên hệ
+            </button>
+          )}
 
           <div
             className={`absolute top-24 right-0 max-w-[1008px] w-full bg-white shadow-lg rounded-lg p-4 transition-transform duration-300 ${
