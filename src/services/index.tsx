@@ -762,3 +762,10 @@ export const deleteUniversity = async (id: string) => {
   const res = await axiosClient.delete(`/api/university/${id}`);
   return res.data;
 };
+export const updateConsultRequest = async (
+  status: number,
+  id: string | string[]
+) => {
+  const res = await axiosClient.patch(`/api/consultRequest/${id}`, { status });
+  return res.data;
+};

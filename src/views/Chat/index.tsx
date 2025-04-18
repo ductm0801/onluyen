@@ -82,8 +82,9 @@ const Chat = () => {
               className="py-2 px-2 border-2 border-gray-200 rounded-2xl w-full"
             />
           </div> */}
-          {chatList.map((list: any) => (
+          {chatList.map((list: any, index) => (
             <div
+              key={index}
               className={`${
                 activeChat ===
                 (user?.UserId === list.receiver ? list.sender : list?.receiver)

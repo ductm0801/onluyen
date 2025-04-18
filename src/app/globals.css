@@ -119,3 +119,9 @@ ul::-webkit-scrollbar {
 html {
   scroll-behavior: smooth;
 }
+textarea {
+  field-sizing: content;
+  resize: none;
+  max-height: 100px;
+  overflow-y: auto;
+}

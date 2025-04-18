@@ -221,6 +221,9 @@ const TakeExam = () => {
           <h5>
             Câu hỏi {currentQuestionIndex + 1} trên {exam.questions.length}
           </h5>
+          <p className="font-bold text-lg">
+            Môn: {currentQuestion.subjectName}
+          </p>
           <p
             className="text-2xl font-bold"
             // dangerouslySetInnerHTML={{
