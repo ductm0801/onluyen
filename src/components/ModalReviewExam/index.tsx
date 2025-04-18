@@ -1,6 +1,9 @@
+import { IMAGES } from "@/constants/images";
+import { renderMathContent } from "@/constants/utils";
 import { IExam } from "@/models";
 import { useLoading } from "@/providers/loadingProvider";
 import { getExamDetail, reviewreviewTestStatus } from "@/services";
+import { Image } from "antd";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
@@ -105,10 +108,25 @@ const ModaReviewTest: React.FC<props> = ({
             <div className="overflow-y-auto max-h-[300px]">
               <p className="font-medium">Danh sách câu hỏi:</p>
 
-              <ul className="text-gray-700 flex flex-col gap-2">
+              <ul className="text-gray-700 flex flex-col gap-2 list-inside list-decimal">
                 {examData.questions?.map((question, index) => (
-                  <li key={index} className="text-sm">
-                    {index + 1}. {question.title}
+                  <li key={index} className="text-sm ">
+                    <span
+                      dangerouslySetInnerHTML={{
+                        __html: renderMathContent(question.title),
+                      }}
+                    />
+                    <div className="px-4">
+                      {question.imageUrl && (
+                        <Image
+                          width={48}
+                          height={48}
+                          src={question.imageUrl}
+                          alt="img"
+                        />
+                      )}
+                    </div>
+
                     <ul className="list-inside list-disc">
                       {question.answers?.map((answer, index) => (
                         <li
@@ -120,6 +138,14 @@ const ModaReviewTest: React.FC<props> = ({
                           }  `}
                         >
                           {answer.content}
+                          {answer.imageUrl && (
+                            <Image
+                              width={48}
+                              height={48}
+                              src={answer.imageUrl}
+                              alt="img"
+                            />
+                          )}
                         </li>
                       ))}
                     </ul>

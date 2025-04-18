@@ -61,4 +61,5 @@ export const IMAGES = {
   robotImg: "/assets/robotImg.png",
   consultantIcon: "/assets/consultantIcon.svg",
   peopleIcon: "/assets/peopleIcon.svg",
+  universityIcon: "/assets/university.svg",
 };

@@ -41,6 +41,12 @@ export const menus: Record<
       icon: IMAGES.coursePending,
       isShow: true,
     },
+    {
+      label: "Các trường đại học",
+      path: "/admin/university",
+      icon: IMAGES.universityIcon,
+      isShow: true,
+    },
   ],
   Student: [
     {
