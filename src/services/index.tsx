@@ -118,11 +118,18 @@ export const deleteQuestion = async (questionId: string) => {
   return res.data;
 };
 
-export const getExamBank = async (pageIndex: number, pageSize: number) => {
+export const getExamBank = async (
+  pageIndex: number,
+  pageSize: number,
+  filter: any
+) => {
   const res = await axiosClient.get(`/api/testBank/paging`, {
     params: {
       pageIndex,
       pageSize,
+      universityId: filter.universityId,
+      subjectId: filter.subjectId,
+      searchTerm: filter.searchTerm,
     },
   });
   return res.data;
@@ -732,5 +739,26 @@ export const adminUpdatePendingCourse = async (
   const res = await axiosClient.put(`/api/courses/approval/${id}`, {
     status,
   });
+  return res.data;
+};
+export const getUniversityPaging = async (
+  pageIndex: number,
+  pageSize: number
+) => {
+  const res = await axiosClient.get(`/api/university/paging`, {
+    params: { pageIndex, pageSize },
+  });
+  return res.data;
+};
+export const createUniversity = async (body: any) => {
+  const res = await axiosClient.post(`/api/university`, body);
+  return res.data;
+};
+export const updateUniversity = async (body: any, id: string) => {
+  const res = await axiosClient.put(`/api/university/${id}`, body);
+  return res.data;
+};
+export const deleteUniversity = async (id: string) => {
+  const res = await axiosClient.delete(`/api/university/${id}`);
   return res.data;
 };

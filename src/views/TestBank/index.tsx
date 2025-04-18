@@ -4,11 +4,17 @@ import Paging from "@/components/Paging";
 import { IExamBank } from "@/models";
 import { useAuth } from "@/providers/authProvider";
 import { useLoading } from "@/providers/loadingProvider";
-import { deleteExamBank, getExamBank } from "@/services";
-import { Modal } from "antd";
+import {
+  deleteExamBank,
+  getExamBank,
+  getSubject,
+  getUniversity,
+} from "@/services";
+import { Modal, Select } from "antd";
+import _ from "lodash";
 import { useRouter } from "next/navigation";
 
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 const cols = [
   {
@@ -47,7 +53,14 @@ const TestBank = () => {
   const [create, setCreate] = useState(false);
   const { setLoading } = useLoading();
   const router = useRouter();
+  const [uni, setUni] = useState<any[]>([]);
+  const [subject, setSubject] = useState<any[]>([]);
   const { user } = useAuth();
+  const [filter, setFilter] = useState({
+    universityId: "",
+    subjectId: "",
+    searchTerm: "",
+  });
 
   const [confirm, setConfirm] = useState(false);
   const [examBankId, setExamBankId] = useState("");
@@ -79,7 +92,7 @@ const TestBank = () => {
   const fetchExamBank = async () => {
     try {
       setLoading(true);
-      const res = await getExamBank(currentPage, pageSize);
+      const res = await getExamBank(currentPage, pageSize, filter);
       if (res) setExamBank(res.data.items);
       setPageSize(res.data.pageSize);
       setTotalItems(res.data.totalItemsCount);
@@ -93,7 +106,55 @@ const TestBank = () => {
   };
   useEffect(() => {
     fetchExamBank();
-  }, [currentPage]);
+  }, [currentPage, filter]);
+  const fetchUniversity = async () => {
+    try {
+      setLoading(true);
+      const res = await getUniversity();
+      setUni(res.data);
+    } catch (error) {
+      setLoading(false);
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  const fetchSubject = async () => {
+    try {
+      setLoading(true);
+      const res = await getSubject();
+      setSubject(res.data);
+    } catch (error) {
+      setLoading(false);
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
+    fetchUniversity();
+    fetchSubject();
+  }, []);
+  useEffect(() => {
+    setCurrentPage(0);
+  }, [filter]);
+
+  if (!uni || !subject) return null;
+  const uniOptionss = uni.map((a) => ({
+    label: a.universityName,
+    value: a.id,
+  }));
+  const subjectOptions = subject.map((a) => ({
+    label: a.subjectName,
+    value: a.id,
+  }));
+  const handleSearch = useCallback(
+    _.debounce((value) => {
+      setFilter((prev) => ({ ...prev, searchTerm: value }));
+    }, 1000),
+    []
+  );
+
   return (
     <div className="relative overflow-x-auto">
       <div className="flex justify-between  items-center  flex-column flex-wrap md:flex-row space-y-4 md:space-y-0 pb-4">
@@ -103,6 +164,26 @@ const TestBank = () => {
         >
           Tạo ngân hàng đề mới
         </div>
+      </div>
+      <div className="flex items-center justify-end gap-3 w-full mb-4">
+        <Select
+          options={uniOptionss}
+          placeholder="Lọc theo trường đại học"
+          onChange={(value) =>
+            setFilter((prev) => ({ ...prev, universityId: value }))
+          }
+          allowClear
+          size="large"
+        />
+        <Select
+          options={subjectOptions}
+          placeholder="Lọc theo môn học"
+          onChange={(value) =>
+            setFilter((prev) => ({ ...prev, subjectId: value }))
+          }
+          allowClear
+          size="large"
+        />
         <div className="relative">
           <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
             <svg
@@ -126,6 +207,7 @@ const TestBank = () => {
             id="table-search-users"
             className="block p-2 ps-10 text-sm focus:ring-0 focus:outline-none text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white "
             placeholder="Tìm kiếm"
+            onChange={(e) => handleSearch(e.target.value)}
           />
         </div>
       </div>
