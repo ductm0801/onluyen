@@ -15,9 +15,9 @@ const tab = [
   { key: "bank", value: "Tài khoản ngân hàng" },
 ];
 const rateOptions = [
-  { label: "0.7", value: 0.7 },
-  { label: "0.8", value: 0.8 },
-  { label: "0.9", value: 0.9 },
+  { label: "0.7", value: "0.7" },
+  { label: "0.8", value: "0.8" },
+  { label: "0.9", value: "0.9" },
 ];
 export const renderBgColorStatus = (status: keyof typeof statusEnum) => {
   switch (status) {
@@ -64,7 +64,7 @@ const AccountDetail = () => {
   const onFinish = async (values: any) => {
     try {
       setLoading(true);
-      await updateInstructorRate(params.id, values.rate);
+      await updateInstructorRate(user?.instructor.id || "", values.rate);
       toast.success("Cập nhật thành công");
       setEdit(false);
       fetchUser();
