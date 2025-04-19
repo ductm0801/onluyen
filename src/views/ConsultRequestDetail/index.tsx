@@ -218,14 +218,13 @@ const ConsultRequestDetail = () => {
       <div className="mt-4 min-h-[600px] relative border rounded-xl shadow-md overflow-hidden">
         <div className="flex items-center justify-between px-8 py-[40px]">
           <p className="text-[#101828] font-bold text-2xl">Kết quả làm bài</p>
-          {status === 1 && (
-            <button
-              className="bg-[#1244A2] text-white w-[200px] text-center  rounded-xl py-3 cursor-pointer"
-              onClick={() => setOpenChat((prev) => !prev)}
-            >
-              Liên hệ
-            </button>
-          )}
+
+          <button
+            className="bg-[#1244A2] text-white w-[200px] text-center  rounded-xl py-3 cursor-pointer"
+            onClick={() => setOpenChat((prev) => !prev)}
+          >
+            Liên hệ
+          </button>
 
           <div
             className={`absolute top-24 right-0 max-w-[1008px] w-full bg-white shadow-lg rounded-lg p-4 transition-transform duration-300 ${
