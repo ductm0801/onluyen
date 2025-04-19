@@ -794,3 +794,8 @@ export const getSchedule = async (
   });
   return res.data;
 };
+
+export const updateSchedule = async (body: any, id: string | string[]) => {
+  const res = await axiosClient.put(`/api/schedules/${id}`, body);
+  return res.data;
+};

@@ -1,5 +1,5 @@
 "use client";
-import { courseStatusEnum } from "@/constants/enum";
+import { courseStatusEnum, courseTypeEnum } from "@/constants/enum";
 import { ICourse } from "@/models";
 import { useLoading } from "@/providers/loadingProvider";
 import { getCoursePending } from "@/services";
@@ -22,6 +22,11 @@ const cols = [
 
   {
     name: "Môn học",
+    className:
+      "px-6 py-4 font-medium text-center text-gray-900 whitespace-nowrap dark:text-white",
+  },
+  {
+    name: "Loại khóa học",
     className:
       "px-6 py-4 font-medium text-center text-gray-900 whitespace-nowrap dark:text-white",
   },
@@ -140,7 +145,9 @@ const PendingCourse = () => {
                 </th>
                 <td className="px-6 py-4 text-center">{a.instructorName}</td>
                 <td className="px-6 py-4 text-center">{a.subjectName}</td>
-
+                <td className="px-6 py-4 text-center">
+                  {courseTypeEnum[a.courseType as keyof typeof courseTypeEnum]}
+                </td>
                 <td
                   className={`p-2 text-sm leading-normal text-center align-middle shadow-transparent`}
                 >

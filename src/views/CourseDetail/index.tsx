@@ -38,6 +38,7 @@ const CourseDetail = () => {
   useEffect(() => {
     fetchCourseDetail();
   }, [params.id, currentPage]);
+
   if (!detail) return;
   const tab = [
     {
@@ -98,7 +99,9 @@ const CourseDetail = () => {
   return (
     <div>
       <div className="flex items-center justify-between border-b border-[#1244A2] pb-2">
-        <p className="text-3xl font-semibold">Chi tiết khóa học</p>
+        <p className="text-3xl font-semibold">
+          Chi tiết khóa học {detail.title}
+        </p>
         {detail.courseStatus === 0 && (
           <div
             className="bg-blue-600 text-white text-sm px-3 py-2 rounded-lg font-bold cursor-pointer"
