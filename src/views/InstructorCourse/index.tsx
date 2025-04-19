@@ -1,7 +1,7 @@
 "use client";
 import ModalCreateCourse from "@/components/ModalCreateCourse";
 import Paging from "@/components/Paging";
-import { courseStatusEnum } from "@/constants/enum";
+import { courseStatusEnum, courseTypeEnum } from "@/constants/enum";
 import { IMAGES } from "@/constants/images";
 import { ICourse } from "@/models";
 import { useLoading } from "@/providers/loadingProvider";
@@ -22,6 +22,11 @@ const cols = [
       "px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white",
   },
   {
+    name: "Loại khoá học",
+    className:
+      "px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white",
+  },
+  {
     name: "Giá bán",
     className:
       "px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white",
@@ -31,11 +36,7 @@ const cols = [
     className:
       "px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white",
   },
-  //   {
-  //     name: "Ngày tạo",
-  //     className:
-  //       "px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white",
-  //   },
+
   {
     name: "Hành động",
     className:
@@ -143,6 +144,13 @@ const InstructorCourse = () => {
                     </div>
                   </th>
                   <td className="px-6 py-4">{a.description}</td>
+                  <td className="px-6 py-4">
+                    {
+                      courseTypeEnum[
+                        a.courseType as keyof typeof courseTypeEnum
+                      ]
+                    }
+                  </td>
                   <td className="px-6 py-4">
                     {a.coursePrice.toLocaleString("vi-VN")}đ
                   </td>

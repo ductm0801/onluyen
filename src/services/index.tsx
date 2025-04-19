@@ -783,3 +783,14 @@ export const createSchedule = async (body: any) => {
   const res = await axiosClient.post(`/api/schedules`, body);
   return res.data;
 };
+export const getSchedule = async (
+  pageIndex: number,
+
+  pageSize: number,
+  courseId: string | string[]
+) => {
+  const res = await axiosClient.get(`/api/schedules/course/${courseId}`, {
+    params: { pageIndex, pageSize },
+  });
+  return res.data;
+};

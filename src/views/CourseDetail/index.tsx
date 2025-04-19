@@ -1,6 +1,7 @@
 "use client";
 import FormUpdateCourse from "@/components/FormUpdateCourse";
 import FormUpdateLesson from "@/components/FormUpdateLesson";
+import FormUpdateSchedule from "@/components/FormUpdateSchedule";
 import { ICourse } from "@/models";
 import { useLoading } from "@/providers/loadingProvider";
 import { getInstructorCourseDetail, publishCourse } from "@/services";
@@ -44,37 +45,12 @@ const CourseDetail = () => {
       label: "Thông tin chung",
       children: <FormUpdateCourse course={detail} />,
     },
-    // {
-    //   value: 1,
-    //   label: "Danh sách bài học",
-    //   children: (
-    //     <FormUpdateLesson
-    //       lessons={detail.lessons.items}
-    //       fetchCourseDetail={fetchCourseDetail}
-    //       currentPage={currentPage}
-    //       pageSize={pageSize}
-    //       totalItems={totalItems}
-    //       totalPages={totalPages}
-    //       setCurrentPage={setCurrentPage}
-    //     />
-    //   ),
-    // },
   ];
   if (detail.courseType === 1) {
     tab.push({
       value: 1,
       label: "Danh sách lịch học",
-      children: (
-        <FormUpdateLesson
-          lessons={detail.lessons.items}
-          fetchCourseDetail={fetchCourseDetail}
-          currentPage={currentPage}
-          pageSize={pageSize}
-          totalItems={totalItems}
-          totalPages={totalPages}
-          setCurrentPage={setCurrentPage}
-        />
-      ),
+      children: <FormUpdateSchedule duration={detail.duration} />,
     });
   }
   if (detail.courseType === 0) {

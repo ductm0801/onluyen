@@ -181,6 +181,7 @@ export type ICourse = {
   subjectId: string;
   subjectName: string;
   imageUrl: string;
+  duration: string;
   isJoined: boolean;
   courseType: number;
   isStarted: boolean;
