@@ -4,7 +4,9 @@ import { IConsultRequest } from "@/models";
 import { useLoading } from "@/providers/loadingProvider";
 import {
   getChat,
+  getConsultantRequestChat,
   getConsultRequestDetail,
+  sendConsultantRequestMessage,
   sendMessage,
   updateConsultRequest,
 } from "@/services";
@@ -61,15 +63,6 @@ const ConsultRequestDetail = () => {
   const [status, setStatus] = useState(0);
   const { user } = useAuth();
 
-  const handleSubmit = async (values: any) => {
-    try {
-      await sendMessage({ text: values.text });
-    } catch (err) {
-      console.log(err);
-    } finally {
-      form.resetFields();
-    }
-  };
   const fetchData = async () => {
     try {
       setLoading(true);
@@ -131,19 +124,35 @@ const ConsultRequestDetail = () => {
   const fetchChat = async () => {
     try {
       if (!data) return;
-      const res = await getChat(data.studentInfo.user.id);
+      const res = await getConsultantRequestChat(
+        data.studentInfo.user.id,
+        data.id
+      );
       if (res) setMessages(res);
     } catch (err) {
       console.log(err);
     }
   };
   useEffect(() => {
-    onSnapshot(collection(db, "chats"), (snapshot) => {
+    onSnapshot(collection(db, "chats_consultant_request"), (snapshot) => {
       fetchChat();
     });
   }, [params.id, data]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-
+  const handleSubmit = async (values: any) => {
+    if (!data) return;
+    try {
+      await sendConsultantRequestMessage({
+        consultantRequestId: data.id,
+        receiver: data.studentInfo.user.id,
+        text: values.text,
+      });
+    } catch (err) {
+      console.log(err);
+    } finally {
+      form.resetFields();
+    }
+  };
   const scrollToBottom = () => {
     if (!openChat) return;
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -206,7 +215,7 @@ const ConsultRequestDetail = () => {
           </div>
         </div>
       </div>
-      <div className="mt-4 relative border rounded-xl shadow-md overflow-hidden">
+      <div className="mt-4 min-h-[600px] relative border rounded-xl shadow-md overflow-hidden">
         <div className="flex items-center justify-between px-8 py-[40px]">
           <p className="text-[#101828] font-bold text-2xl">Kết quả làm bài</p>
           {status === 1 && (
@@ -226,7 +235,7 @@ const ConsultRequestDetail = () => {
             <h3 className="text-lg font-semibold">
               Tư vấn cho {data.studentInfo.user.fullName}
             </h3>
-            <div className="h-64 overflow-auto border border-gray-300 rounded-lg p-2">
+            <div className="h-[300px] overflow-auto border border-gray-300 rounded-lg p-2">
               <div className="flex flex-col mt-5 overflow-y-auto">
                 {messages.map((m: any, index) =>
                   m.sender === user?.UserId ? (
@@ -256,22 +265,38 @@ const ConsultRequestDetail = () => {
                 <div ref={messagesEndRef} />
               </div>
             </div>
-            <Form form={form} onFinish={handleSubmit} className="py-5 relative">
-              <Form.Item name="text" noStyle>
-                <textarea
-                  className="w-full border  py-2 px-3 rounded-xl field-sizing-content"
-                  placeholder="Nhập tin nhắn ở đây..."
-                />
-              </Form.Item>
-              <Form.Item noStyle>
-                <button
-                  type="submit"
-                  className="absolute top-1/2 right-3 -translate-y-1/2"
-                >
-                  <img src={IMAGES.sendIcon} alt="send" className="w-[20px]" />
-                </button>
-              </Form.Item>
-            </Form>
+            {status === 1 && (
+              <Form
+                form={form}
+                onFinish={handleSubmit}
+                className="py-5 relative"
+              >
+                <Form.Item name="text" noStyle>
+                  <textarea
+                    className="w-full border  py-2 px-3 rounded-xl field-sizing-content"
+                    placeholder="Nhập tin nhắn ở đây..."
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" && !e.shiftKey) {
+                        e.preventDefault();
+                        form.submit();
+                      }
+                    }}
+                  />
+                </Form.Item>
+                <Form.Item noStyle>
+                  <button
+                    type="submit"
+                    className="absolute top-1/2 right-3 -translate-y-1/2"
+                  >
+                    <img
+                      src={IMAGES.sendIcon}
+                      alt="send"
+                      className="w-[20px]"
+                    />
+                  </button>
+                </Form.Item>
+              </Form>
+            )}
           </div>
         </div>
         <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
