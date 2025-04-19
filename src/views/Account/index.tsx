@@ -6,6 +6,7 @@ import { IAccount } from "@/models";
 import { useLoading } from "@/providers/loadingProvider";
 import { getUser, updateUserStatus } from "@/services";
 import { Modal } from "antd";
+import { useRouter } from "next/navigation";
 import React, { use, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
@@ -51,6 +52,7 @@ const Account = () => {
   const [confirm, setConfirm] = useState(false);
   const [userId, setUserId] = useState("");
   const { setLoading } = useLoading();
+  const router = useRouter();
 
   const openConfirm = (id: string) => {
     setConfirm(true);
@@ -163,7 +165,8 @@ const Account = () => {
               >
                 <th
                   scope="row"
-                  className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white"
+                  className="flex group cursor-pointer items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white"
+                  onClick={() => router.push(`/admin/account/${a.userId}`)}
                 >
                   <img
                     className="w-10 h-10 rounded-full"
@@ -171,7 +174,9 @@ const Account = () => {
                     alt="avatar"
                   />
                   <div className="ps-3">
-                    <div className="text-base font-semibold">{a.fullName}</div>
+                    <div className="text-base group-hover:underline group-hover:text-blue-500  font-semibold">
+                      {a.fullName}
+                    </div>
                     <div className="font-normal text-gray-500">{a.email}</div>
                   </div>
                 </th>
@@ -213,7 +218,7 @@ const Account = () => {
         </tbody>
       </table>
       <Paging
-        pageSize={pageSize}
+        pageSize={5}
         currentPage={currentPage}
         totalItems={totalItems}
         totalPages={totalPages}

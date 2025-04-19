@@ -30,6 +30,7 @@ export type IUSer = {
     address: string;
     gender: string;
     status: number;
+    dateOfBirth: string;
   };
   instructor: {
     id: string;
@@ -39,6 +40,7 @@ export type IUSer = {
     availableBalance: number;
     pendingBalance: number;
     totalBalance: number;
+    commissionRate: number;
   };
   id: string;
   imageUrl: string;
@@ -49,6 +51,10 @@ export type IUSer = {
   gender: string;
   subjects: IUserSubject[] | IUserSubject;
   status: number;
+  subject: {
+    subjectName: string;
+    description: string;
+  };
 };
 export type IUserSubject = {
   id: string;

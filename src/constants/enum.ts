@@ -93,3 +93,10 @@ export const userRoleEnum = {
   Consultant: "Tư vấn viên",
   ExamManager: "Quản lý đề thi",
 };
+export const userRoleEnumNormalize = {
+  student: "Học viên",
+  instructor: "Giáo viên",
+  admin: "Quản trị viên",
+  consultant: "Tư vấn viên",
+  exammanager: "Quản lý đề thi",
+};

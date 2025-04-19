@@ -183,6 +183,12 @@ const FormUpdateSchedule: FC<props> = ({ duration }) => {
               form.setFieldsValue({ timeSlotDtos: updatedTimeSlots });
             }}
           >
+            <Form.Item
+              name="note"
+              rules={[{ required: true, message: "Vui lòng nhập tiêu đề" }]}
+            >
+              <Input placeholder="tiêu đề" />
+            </Form.Item>
             <Form.List name="timeSlotDtos">
               {(fields, { add, remove }) => (
                 <>
@@ -350,9 +356,9 @@ const FormUpdateSchedule: FC<props> = ({ duration }) => {
               <>
                 <Form.Item
                   name="note"
-                  rules={[{ required: true, message: "Vui lòng nhập ghi chú" }]}
+                  rules={[{ required: true, message: "Vui lòng nhập tiêu đề" }]}
                 >
-                  <Input placeholder="Ghi chú" />
+                  <Input placeholder="tiêu đề" />
                 </Form.Item>
                 <Form.List name="timeSlotDtos">
                   {(fields, { add, remove }) => (
