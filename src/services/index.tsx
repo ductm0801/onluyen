@@ -807,9 +807,11 @@ export const updateInstructorRate = async (
   id: string | string[],
   rate: number
 ) => {
-  const res = await axiosClient.put(`/api/instructors/update_instructor_rate`, {
-    id,
-    rate,
-  });
+  const res = await axiosClient.put(
+    `/api/instructors/update_instructor_rate/${id}`,
+    {
+      rate,
+    }
+  );
   return res.data;
 };

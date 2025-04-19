@@ -30,7 +30,7 @@ export const renderBgColorStatus = (status: keyof typeof statusEnum) => {
     case 3:
       return "from-emerald-600 to-emerald-400";
     case 0:
-      return "from-slate-600 to-slate-300";
+      return "from-emerald-600 to-emerald-300";
     default:
       return "from-emerald-500 to-teal-400";
   }
@@ -160,39 +160,43 @@ const AccountDetail = () => {
                 </div>
               </div>
             </div>
-            <div className="w-full md:w-[35%] bg-white rounded-xl border border-gray-400 border-solid shadow-xl px-4 py-4 pt-3 flex flex-col gap-2 text-lg">
-              <p className="text-xl font-bold mb-2 pb-3 border-b border-gray-300">
-                Thông Tin liên quan
-              </p>
-              <div className="flex flex-row flex-wrap items-center gap-2">
-                <p className="font-bold text-lg m-0 min-w-[140px]">
-                  Số năm kinh nghiệm:
+            {Object.keys(user || "")[1] === "instructor" && (
+              <div className="w-full md:w-[35%] bg-white rounded-xl border border-gray-400 border-solid shadow-xl px-4 py-4 pt-3 flex flex-col gap-2 text-lg">
+                <p className="text-xl font-bold mb-2 pb-3 border-b border-gray-300">
+                  Thông Tin liên quan
                 </p>
-                <p className="font-semibold text-lg m-0">
-                  {user?.instructor.yearOfExperience || "\u2014"}
-                </p>
+                <div className="flex flex-row flex-wrap items-center gap-2">
+                  <p className="font-bold text-lg m-0 min-w-[140px]">
+                    Số năm kinh nghiệm:
+                  </p>
+                  <p className="font-semibold text-lg m-0">
+                    {user?.instructor.yearOfExperience || "\u2014"}
+                  </p>
+                </div>
+                <div className="flex flex-row flex-wrap items-center gap-2">
+                  <p className="font-bold text-lg m-0 min-w-[140px]">Dạy môn</p>
+                  <p className="font-semibold text-lg m-0">
+                    {user?.subject.subjectName || "\u2014"}
+                  </p>
+                </div>
+                <div className="flex flex-row flex-wrap items-center gap-2">
+                  <p className="font-bold text-lg m-0 min-w-[140px]">
+                    Hoa hồng:
+                  </p>
+                  <p className="font-semibold text-lg m-0 flex items-center gap-2">
+                    {user?.instructor.commissionRate || "\u2014"}{" "}
+                    <Tooltip title="Chỉnh sửa hoa hồng">
+                      <div
+                        className="bg-blue-500 w-8 text-center py-1 cursor-pointer aspect-square rounded-xl text-white"
+                        onClick={() => setEdit(true)}
+                      >
+                        <EditOutlined />
+                      </div>
+                    </Tooltip>
+                  </p>
+                </div>
               </div>
-              <div className="flex flex-row flex-wrap items-center gap-2">
-                <p className="font-bold text-lg m-0 min-w-[140px]">Dạy môn</p>
-                <p className="font-semibold text-lg m-0">
-                  {user?.subject.subjectName || "\u2014"}
-                </p>
-              </div>
-              <div className="flex flex-row flex-wrap items-center gap-2">
-                <p className="font-bold text-lg m-0 min-w-[140px]">Hoa hồng:</p>
-                <p className="font-semibold text-lg m-0 flex items-center gap-2">
-                  {user?.instructor.commissionRate || "\u2014"}{" "}
-                  <Tooltip title="Chỉnh sửa hoa hồng">
-                    <div
-                      className="bg-blue-500 w-8 text-center py-1 cursor-pointer aspect-square rounded-xl text-white"
-                      onClick={() => setEdit(true)}
-                    >
-                      <EditOutlined />
-                    </div>
-                  </Tooltip>
-                </p>
-              </div>
-            </div>
+            )}
           </div>
         );
       case "bank":
@@ -225,6 +229,7 @@ const AccountDetail = () => {
           </div>
         </div>
       </div>
+
       <div className="w-full flex flex-row flex-wrap border-t border-gray-200 px-2">
         {tab.map((i, ixd) => (
           <div
@@ -244,6 +249,7 @@ const AccountDetail = () => {
           </div>
         ))}
       </div>
+
       <div className="p-4">{handleRenderTab()}</div>
       {edit && (
         <Modal
