@@ -813,3 +813,22 @@ export const updateInstructorRate = async (
   });
   return res.data;
 };
+export const sendConsultantRequestMessage = async (body: any) => {
+  const res = await axiosClient.post(
+    `/api/chat/send_chat_consultant_request`,
+    body
+  );
+  return res.data;
+};
+export const getConsultantRequestChat = async (
+  receiver: string | string[],
+  consultantRequesstId: string | string[]
+) => {
+  const res = await axiosClient.get(`/api/chat/get_messages_consultant`, {
+    params: {
+      receiver,
+      consultantRequesstId,
+    },
+  });
+  return res.data;
+};
