@@ -9,7 +9,12 @@ const typeOptions = [
   { label: "Tự học", value: 0 },
   { label: "Dạy kèm", value: 1 },
 ];
-
+const durationOptions = [
+  { label: "1 tiếng", value: "01:00:00" },
+  { label: "1 tiếng rưỡi", value: "01:30:00" },
+  { label: "2 tiếng", value: "02:00:00" },
+  { label: "2 tiếng rưỡi", value: "02:30:00" },
+];
 const ModalCreateCourse = ({
   onClose,
   fetchCourse,
@@ -21,6 +26,7 @@ const ModalCreateCourse = ({
   const [loadingImg, setLoadingImg] = useState(false);
   const [imageUrl, setImageUrl] = useState<string>();
   const { setLoading } = useLoading();
+  const courseType = Form.useWatch("courseType", form);
   const onFinish = async (values: any) => {
     try {
       setLoading(true);
@@ -58,7 +64,6 @@ const ModalCreateCourse = ({
       setLoading(false);
     }
   };
-  console.log(imageUrl);
 
   return (
     <div
@@ -156,6 +161,7 @@ const ModalCreateCourse = ({
               >
                 <Select options={typeOptions} placeholder="Dạng khoá học" />
               </Form.Item>
+
               <Form.Item
                 className="col-span-1 mb-0"
                 name="coursePrice"
@@ -179,6 +185,25 @@ const ModalCreateCourse = ({
                   className="rounded-md w-full bg-white"
                 />
               </Form.Item>
+              {courseType === 1 && (
+                <Form.Item
+                  className="col-span-2 mb-0"
+                  name="duration"
+                  label="Thời gian học"
+                  labelCol={{ span: 24 }}
+                  rules={[
+                    {
+                      required: true,
+                      message: "Vui lòng chọn thời gian học",
+                    },
+                  ]}
+                >
+                  <Select
+                    options={durationOptions}
+                    placeholder="Thời gian học"
+                  />
+                </Form.Item>
+              )}
               <Form.Item
                 className="col-span-2 mb-0"
                 name="description"

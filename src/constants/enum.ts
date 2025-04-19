@@ -44,6 +44,10 @@ export const consultEnum = {
   2: "Từ chối ",
   3: "Hoàn thành",
 };
+export const courseTypeEnum = {
+  0: "Tự học",
+  1: "Dạy kèm",
+};
 
 export const renderBgColorStatus = (status: keyof typeof statusEnum) => {
   switch (status) {

@@ -125,3 +125,6 @@ textarea {
   max-height: 100px;
   overflow-y: auto;
 }
+.clip-half {
+  clip-path: polygon(100% 0, 100% 100%, 0 0);
+}
