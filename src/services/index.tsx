@@ -799,3 +799,17 @@ export const updateSchedule = async (body: any, id: string | string[]) => {
   const res = await axiosClient.put(`/api/schedules/${id}`, body);
   return res.data;
 };
+export const getUserDetail = async (id: string | string[]) => {
+  const res = await axiosClient.get(`/api/users/get_userDetail/${id}`);
+  return res.data;
+};
+export const updateInstructorRate = async (
+  id: string | string[],
+  rate: number
+) => {
+  const res = await axiosClient.put(`/api/instructors/update_instructor_rate`, {
+    id,
+    rate,
+  });
+  return res.data;
+};
