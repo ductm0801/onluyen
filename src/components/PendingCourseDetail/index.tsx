@@ -1,7 +1,11 @@
 "use client";
 import { ICourse } from "@/models";
 import { useLoading } from "@/providers/loadingProvider";
-import { adminUpdatePendingCourse, getCoursePendingDetail } from "@/services";
+import {
+  adminUpdatePendingCourse,
+  getCoursePendingDetail,
+  getSchedule,
+} from "@/services";
 import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
@@ -9,6 +13,7 @@ import Paging from "../Paging";
 import { Image, Modal, Tooltip } from "antd";
 import { IMAGES } from "@/constants/images";
 import { courseStatusEnum } from "@/constants/enum";
+import Schedule from "../Schedule";
 
 export const renderBgColorStatus = (status: keyof typeof courseStatusEnum) => {
   switch (status) {
@@ -30,6 +35,7 @@ export const renderBgColorStatus = (status: keyof typeof courseStatusEnum) => {
 const PendingCourseDetail = () => {
   const [data, setData] = useState<ICourse | undefined>(undefined);
   const { setLoading } = useLoading();
+  const [scheduleData, setScheduleData] = useState<any>([]);
   const [currentPage, setCurrentPage] = useState(0);
   const [totalItems, setTotalItems] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
@@ -83,6 +89,24 @@ const PendingCourseDetail = () => {
     }
     return;
   };
+  const fetchDataSchedule = async () => {
+    setLoading(true);
+    try {
+      const res = await getSchedule(currentPage, 100, params.id);
+      if (res) {
+        setScheduleData(res.data.items);
+        // setTotalItems(res.data.totalItemsCount);
+        // setTotalPages(res.data.totalPageCount);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
+    fetchDataSchedule();
+  }, [currentPage, params.id]);
 
   const handlePublishCourse = async (status: number) => {
     try {
@@ -96,9 +120,89 @@ const PendingCourseDetail = () => {
       setLoading(false);
     }
   };
+  const handleRenderCourseType = (type: number) => {
+    switch (type) {
+      case 0:
+        return (
+          <div className="flex flex-col gap-4">
+            {data?.lessons.items.map((lesson, index) => (
+              <div
+                key={lesson.lessonId}
+                className=" flex flex-col gap-4 bg-white rounded-lg shadow-sm px-4 py-2 cursor-pointer"
+                onClick={() => setOpen(lesson.lessonId)}
+              >
+                <div className="flex justify-between items-center border-b border-[#1244A2] pb-2 ">
+                  <div className="flex items-center gap-4">
+                    <Image
+                      width={160}
+                      height={90}
+                      src={lesson.imageUrl}
+                      alt={lesson.title}
+                      className="object-cover aspect-video"
+                    />
+                    <div>
+                      <p className="text-lg font-semibold">{lesson.title}</p>
+                      <p className="text-[#333333a1] text-sm">
+                        {lesson.description}
+                      </p>
+                    </div>
+                  </div>
+
+                  <img
+                    src={IMAGES.arrowDown}
+                    alt="down"
+                    className={`w-6 cursor-pointer transition-all duration-300 ease-in-out  ${
+                      open === lesson.lessonId ? "rotate-180" : "rotate-0"
+                    }`}
+                  />
+                </div>
+
+                <div
+                  className={`flex flex-col gap-4 mt-2  overflow-hidden transition-all duration-300 ease-in-out        ${
+                    open === lesson.lessonId ? "max-h-screen" : "max-h-0"
+                  }`}
+                >
+                  <div className="flex items-center gap-4 px-8">
+                    <p className="text-lg font-semibold">Video bài học</p>
+                    <video
+                      controls
+                      className="w-[300px] aspect-video"
+                      src={lesson.videoUrl}
+                    />
+                  </div>
+                  {lesson.content && (
+                    <>
+                      <p className="text-lg font-semibold">Nội dung bài học</p>
+                      <p>{lesson.content}</p>
+                    </>
+                  )}
+                </div>
+              </div>
+            ))}
+            <Paging
+              currentPage={currentPage}
+              pageSize={pageSize}
+              setCurrentPage={setCurrentPage}
+              totalItems={totalItems}
+              totalPages={totalPages}
+            />
+          </div>
+        );
+      case 1:
+        return (
+          <div>
+            <h2 className="text-3xl font-bold mb-4 text-center">📅 Lịch dạy</h2>
+            <Schedule data={scheduleData} duration={data?.duration || ""} />
+          </div>
+        );
+      default:
+        return "Khóa học tự học";
+    }
+  };
   if (!data) return null;
   return (
     <div className="flex flex-col gap-4">
+      <p className="text-3xl font-bold uppercase">Khóa học {data.title}</p>
       <div className="flex items-center gap-4">
         {" "}
         <p> Trạng thái </p>
@@ -127,69 +231,7 @@ const PendingCourseDetail = () => {
           </div>
         )}
       </div>
-      <div className="flex flex-col gap-4">
-        {data?.lessons.items.map((lesson, index) => (
-          <div
-            key={lesson.lessonId}
-            className=" flex flex-col gap-4 bg-white rounded-lg shadow-sm px-4 py-2 cursor-pointer"
-            onClick={() => setOpen(lesson.lessonId)}
-          >
-            <div className="flex justify-between items-center border-b border-[#1244A2] pb-2 ">
-              <div className="flex items-center gap-4">
-                <Image
-                  width={160}
-                  height={90}
-                  src={lesson.imageUrl}
-                  alt={lesson.title}
-                  className="object-cover aspect-video"
-                />
-                <div>
-                  <p className="text-lg font-semibold">{lesson.title}</p>
-                  <p className="text-[#333333a1] text-sm">
-                    {lesson.description}
-                  </p>
-                </div>
-              </div>
-
-              <img
-                src={IMAGES.arrowDown}
-                alt="down"
-                className={`w-6 cursor-pointer transition-all duration-300 ease-in-out  ${
-                  open === lesson.lessonId ? "rotate-180" : "rotate-0"
-                }`}
-              />
-            </div>
-
-            <div
-              className={`flex flex-col gap-4 mt-2  overflow-hidden transition-all duration-300 ease-in-out        ${
-                open === lesson.lessonId ? "max-h-screen" : "max-h-0"
-              }`}
-            >
-              <div className="flex items-center gap-4 px-8">
-                <p className="text-lg font-semibold">Video bài học</p>
-                <video
-                  controls
-                  className="w-[300px] aspect-video"
-                  src={lesson.videoUrl}
-                />
-              </div>
-              {lesson.content && (
-                <>
-                  <p className="text-lg font-semibold">Nội dung bài học</p>
-                  <p>{lesson.content}</p>
-                </>
-              )}
-            </div>
-          </div>
-        ))}
-        <Paging
-          currentPage={currentPage}
-          pageSize={pageSize}
-          setCurrentPage={setCurrentPage}
-          totalItems={totalItems}
-          totalPages={totalPages}
-        />
-      </div>
+      {handleRenderCourseType(data.courseType)}
     </div>
   );
 };
