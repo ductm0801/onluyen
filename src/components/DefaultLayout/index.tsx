@@ -1,19 +1,17 @@
 "use client";
 import { IMAGES } from "@/constants/images";
-import Link from "next/link";
-import { useParams, usePathname, useRouter } from "next/navigation";
-import React, { useEffect, useRef, useState } from "react";
-import Nav from "../Nav";
 import { menus } from "@/constants/menu";
+import { db } from "@/firebase/config";
 import { useAuth } from "@/providers/authProvider";
 import { useTheme } from "@/providers/themeProvider";
-import { Moon, Sun } from "lucide-react";
-import path from "path";
-import { Avatar, Form, Modal } from "antd";
-import { useLoading } from "@/providers/loadingProvider";
 import { getChat, getNoti, sendMessage } from "@/services";
+import { Avatar, Form, Modal } from "antd";
 import { collection, onSnapshot } from "firebase/firestore";
-import { db } from "@/firebase/config";
+import { Moon, Sun } from "lucide-react";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+import React, { useEffect, useRef, useState } from "react";
+import Nav from "../Nav";
 
 type props = {
   children: React.ReactNode;
@@ -129,6 +127,7 @@ const DefaultLayout: React.FC<props> = ({ children }) => {
       setOpen(false);
     }
   }, [pathName, user]);
+  const notReadNotis = noti.filter((n) => !n.isRead);
 
   return (
     <div className="overflow-x-hidden min-h-screen">
@@ -198,64 +197,71 @@ const DefaultLayout: React.FC<props> = ({ children }) => {
                           )}
                         </div>
                       </div>
+                      <div className="group">
+                        <div className="relative">
+                          <img
+                            src={IMAGES.bellIcon}
+                            alt="bell"
+                            className="w-[30px]  cursor-pointer"
+                            onClick={() => setOpenNoti((prev) => !prev)}
+                          />
+                          {notReadNotis.length > 0 && (
+                            <div className="absolute -top-1 -right-1 bg-red-500 w-5 flex items-center justify-center text-xs  text-center text-white aspect-square rounded-full">
+                              {notReadNotis.length}
+                            </div>
+                          )}
+                        </div>
 
-                      <img
-                        src={IMAGES.bellIcon}
-                        alt="bell"
-                        className="w-[30px] cursor-pointer"
-                        onClick={() => setOpenNoti((prev) => !prev)}
-                      />
-                      <div
-                        className={`${
-                          openNoti ? "h-[452px]" : "h-0"
-                        } transition-all overflow-hidden   bg-white duration-300 shadow-lg w-full  max-w-[388px] ease-in-out absolute top-16 right-16 rounded-xl z-50`}
-                      >
-                        {noti.length > 0 ? (
-                          <div className="flex flex-col overflow-y-auto gap-3  py-4 px-6">
-                            {noti.map((noti, index) => (
-                              <div
-                                key={index}
-                                className="flex items-start gap-2"
-                              >
-                                <img
-                                  src={IMAGES.systemAva}
-                                  alt="ava"
-                                  className=" aspect-square"
-                                />
-                                <div className="flex flex-col gap-[6px]">
-                                  <p className="text-[#101828] font-bold">
-                                    {noti.title}
-                                  </p>
-                                  <p className="text-[#344054] line-clamp-2 text-sm">
-                                    {noti.body}
-                                  </p>
-                                  <div
-                                    className="text-[#2E90FA] text-sm cursor-pointer"
-                                    onClick={() => handleOpenNoti(noti)}
-                                  >
-                                    Xem thêm
+                        <div
+                          className={`group-hover:h-[452px] h-0 transition-all overflow-hidden   bg-white duration-300 shadow-lg w-full  max-w-[388px] ease-in-out absolute top-16 right-16 rounded-xl z-50`}
+                        >
+                          {noti.length > 0 ? (
+                            <div className="flex flex-col overflow-y-auto gap-3  py-4 px-6">
+                              {noti.map((noti, index) => (
+                                <div
+                                  key={index}
+                                  className="flex items-start gap-2"
+                                >
+                                  <img
+                                    src={IMAGES.systemAva}
+                                    alt="ava"
+                                    className=" aspect-square"
+                                  />
+                                  <div className="flex flex-col gap-[6px]">
+                                    <p className="text-[#101828] font-bold">
+                                      {noti.title}
+                                    </p>
+                                    <p className="text-[#344054] line-clamp-2 text-sm">
+                                      {noti.body}
+                                    </p>
+                                    <div
+                                      className="text-[#2E90FA] text-sm cursor-pointer"
+                                      onClick={() => handleOpenNoti(noti)}
+                                    >
+                                      Xem thêm
+                                    </div>
                                   </div>
                                 </div>
-                              </div>
-                            ))}
-                          </div>
-                        ) : (
-                          <div className="flex flex-col gap-4 items-center justify-center h-full w-full py-4">
-                            <img src={IMAGES.notiEmpty} alt="empty" />
-                            <div className="flex flex-col gap-2 items-center">
-                              <p className="font-bold text-xl text-gray-500">
-                                Không có thông báo
-                              </p>
-                              <p className="text-sm">
-                                Bạn chưa có thông báo nào
-                              </p>
+                              ))}
                             </div>
-                          </div>
-                        )}
+                          ) : (
+                            <div className="flex flex-col gap-4 items-center justify-center h-full w-full py-4">
+                              <img src={IMAGES.notiEmpty} alt="empty" />
+                              <div className="flex flex-col gap-2 items-center">
+                                <p className="font-bold text-xl text-gray-500">
+                                  Không có thông báo
+                                </p>
+                                <p className="text-sm">
+                                  Bạn chưa có thông báo nào
+                                </p>
+                              </div>
+                            </div>
+                          )}
+                        </div>
                       </div>
                     </div>
                     {user ? (
-                      <div className="flex flex-row gap-[8px] items-center relative group cursor-pointer">
+                      <div className="flex group flex-row gap-[8px] items-center relative group cursor-pointer">
                         <div
                           className="font-semibold text-white text-lg"
                           onClick={() => toggleDropDown()}
@@ -269,9 +275,7 @@ const DefaultLayout: React.FC<props> = ({ children }) => {
                         />
 
                         <div
-                          className={`${
-                            open ? "max-h-[300px]" : "max-h-0"
-                          } transition-all overflow-hidden min-w-[150px] duration-300 ease-in-out absolute top-10 right-0 w-full`}
+                          className={` group-hover:max-h-[300px] max-h-0  transition-all overflow-hidden min-w-[150px] duration-300 ease-in-out absolute top-10 right-0 w-full`}
                         >
                           <div className="flex flex-col gap-1 bg-white rounded-xl p-2">
                             <button
