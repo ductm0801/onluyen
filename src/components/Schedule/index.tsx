@@ -1,4 +1,8 @@
+import { useLoading } from "@/providers/loadingProvider";
+import { getMeetLink } from "@/services";
+import { Tooltip } from "antd";
 import React, { FC, useEffect, useState } from "react";
+import { toast } from "react-toastify";
 type props = {
   duration: string;
   data: any[];
@@ -16,6 +20,7 @@ const dayOfWeekOptions = [
 
 const Schedule: FC<props> = ({ duration, data }) => {
   const [schedule, setSchedule] = useState<any[]>([]);
+  const { setLoading } = useLoading();
   const convertToTime = (timeStr: string) => {
     const hour = parseInt(timeStr.split(" ")[0], 10);
     return `${hour.toString().padStart(2, "0")}:00`;
@@ -47,6 +52,7 @@ const Schedule: FC<props> = ({ duration, data }) => {
             schedule[dayIndex] = [];
           }
           schedule[dayIndex].push({
+            id: slot.id,
             note: scheduleItem.note,
             startTime: convertToTime(slot.startTime),
             endTime: convertToTime(slot.endTime),
@@ -73,6 +79,18 @@ const Schedule: FC<props> = ({ duration, data }) => {
   useEffect(() => {
     setSchedule(generateSchedule());
   }, [data]);
+  const handleGetMeetLink = async (data: any) => {
+    try {
+      setLoading(true);
+      const res = await getMeetLink(data.id);
+      if (res) window.open(res.data, "_blank");
+    } catch (e: any) {
+      toast.error(e.response.data.message);
+      setLoading(false);
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <div className="overflow-x-auto">
       <table className="w-full border-separate text-sm text-center border-spacing-2">
@@ -110,7 +128,17 @@ const Schedule: FC<props> = ({ duration, data }) => {
                         .filter((slot) =>
                           isTimeSlotMatched(slot.startTime, timeSlot.startTime)
                         )
-                        .map((slot, idx) => <div key={idx}>{slot.note}</div>)}
+                        .map((slot, idx) => (
+                          <div
+                            key={idx}
+                            className="cursor-pointer"
+                            onClick={() => handleGetMeetLink(slot)}
+                          >
+                            <Tooltip title="Đi đến lớp học">
+                              {slot.note}
+                            </Tooltip>
+                          </div>
+                        ))}
                   </td>
                 );
               })}
