@@ -122,22 +122,25 @@ const Schedule: FC<props> = ({ duration, data }) => {
                 const daySchedule = schedule[index];
 
                 return (
-                  <td key={index} className={`rounded-xl border px-2 py-1 `}>
+                  <td key={index} className={`rounded-xl border  `}>
                     {Array.isArray(daySchedule) &&
                       daySchedule
                         .filter((slot) =>
                           isTimeSlotMatched(slot.startTime, timeSlot.startTime)
                         )
                         .map((slot, idx) => (
-                          <div
+                          <Tooltip
                             key={idx}
-                            className="cursor-pointer"
-                            onClick={() => handleGetMeetLink(slot)}
+                            title="Đi đến lớp học"
+                            className="cursor-pointer w-full px-2 py-1"
                           >
-                            <Tooltip title="Đi đến lớp học">
+                            <div
+                              className="w-full"
+                              onClick={() => handleGetMeetLink(slot)}
+                            >
                               {slot.note}
-                            </Tooltip>
-                          </div>
+                            </div>
+                          </Tooltip>
                         ))}
                   </td>
                 );
