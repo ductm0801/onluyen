@@ -18,6 +18,12 @@ export const menus: Record<
       isShow: true,
     },
     {
+      label: "Các trường đại học",
+      path: "/admin/university",
+      icon: IMAGES.universityIcon,
+      isShow: true,
+    },
+    {
       label: "Môn học",
       path: "/admin/courses",
       icon: IMAGES.courseIcon,
@@ -39,12 +45,6 @@ export const menus: Record<
       label: "Khoá học chờ duyệt",
       path: "/admin/pending-course",
       icon: IMAGES.coursePending,
-      isShow: true,
-    },
-    {
-      label: "Các trường đại học",
-      path: "/admin/university",
-      icon: IMAGES.universityIcon,
       isShow: true,
     },
   ],
