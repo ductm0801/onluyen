@@ -832,3 +832,7 @@ export const getConsultantRequestChat = async (
   });
   return res.data;
 };
+export const getMeetLink = async (timeSlotId: string) => {
+  const res = await axiosClient.get(`/api/schedules/meetlink/${timeSlotId}`);
+  return res.data;
+};
