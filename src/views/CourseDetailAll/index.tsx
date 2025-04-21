@@ -1,11 +1,13 @@
 "use client";
 import Paging from "@/components/Paging";
 import { IMAGES } from "@/constants/images";
+import { formatDuration } from "@/constants/utils";
 import { ICourse } from "@/models";
 import { useAuth } from "@/providers/authProvider";
 import { useLoading } from "@/providers/loadingProvider";
 import {
   getCourseDetail,
+  getSchedule,
   handleTrialCourse,
   paymentCourse,
   startCourse,
@@ -16,6 +18,7 @@ import { toast } from "react-toastify";
 
 const CourseDetail = () => {
   const [course, setCourse] = useState<ICourse>();
+  const [schedule, setSchedule] = useState<any>();
   const params = useParams();
   const { setLoading } = useLoading();
   const [currentPage, setCurrentPage] = useState(0);
@@ -43,6 +46,23 @@ const CourseDetail = () => {
   useEffect(() => {
     fetchCourseDetail();
   }, [params.id, currentPage]);
+  const fetchCourseSchedule = async () => {
+    if (course?.courseType === 0) return;
+    try {
+      setLoading(true);
+      const res = await getSchedule(0, 100, params.id);
+      if (res) {
+        setSchedule(res.data.items);
+      }
+    } catch (err) {
+      setLoading(false);
+    } finally {
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
+    fetchCourseSchedule();
+  }, [course]);
   const handlePayment = async () => {
     if (!user) {
       toast.warning("Vui lòng đăng nhập để thanh toán!");
@@ -94,18 +114,70 @@ const CourseDetail = () => {
       setLoading(false);
     }
   };
+  const handleRenderContent = () => {
+    switch (course?.courseType) {
+      case 0:
+        return (
+          <>
+            {" "}
+            <div className="flex flex-col gap-2 text-[#667085]">
+              {course?.lessons.items.map((item, index) => (
+                <div
+                  key={item.lessonId}
+                  className="flex items-center justify-between gap-2 rounded-2xl border p-6 cursor-pointer"
+                  onClick={() => setActive(index)}
+                >
+                  <div className="flex flex-col w-full">
+                    <p className="text-[#101828] font-bold">{item.title}</p>
+                    <div
+                      className={`flex items-center w-full justify-between ${
+                        active === index ? "max-h-[500px]" : "max-h-0"
+                      } overflow-hidden transition-all duration-300 `}
+                    >
+                      <p>{item.description}</p>
+                      <span className="text-[#101828] font-bold">
+                        {Math.floor((item?.totalVideoLength || 0) / 60)} phút{" "}
+                        {(item?.totalVideoLength || 0) % 60} giây
+                      </span>{" "}
+                    </div>
+                  </div>
+                  <img
+                    src={active === index ? IMAGES.minusIcon : IMAGES.plusIcon}
+                    alt="icon"
+                  />
+                </div>
+              ))}
+            </div>
+            <Paging
+              currentPage={currentPage}
+              setCurrentPage={setCurrentPage}
+              pageSize={pageSize}
+              totalItems={totalItems}
+              totalPages={totalPages}
+            />
+          </>
+        );
+      case 1:
+        return "Lịch học";
+      default:
+        return null;
+    }
+  };
   return (
     <div className="grid grid-cols-3 gap-x-8">
       <div className="flex flex-col gap-4 col-span-2">
         <h1 className="text-4xl font-bold">{course?.title}</h1>
         <p className="text-base text-[#344054]">{course?.description}</p>
         <div className="grid grid-cols-2 items-center gap-4">
-          <div className="flex items-center gap-2 text-[#667085]">
-            <img src={IMAGES.lessonIcon} alt="lesson" />
-            Tổng số
-            <span className="text-[#101828] font-bold">{totalItems}</span> bài
-            học
-          </div>
+          {course?.courseType === 0 && (
+            <div className="flex items-center gap-2 text-[#667085]">
+              <img src={IMAGES.lessonIcon} alt="lesson" />
+              Tổng số
+              <span className="text-[#101828] font-bold">{totalItems}</span> bài
+              học
+            </div>
+          )}
+
           <div className="flex items-center gap-2 text-[#667085]">
             <img src={IMAGES.priceIcon} alt="lesson" className="w-[25px]" />
             Giá
@@ -122,48 +194,25 @@ const CourseDetail = () => {
           </div>
           <div className="flex items-center gap-2 text-[#667085]">
             <img src={IMAGES.clockIcon} alt="lesson" className="w-[25px]" />
-            Tổng thời gian học
-            <span className="text-[#101828] font-bold">
-              {Math.floor((course?.totalVideosLength || 0) / 60)} phút{" "}
-              {(course?.totalVideosLength || 0) % 60} giây
-            </span>{" "}
+            {course?.courseType === 0 ? (
+              <>
+                Tổng thời gian học
+                <span className="text-[#101828] font-bold">
+                  {Math.floor((course?.totalVideosLength || 0) / 60)} phút{" "}
+                  {(course?.totalVideosLength || 0) % 60} giây
+                </span>{" "}
+              </>
+            ) : (
+              <>
+                Thời gian học{" "}
+                <span className="text-[#101828] font-bold">
+                  {formatDuration(course?.duration || "00:00:00")}/ buổi
+                </span>
+              </>
+            )}
           </div>
         </div>
-        <div className="flex flex-col gap-2 text-[#667085]">
-          {course?.lessons.items.map((item, index) => (
-            <div
-              key={item.lessonId}
-              className="flex items-center justify-between gap-2 rounded-2xl border p-6 cursor-pointer"
-              onClick={() => setActive(index)}
-            >
-              <div className="flex flex-col w-full">
-                <p className="text-[#101828] font-bold">{item.title}</p>
-                <div
-                  className={`flex items-center w-full justify-between ${
-                    active === index ? "max-h-[500px]" : "max-h-0"
-                  } overflow-hidden transition-all duration-300 `}
-                >
-                  <p>{item.description}</p>
-                  <span className="text-[#101828] font-bold">
-                    {Math.floor((item?.totalVideoLength || 0) / 60)} phút{" "}
-                    {(item?.totalVideoLength || 0) % 60} giây
-                  </span>{" "}
-                </div>
-              </div>
-              <img
-                src={active === index ? IMAGES.minusIcon : IMAGES.plusIcon}
-                alt="icon"
-              />
-            </div>
-          ))}
-        </div>
-        <Paging
-          currentPage={currentPage}
-          setCurrentPage={setCurrentPage}
-          pageSize={pageSize}
-          totalItems={totalItems}
-          totalPages={totalPages}
-        />
+        {handleRenderContent()}
       </div>
       <div className="flex flex-col gap-3">
         <img
@@ -180,12 +229,14 @@ const CourseDetail = () => {
           </div>
         ) : (
           <div className="flex items-center gap-3 w-full">
-            <div
-              className="bg-[#FDB022] w-full text-white rounded-lg text-center py-3 cursor-pointer flex items-center gap-3 justify-center"
-              onClick={() => handleTrial()}
-            >
-              Học thử
-            </div>
+            {course?.courseType === 0 && (
+              <div
+                className="bg-[#FDB022] w-full text-white rounded-lg text-center py-3 cursor-pointer flex items-center gap-3 justify-center"
+                onClick={() => handleTrial()}
+              >
+                Học thử
+              </div>
+            )}
             <div
               className="bg-[#1244A2] w-full text-white rounded-lg text-center py-3 cursor-pointer flex items-center gap-3 justify-center"
               onClick={() => handlePayment()}

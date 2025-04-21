@@ -33,3 +33,12 @@ export const getVideoDuration = (file: File): Promise<number> => {
     video.src = URL.createObjectURL(file);
   });
 };
+export const formatDuration = (duration: string) => {
+  const [hours, minutes, seconds] = duration.split(":").map(Number);
+
+  let result = "";
+  if (hours) result += `${hours} tiếng`;
+  if (minutes) result += ` ${minutes} phút`;
+
+  return result.trim();
+};

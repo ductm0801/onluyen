@@ -74,9 +74,21 @@ export const menus: Record<
       isShow: true,
     },
     {
+      label: "Khoá học của tôi",
+      icon: IMAGES.courseIcon,
+      path: "/student/my-course",
+      isShow: true,
+    },
+    {
       label: "Lịch sử thi",
       icon: IMAGES.examResult,
       path: "/student/result-detail",
+      isShow: true,
+    },
+    {
+      label: "Yêu cầu tư vấn",
+      path: "/student/consult-request",
+      icon: IMAGES.consultantIcon,
       isShow: true,
     },
     {
