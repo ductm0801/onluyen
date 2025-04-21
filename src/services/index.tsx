@@ -551,6 +551,10 @@ export const getStudentCourseProgress = async () => {
   const res = await axiosClient.get(`/api/student-course/student`);
   return res.data;
 };
+export const getStudentCourse = async () => {
+  const res = await axiosClient.get(`/api/student-course/student-paging`);
+  return res.data;
+};
 export const getTransactionList = async (
   pageIndex: number,
   pageSize: number,

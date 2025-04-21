@@ -1,29 +1,24 @@
 "use client";
 import CircularProgess from "@/components/CircularProgress";
-import React, { useEffect, useRef, useState } from "react";
-import { Swiper, SwiperSlide } from "swiper/react";
-import "swiper/css";
-import "swiper/css/pagination";
-import { Autoplay, Navigation, Pagination } from "swiper/modules";
+import CustomButton from "@/components/CustomButton";
 import { IMAGES } from "@/constants/images";
+import { ICourseProgress, Subject } from "@/models";
+import { useLoading } from "@/providers/loadingProvider";
 import {
   enrollExam,
   getExamBySubjectId,
-  getStudentCourseProgress,
   getSubject,
   paymentExamCode,
   takeExam,
 } from "@/services";
-import { useLoading } from "@/providers/loadingProvider";
-import { useAuth } from "@/providers/authProvider";
-import { ICourseProgress, IExam, Subject } from "@/models";
-import { toast } from "react-toastify";
-import CustomButton from "@/components/CustomButton";
-import { useRouter } from "next/navigation";
 import { Button, Input, Modal } from "antd";
-import ExamDetail from "../ExamDetail";
-import { db } from "@/firebase/config";
-import { collection, onSnapshot } from "firebase/firestore";
+import { useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+import { toast } from "react-toastify";
+import "swiper/css";
+import "swiper/css/pagination";
+import { Autoplay, Navigation, Pagination } from "swiper/modules";
+import { Swiper, SwiperSlide } from "swiper/react";
 
 const renderBullet = (index: number, className: string) =>
   `<div class="${className}"></div>`;
@@ -41,18 +36,18 @@ const Home = () => {
   const [cSubject, setCSubject] = useState<Subject[]>([]);
   const [items, setItems] = useState<ICourseProgress[]>([]);
 
-  const fetCourseProgress = async () => {
-    try {
-      setLoading(true);
-      const res = await getStudentCourseProgress();
-      if (res) setItems(res.data);
-    } catch (error) {
-      setLoading(false);
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  // const fetCourseProgress = async () => {
+  //   try {
+  //     setLoading(true);
+  //     const res = await getStudentCourseProgress();
+  //     if (res) setItems(res.data);
+  //   } catch (error) {
+  //     setLoading(false);
+  //     console.error(error);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   const handleSubjectClick = (id: string, index: number) => {
     setActive(id);
@@ -109,7 +104,7 @@ const Home = () => {
   useEffect(() => {
     fetchSubject();
     fetchSubjectNoGeneral();
-    fetCourseProgress();
+    // fetCourseProgress();
   }, []);
   const [pageIndex, setPageIndex] = useState(0);
   const [exam, setExam] = useState([]);
