@@ -100,3 +100,12 @@ export const userRoleEnumNormalize = {
   consultant: "Tư vấn viên",
   exammanager: "Quản lý đề thi",
 };
+export const dayOfWeekOptions = [
+  { value: "ChuNhat", label: "Chủ nhật" },
+  { value: "ThuHai", label: "Thứ hai" },
+  { value: "ThuBa", label: "Thứ ba" },
+  { value: "ThuTu", label: "Thứ tư" },
+  { value: "ThuNam", label: "Thứ năm" },
+  { value: "ThuSau", label: "Thứ sáu" },
+  { value: "ThuBay", label: "Thứ bảy" },
+];

@@ -1,3 +1,4 @@
+import { dayOfWeekOptions } from "@/constants/enum";
 import { useLoading } from "@/providers/loadingProvider";
 import { getMeetLink } from "@/services";
 import { Tooltip } from "antd";
@@ -7,16 +8,6 @@ type props = {
   duration: string;
   data: any[];
 };
-
-const dayOfWeekOptions = [
-  { value: "ChuNhat", label: "Chủ nhật" },
-  { value: "ThuHai", label: "Thứ hai" },
-  { value: "ThuBa", label: "Thứ ba" },
-  { value: "ThuTu", label: "Thứ tư" },
-  { value: "ThuNam", label: "Thứ năm" },
-  { value: "ThuSau", label: "Thứ sáu" },
-  { value: "ThuBay", label: "Thứ bảy" },
-];
 
 const Schedule: FC<props> = ({ duration, data }) => {
   const [schedule, setSchedule] = useState<any[]>([]);
