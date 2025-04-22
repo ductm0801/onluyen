@@ -1,6 +1,7 @@
 "use client";
 import Paging from "@/components/Paging";
 import { consultEnum } from "@/constants/enum";
+import { useAuth } from "@/providers/authProvider";
 import { useLoading } from "@/providers/loadingProvider";
 import { getConsultRequest } from "@/services";
 import { Select } from "antd";
@@ -72,6 +73,7 @@ const ConsultRequest = () => {
   const [status, setStatus] = useState<number | undefined>(undefined);
   const [consultData, setConsultData] = useState<any[]>([]);
   const router = useRouter();
+  const { user } = useAuth();
   const fetchConsultRequest = async () => {
     try {
       setLoading(true);
@@ -151,7 +153,11 @@ const ConsultRequest = () => {
                   <div
                     className="font-medium text-blue-600 dark:text-blue-500 hover:underline cursor-pointer"
                     onClick={() =>
-                      router.push(`/consultant/consult-request/${a.id}`)
+                      router.push(
+                        user?.Role === "Consultant"
+                          ? `/consultant/consult-request/${a.id}`
+                          : `/student/consult-request/${a.id}`
+                      )
                     }
                   >
                     Chi tiết

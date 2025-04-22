@@ -62,4 +62,5 @@ export const IMAGES = {
   consultantIcon: "/assets/consultantIcon.svg",
   peopleIcon: "/assets/peopleIcon.svg",
   universityIcon: "/assets/university.svg",
+  scheduleIcon: "/assets/schedule.svg",
 };
