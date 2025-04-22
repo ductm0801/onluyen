@@ -94,7 +94,9 @@ const DefaultLayout: React.FC<props> = ({ children }) => {
     setSidebarOpen(!sidebarOpen);
   };
   const handleOpenNoti = (noti: any) => {
-    updateNoti(noti.notiId);
+    if (!noti.isRead) {
+      updateNoti(noti.notiId);
+    }
     setNotiDetail(true);
     notiRef.current = noti;
   };
