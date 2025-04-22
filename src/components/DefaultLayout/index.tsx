@@ -4,7 +4,7 @@ import { menus } from "@/constants/menu";
 import { db } from "@/firebase/config";
 import { useAuth } from "@/providers/authProvider";
 import { useTheme } from "@/providers/themeProvider";
-import { getChat, getNoti, sendMessage } from "@/services";
+import { getChat, getNoti, sendMessage, updateNoti } from "@/services";
 import { Avatar, Form, Modal } from "antd";
 import { collection, onSnapshot } from "firebase/firestore";
 import { Moon, Sun } from "lucide-react";
@@ -36,6 +36,7 @@ const DefaultLayout: React.FC<props> = ({ children }) => {
   const notiRef = useRef<any>(null);
 
   const fetchChat = async () => {
+    if (!user) return;
     try {
       if (user?.Role === "Consultant") return;
       const res = await getChat("12FFC162-D2D0-420A-8806-647253B09E95");
@@ -45,6 +46,7 @@ const DefaultLayout: React.FC<props> = ({ children }) => {
     }
   };
   const fetchNoti = async () => {
+    if (!user) return;
     try {
       const res = await getNoti();
       if (res) setNoti(res);
@@ -92,6 +94,7 @@ const DefaultLayout: React.FC<props> = ({ children }) => {
     setSidebarOpen(!sidebarOpen);
   };
   const handleOpenNoti = (noti: any) => {
+    updateNoti(noti.notiId);
     setNotiDetail(true);
     notiRef.current = noti;
   };

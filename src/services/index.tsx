@@ -861,3 +861,7 @@ export const getInstructorSchedule = async (
   });
   return res.data;
 };
+export const updateNoti = async (notiId: string) => {
+  const res = await axiosClient.put(`/api/chat/update_isread/${notiId}`);
+  return res.data;
+};
