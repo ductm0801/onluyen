@@ -1,4 +1,4 @@
-import { Select, Tooltip } from "antd";
+import { Popover, Select, Tooltip } from "antd";
 import React, { FC, useState } from "react";
 import dayjs from "dayjs";
 import { useLoading } from "@/providers/loadingProvider";
@@ -97,20 +97,22 @@ const ScheduleTotal: FC<props> = ({
     if (!entry) return null;
 
     return (
-      <Tooltip
-        title="Đi đến lớp học"
-        className="cursor-pointer w-full px-2 py-1"
+      <Popover
+        placement="top"
+        title={entry.courseTitle}
+        content="Đi đên lớp học"
+        className="cursor-pointer"
       >
         <div
           className="text-sm font-bold text-center p-2 rounded"
           onClick={() => handleGetMeetLink(entry)}
         >
-          {/* <div>{entry.instructor.subject.subjectName}</div> */}
+          <div className="line-clamp-1">{entry.courseTitle}</div>
           <div>
             {entry.startTime.slice(0, 5)} - {entry.endTime.slice(0, 5)}
           </div>
         </div>
-      </Tooltip>
+      </Popover>
     );
   };
 
