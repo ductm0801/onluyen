@@ -1,26 +1,21 @@
 "use client";
-import { useLoading } from "@/providers/loadingProvider";
-import { getMeetLink, getStudentCourse, getStudentSchedule } from "@/services";
-import React, { useEffect, useState } from "react";
-import dayjs from "dayjs";
-import { Select, Tooltip } from "antd";
-import { dayOfWeekOptions } from "@/constants/enum";
-import { toast } from "react-toastify";
-import { getCurrentWeekRange } from "@/constants/utils";
 import ScheduleTotal from "@/components/ScheduleTotal";
+import { getCurrentWeekRange } from "@/constants/utils";
+import { useLoading } from "@/providers/loadingProvider";
+import { getInstructorSchedule } from "@/services";
+import React, { useEffect, useState } from "react";
 
-const MyCourse = () => {
+const InstructorSchedule = () => {
   const [data, setData] = useState([]);
   const { setLoading } = useLoading();
 
   const currentWeek = getCurrentWeekRange();
   const [startDate, setStartDate] = useState(currentWeek.startDate);
   const [endDate, setEndDate] = useState(currentWeek.endDate);
-
   const fetchData = async () => {
     setLoading(true);
     try {
-      const res = await getStudentSchedule(startDate, endDate);
+      const res = await getInstructorSchedule(startDate, endDate);
       if (res) {
         setData(res.data);
       }
@@ -30,11 +25,9 @@ const MyCourse = () => {
       setLoading(false);
     }
   };
-
   useEffect(() => {
     fetchData();
   }, [startDate, endDate]);
-
   return (
     <ScheduleTotal
       fetchData={fetchData}
@@ -46,4 +39,4 @@ const MyCourse = () => {
   );
 };
 
-export default MyCourse;
+export default InstructorSchedule;
