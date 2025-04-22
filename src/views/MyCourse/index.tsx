@@ -36,13 +36,16 @@ const MyCourse = () => {
   }, [startDate, endDate]);
 
   return (
-    <ScheduleTotal
-      fetchData={fetchData}
-      setStartDate={setStartDate}
-      setEndDate={setEndDate}
-      data={data}
-      currentWeek={currentWeek}
-    />
+    <div>
+      <p className="text-3xl text-[#1244A2] font-bold py-4">Lịch học</p>
+      <ScheduleTotal
+        fetchData={fetchData}
+        setStartDate={setStartDate}
+        setEndDate={setEndDate}
+        data={data}
+        currentWeek={currentWeek}
+      />
+    </div>
   );
 };
 
