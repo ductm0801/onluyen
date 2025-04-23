@@ -67,6 +67,7 @@ const FormUpdateSchedule: FC<props> = ({ duration }) => {
         };
       });
       await createSchedule({
+        ...values,
         timeSlotDtos,
         courseId: params.id,
       });

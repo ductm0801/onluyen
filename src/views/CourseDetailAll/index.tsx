@@ -112,14 +112,15 @@ const CourseDetail = () => {
       toast.warning("Vui lòng đăng nhập để học thử!");
       return;
     }
-    if (!course?.trialAllowance) {
+    if (course?.trialCourse !== null) {
       router.replace(`/student/learning/${course?.trialCourse.id}`);
       return;
     }
     try {
       setLoading(true);
       const res = await handleTrialCourse(params.id);
-      console.log(res);
+
+      router.replace(`/student/learning/${res.data.studentCourseId}`);
     } catch (error: any) {
       setLoading(false);
       toast.error(error?.response?.data?.message || "Có lỗi xảy ra!");
@@ -269,7 +270,7 @@ const CourseDetail = () => {
               <>
                 Thời gian học{" "}
                 <span className="text-[#101828] font-bold">
-                  {formatDuration(course?.duration || "00:00:00")}/ buổi
+                  {formatDuration(course?.timeSlotDuration || "00:00:00")}/ buổi
                 </span>
               </>
             )}
