@@ -56,12 +56,25 @@ const Schedule: FC<props> = ({ duration, data }) => {
     return schedule;
   };
   const getTimeSlots = () => {
+    const [durHours, durMinutes] = duration.split(":").map(Number);
     const slots = [];
+
     for (let hour = 8; hour < 20; hour++) {
-      const startTime = `${hour.toString().padStart(2, "0")}:00`;
-      const endTime = `${(hour + 1).toString().padStart(2, "0")}:00`;
-      slots.push({ startTime, endTime });
+      const start = new Date();
+      start.setHours(hour, 0, 0);
+
+      const end = new Date(start);
+      end.setHours(end.getHours() + durHours);
+      end.setMinutes(end.getMinutes() + durMinutes);
+
+      const formatTime = (date: any) => date.toTimeString().slice(0, 5);
+
+      slots.push({
+        startTime: formatTime(start),
+        endTime: formatTime(end),
+      });
     }
+
     return slots;
   };
 

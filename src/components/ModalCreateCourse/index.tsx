@@ -70,7 +70,7 @@ const ModalCreateCourse = ({
       id="crud-modal"
       tabIndex={-1}
       aria-hidden="true"
-      className=" overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full bg-black/70"
+      className="overflow-y-auto overflow-x-hidden fixed inset-0 z-50 flex justify-center items-center w-full md:inset-0  max-h-full bg-black/70"
     >
       <div className="relative p-4 w-full max-w-md max-h-full">
         <div className="relative bg-white rounded-lg shadow-sm dark:bg-gray-700">
@@ -185,22 +185,62 @@ const ModalCreateCourse = ({
                   className="rounded-md w-full bg-white"
                 />
               </Form.Item>
-              {courseType === 1 && (
+              {courseType === 1 ? (
+                <>
+                  <Form.Item
+                    className="col-span-1 mb-0"
+                    name="TimeSlotDuration"
+                    label="Thời gian học"
+                    labelCol={{ span: 24 }}
+                    rules={[
+                      {
+                        required: true,
+                        message: "Vui lòng chọn thời gian học",
+                      },
+                    ]}
+                  >
+                    <Select
+                      options={durationOptions}
+                      placeholder="Thời gian học"
+                    />
+                  </Form.Item>
+                  <Form.Item
+                    className="col-span-1 mb-0"
+                    name="totalTimeSlotAmount"
+                    label="Tổng số buổi học"
+                    labelCol={{ span: 24 }}
+                    rules={[
+                      {
+                        required: true,
+                        message: "Vui lòng nhập tổng số buổi học",
+                      },
+                    ]}
+                  >
+                    <InputNumber
+                      min={0}
+                      placeholder="Tổng số buổi học"
+                      className="w-full"
+                    />
+                  </Form.Item>
+                </>
+              ) : (
                 <Form.Item
                   className="col-span-2 mb-0"
-                  name="duration"
-                  label="Thời gian học"
+                  name="courseDuration"
+                  label="Thời hạn khóa học"
                   labelCol={{ span: 24 }}
                   rules={[
                     {
                       required: true,
-                      message: "Vui lòng chọn thời gian học",
+                      message: "Vui lòng nhập thời hạn khóa học",
                     },
                   ]}
                 >
-                  <Select
-                    options={durationOptions}
-                    placeholder="Thời gian học"
+                  <InputNumber
+                    min={10}
+                    placeholder="thời hạn khóa học"
+                    className="w-full"
+                    suffix="ngày"
                   />
                 </Form.Item>
               )}

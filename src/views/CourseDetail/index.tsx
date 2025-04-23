@@ -51,7 +51,7 @@ const CourseDetail = () => {
     tab.push({
       value: 1,
       label: "Danh sách lịch học",
-      children: <FormUpdateSchedule duration={detail.duration} />,
+      children: <FormUpdateSchedule duration={detail.timeSlotDuration} />,
     });
   }
   if (detail.courseType === 0) {
