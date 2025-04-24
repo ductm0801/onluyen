@@ -34,7 +34,9 @@ const Learning = () => {
       setTotalPages(res.data.lessons.totalPageCount);
       if (res) {
         setCourse(res.data);
-        setActiveLesson(res.data.lessons.items[0]);
+        setActiveLesson(
+          res.data.lessons.items[res.data.highestCompletedLessonOrder]
+        );
       }
     } catch (err) {
       setLoading(false);
@@ -45,19 +47,8 @@ const Learning = () => {
 
   useEffect(() => {
     fetchCourseDetail();
-  }, [params.id, currentPage]);
+  }, [params.id, currentPage, isSaveProgress]);
 
-  useEffect(() => {
-    if (isSaveProgress && course) {
-      const currentIndex = course.lessons.items.findIndex(
-        (lesson) => lesson.lessonId === activeLesson?.lessonId
-      );
-      const nextLesson = course.lessons.items[currentIndex + 1];
-      if (nextLesson) {
-        setActiveLesson(nextLesson);
-      }
-    }
-  }, [isSaveProgress]);
   if (!course) return null;
 
   return (

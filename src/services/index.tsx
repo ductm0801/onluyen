@@ -548,7 +548,7 @@ export const startCourse = async (id: string) => {
   return res.data;
 };
 export const getStudentCourseProgress = async () => {
-  const res = await axiosClient.get(`/api/student-course/student`);
+  const res = await axiosClient.get(`/api/student-course/student-paging`);
   return res.data;
 };
 export const getStudentCourse = async () => {

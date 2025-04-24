@@ -318,6 +318,7 @@ export type IInstructorDetail = {
   };
 };
 export type ICourseProgress = {
+  id: string;
   courseId: string;
   title: string;
   description: string;
