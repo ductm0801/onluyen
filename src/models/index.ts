@@ -196,6 +196,7 @@ export type ICourse = {
   courseStatus: keyof typeof courseStatusEnum;
   instructorId: string;
   instructorName: string;
+  totalTimeSlotAmount: string;
   lessons: ILessons;
   studentCourseId: string;
   trialAllowance: boolean;

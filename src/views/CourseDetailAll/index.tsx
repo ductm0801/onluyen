@@ -233,12 +233,21 @@ const CourseDetail = () => {
         <h1 className="text-4xl font-bold">{course?.title}</h1>
         <p className="text-base text-[#344054]">{course?.description}</p>
         <div className="grid grid-cols-2 items-center gap-4">
-          {course?.courseType === 0 && (
+          {course?.courseType === 0 ? (
             <div className="flex items-center gap-2 text-[#667085]">
               <img src={IMAGES.lessonIcon} alt="lesson" />
               Tổng số
               <span className="text-[#101828] font-bold">{totalItems}</span> bài
               học
+            </div>
+          ) : (
+            <div className="flex items-center gap-2 text-[#667085]">
+              <img src={IMAGES.course} alt="lesson" className="w-6" />
+              Tổng
+              <span className="text-[#101828] font-bold">
+                {course?.totalTimeSlotAmount}
+              </span>{" "}
+              buổi học
             </div>
           )}
 
@@ -287,7 +296,11 @@ const CourseDetail = () => {
         {course?.isJoined ? (
           <div
             className="bg-[#1244A2] text-white rounded-lg text-center py-3 cursor-pointer flex items-center gap-3 justify-center"
-            onClick={() => handleStartLearning()}
+            onClick={() => {
+              course.courseType === 0
+                ? handleStartLearning()
+                : router.replace(`/student/my-course`);
+            }}
           >
             Vào học <img src={IMAGES.arrowRight} alt="right" />
           </div>

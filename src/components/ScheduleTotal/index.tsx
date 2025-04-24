@@ -10,25 +10,7 @@ type props = {
   currentWeek: any;
   setStartDate: any;
   setEndDate: any;
-  fetchData: any;
 };
-
-const timeSlots = [
-  "07:00",
-  "08:00",
-  "09:00",
-  "10:00",
-  "11:00",
-  "12:00",
-  "13:00",
-  "14:00",
-  "15:00",
-  "16:00",
-  "17:00",
-  "18:00",
-  "19:00",
-  "20:00",
-];
 
 const dayOfWeekOrder = [
   "ThuHai",
@@ -55,7 +37,6 @@ const ScheduleTotal: FC<props> = ({
   currentWeek,
   setStartDate,
   setEndDate,
-  fetchData,
 }) => {
   const { setLoading } = useLoading();
   const getMonday = (dateStr: string) => {
@@ -82,6 +63,20 @@ const ScheduleTotal: FC<props> = ({
     }
     return weeks;
   };
+
+  function generateTimeSlots(start = 7, end = 20): string[] {
+    const slots: string[] = [];
+    for (let hour = start; hour <= end; hour++) {
+      const hourStr = hour.toString().padStart(2, "0");
+      slots.push(`${hourStr}:00`);
+      if (hour !== end) {
+        slots.push(`${hourStr}:30`);
+      }
+    }
+    return slots;
+  }
+
+  const timeSlots = generateTimeSlots();
 
   const weekOptions = generateWeeks("2025-04-01", 20);
   const defaultValue = weekOptions.find(
@@ -142,7 +137,6 @@ const ScheduleTotal: FC<props> = ({
           const { startDate, endDate } = JSON.parse(value);
           setStartDate(startDate);
           setEndDate(endDate);
-          fetchData();
         }}
       />
       <div className="overflow-auto py-4">
@@ -185,4 +179,4 @@ const ScheduleTotal: FC<props> = ({
   );
 };
 
-export default ScheduleTotal;
+export default React.memo(ScheduleTotal);

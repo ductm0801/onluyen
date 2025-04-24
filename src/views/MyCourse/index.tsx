@@ -23,6 +23,7 @@ const MyCourse = () => {
       const res = await getStudentSchedule(startDate, endDate);
       if (res) {
         setData(res.data);
+        console.log("eheheh");
       }
     } catch (e) {
       console.log(e);
@@ -39,7 +40,6 @@ const MyCourse = () => {
     <div>
       <p className="text-3xl text-[#1244A2] font-bold py-4">Lịch học</p>
       <ScheduleTotal
-        fetchData={fetchData}
         setStartDate={setStartDate}
         setEndDate={setEndDate}
         data={data}

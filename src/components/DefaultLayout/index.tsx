@@ -345,7 +345,7 @@ const DefaultLayout: React.FC<props> = ({ children }) => {
             <div className="p-4 flex flex-col gap-2 overflow-y-auto h-[300px]">
               {messages.map((m, index) =>
                 m.sender === user?.UserId ? (
-                  <div className="flex justify-end mb-4">
+                  <div className="flex justify-end mb-4" key={index}>
                     <div className="mr-2 py-3 px-4 bg-blue-400 rounded-bl-3xl rounded-tl-3xl rounded-tr-xl text-white">
                       {m?.text}
                     </div>

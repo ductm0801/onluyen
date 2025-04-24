@@ -89,7 +89,7 @@ const Learning = () => {
                           ? "bg-blue-50/50 text-blue-600 hover:text-blue600"
                           : ""
                       }`}
-                      key={item.courseId}
+                      key={item.lessonId}
                       onClick={() => setActiveLesson(item)}
                     >
                       <div className="flex items-center justify-between w-full">
@@ -185,7 +185,7 @@ const Learning = () => {
               setIsSaveProgress={setIsSaveProgress}
               videoSrc={activeLesson?.videoUrl || ""}
               progressId={activeLesson?.progress?.id}
-              videoRef={videoPlayerRef}
+              // videoRef={videoPlayerRef}
             />
           </div>
         </div>
