@@ -32,7 +32,6 @@ const InstructorSchedule = () => {
     <div>
       <p className="text-3xl text-[#1244A2] font-bold py-4">Lịch dạy</p>
       <ScheduleTotal
-        fetchData={fetchData}
         setStartDate={setStartDate}
         setEndDate={setEndDate}
         data={data}
