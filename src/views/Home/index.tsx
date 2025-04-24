@@ -7,6 +7,7 @@ import { useLoading } from "@/providers/loadingProvider";
 import {
   enrollExam,
   getExamBySubjectId,
+  getStudentCourseProgress,
   getSubject,
   paymentExamCode,
   takeExam,
@@ -36,18 +37,18 @@ const Home = () => {
   const [cSubject, setCSubject] = useState<Subject[]>([]);
   const [items, setItems] = useState<ICourseProgress[]>([]);
 
-  // const fetCourseProgress = async () => {
-  //   try {
-  //     setLoading(true);
-  //     const res = await getStudentCourseProgress();
-  //     if (res) setItems(res.data);
-  //   } catch (error) {
-  //     setLoading(false);
-  //     console.error(error);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
+  const fetCourseProgress = async () => {
+    try {
+      setLoading(true);
+      const res = await getStudentCourseProgress();
+      if (res) setItems(res.data.items);
+    } catch (error) {
+      setLoading(false);
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleSubjectClick = (id: string, index: number) => {
     setActive(id);
@@ -104,7 +105,7 @@ const Home = () => {
   useEffect(() => {
     fetchSubject();
     fetchSubjectNoGeneral();
-    // fetCourseProgress();
+    fetCourseProgress();
   }, []);
   const [pageIndex, setPageIndex] = useState(0);
   const [exam, setExam] = useState([]);
@@ -283,7 +284,7 @@ const Home = () => {
                       <p
                         className="border-b border-[#FDB022] "
                         onClick={() =>
-                          router.push(`/student/learning/${item.courseId}`)
+                          router.push(`/student/learning/${item.id}`)
                         }
                       >
                         Tiếp tục chương trình
