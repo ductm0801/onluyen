@@ -225,7 +225,7 @@ const FormUpdateSchedule: FC<props> = ({ duration }) => {
                         >
                           <TimePicker
                             placeholder="Thời gian bắt đầu"
-                            minuteStep={5}
+                            minuteStep={30}
                             format="HH:mm"
                             showNow={false}
                             needConfirm={false}
@@ -399,7 +399,7 @@ const FormUpdateSchedule: FC<props> = ({ duration }) => {
                             >
                               <TimePicker
                                 placeholder="Thời gian bắt đầu"
-                                minuteStep={5}
+                                minuteStep={30}
                                 format="HH:mm"
                                 showNow={false}
                                 needConfirm={false}

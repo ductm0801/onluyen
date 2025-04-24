@@ -66,7 +66,10 @@ const DefaultLayout: React.FC<props> = ({ children }) => {
 
   const handleSubmit = async (values: any) => {
     try {
-      await sendMessage({ text: values.text });
+      await sendMessage({
+        receiver: "12FFC162-D2D0-420A-8806-647253B09E95",
+        text: values.text,
+      });
     } catch (err) {
       console.log(err);
     } finally {
