@@ -192,10 +192,7 @@ const PendingCourseDetail = () => {
         return (
           <div>
             <h2 className="text-3xl font-bold mb-4 text-center">📅 Lịch dạy</h2>
-            <Schedule
-              data={scheduleData}
-              duration={data?.timeSlotDuration || ""}
-            />
+            <Schedule data={scheduleData} />
           </div>
         );
       default:
