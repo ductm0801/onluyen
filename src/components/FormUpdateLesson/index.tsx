@@ -50,7 +50,6 @@ const FormUpdateLesson: React.FC<props> = ({
           <div
             key={lesson.lessonId}
             className=" flex flex-col gap-4 bg-white rounded-lg shadow-sm px-4 py-2 cursor-pointer"
-            onClick={() => setOpen(lesson.lessonId)}
           >
             <div className="border-b border-[#1244A2] pb-2 flex justify-between items-center">
               <div className="flex items-center gap-4 ">
@@ -61,7 +60,7 @@ const FormUpdateLesson: React.FC<props> = ({
                   alt={lesson.title}
                   className="object-cover aspect-video"
                 />
-                <div>
+                <div onClick={() => setOpen(lesson.lessonId)}>
                   <p className="text-lg font-semibold">{lesson.title}</p>
                   <p className="text-[#333333a1] text-sm">
                     {lesson.description}
