@@ -136,6 +136,7 @@ const InstructorCourse = () => {
                       height={100}
                       src={a.imageUrl || IMAGES.defaultMale}
                       alt="avatar"
+                      className="object-contain"
                     />
                     <div className="ps-3">
                       <div className="text-base font-semibold  cursor-pointer">
