@@ -1,5 +1,6 @@
 import katex from "katex";
 import "katex/dist/katex.min.css";
+import dayjs from "dayjs";
 
 export const renderMathContent = (text: string): string => {
   if (!text) return "";
@@ -41,4 +42,14 @@ export const formatDuration = (duration: string) => {
   if (minutes) result += ` ${minutes} phút`;
 
   return result.trim();
+};
+
+export const getCurrentWeekRange = () => {
+  const today = dayjs();
+  const startOfWeek = today.startOf("week").add(1, "day");
+  const endOfWeek = startOfWeek.add(6, "day");
+  return {
+    startDate: startOfWeek.format("YYYY-MM-DD"),
+    endDate: endOfWeek.format("YYYY-MM-DD"),
+  };
 };

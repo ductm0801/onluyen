@@ -1,11 +1,9 @@
 "use client";
 import CircularProgess from "@/components/CircularProgress";
-import React, { useEffect, useRef, useState } from "react";
-import { Swiper, SwiperSlide } from "swiper/react";
-import "swiper/css";
-import "swiper/css/pagination";
-import { Autoplay, Navigation, Pagination } from "swiper/modules";
+import CustomButton from "@/components/CustomButton";
 import { IMAGES } from "@/constants/images";
+import { ICourseProgress, Subject } from "@/models";
+import { useLoading } from "@/providers/loadingProvider";
 import {
   enrollExam,
   getExamBySubjectId,
@@ -14,16 +12,14 @@ import {
   paymentExamCode,
   takeExam,
 } from "@/services";
-import { useLoading } from "@/providers/loadingProvider";
-import { useAuth } from "@/providers/authProvider";
-import { ICourseProgress, IExam, Subject } from "@/models";
-import { toast } from "react-toastify";
-import CustomButton from "@/components/CustomButton";
-import { useRouter } from "next/navigation";
 import { Button, Input, Modal } from "antd";
-import ExamDetail from "../ExamDetail";
-import { db } from "@/firebase/config";
-import { collection, onSnapshot } from "firebase/firestore";
+import { useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+import { toast } from "react-toastify";
+import "swiper/css";
+import "swiper/css/pagination";
+import { Autoplay, Navigation, Pagination } from "swiper/modules";
+import { Swiper, SwiperSlide } from "swiper/react";
 
 const renderBullet = (index: number, className: string) =>
   `<div class="${className}"></div>`;
@@ -45,7 +41,7 @@ const Home = () => {
     try {
       setLoading(true);
       const res = await getStudentCourseProgress();
-      if (res) setItems(res.data);
+      if (res) setItems(res.data.items);
     } catch (error) {
       setLoading(false);
       console.error(error);
@@ -288,7 +284,7 @@ const Home = () => {
                       <p
                         className="border-b border-[#FDB022] "
                         onClick={() =>
-                          router.push(`/student/learning/${item.courseId}`)
+                          router.push(`/student/learning/${item.id}`)
                         }
                       >
                         Tiếp tục chương trình

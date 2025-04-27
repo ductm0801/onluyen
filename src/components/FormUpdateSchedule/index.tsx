@@ -67,6 +67,7 @@ const FormUpdateSchedule: FC<props> = ({ duration }) => {
         };
       });
       await createSchedule({
+        ...values,
         timeSlotDtos,
         courseId: params.id,
       });
@@ -146,7 +147,7 @@ const FormUpdateSchedule: FC<props> = ({ duration }) => {
       </div>
       <div>
         <h2 className="text-3xl font-bold mb-4 text-center">📅 Lịch dạy</h2>
-        <Schedule data={data} duration={duration} />
+        <Schedule data={data} />
       </div>
       {create && (
         <Modal
@@ -224,7 +225,7 @@ const FormUpdateSchedule: FC<props> = ({ duration }) => {
                         >
                           <TimePicker
                             placeholder="Thời gian bắt đầu"
-                            minuteStep={5}
+                            minuteStep={30}
                             format="HH:mm"
                             showNow={false}
                             needConfirm={false}
@@ -398,7 +399,7 @@ const FormUpdateSchedule: FC<props> = ({ duration }) => {
                             >
                               <TimePicker
                                 placeholder="Thời gian bắt đầu"
-                                minuteStep={5}
+                                minuteStep={30}
                                 format="HH:mm"
                                 showNow={false}
                                 needConfirm={false}

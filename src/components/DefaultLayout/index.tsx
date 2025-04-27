@@ -4,7 +4,7 @@ import { menus } from "@/constants/menu";
 import { db } from "@/firebase/config";
 import { useAuth } from "@/providers/authProvider";
 import { useTheme } from "@/providers/themeProvider";
-import { getChat, getNoti, sendMessage } from "@/services";
+import { getChat, getNoti, sendMessage, updateNoti } from "@/services";
 import { Avatar, Form, Modal } from "antd";
 import { collection, onSnapshot } from "firebase/firestore";
 import { Moon, Sun } from "lucide-react";
@@ -36,6 +36,7 @@ const DefaultLayout: React.FC<props> = ({ children }) => {
   const notiRef = useRef<any>(null);
 
   const fetchChat = async () => {
+    if (!user) return;
     try {
       if (user?.Role === "Consultant") return;
       const res = await getChat("12FFC162-D2D0-420A-8806-647253B09E95");
@@ -45,6 +46,7 @@ const DefaultLayout: React.FC<props> = ({ children }) => {
     }
   };
   const fetchNoti = async () => {
+    if (!user) return;
     try {
       const res = await getNoti();
       if (res) setNoti(res);
@@ -64,7 +66,10 @@ const DefaultLayout: React.FC<props> = ({ children }) => {
 
   const handleSubmit = async (values: any) => {
     try {
-      await sendMessage({ text: values.text });
+      await sendMessage({
+        receiver: "12FFC162-D2D0-420A-8806-647253B09E95",
+        text: values.text,
+      });
     } catch (err) {
       console.log(err);
     } finally {
@@ -92,6 +97,9 @@ const DefaultLayout: React.FC<props> = ({ children }) => {
     setSidebarOpen(!sidebarOpen);
   };
   const handleOpenNoti = (noti: any) => {
+    if (!noti.isRead) {
+      updateNoti(noti.notiId);
+    }
     setNotiDetail(true);
     notiRef.current = noti;
   };
@@ -340,7 +348,7 @@ const DefaultLayout: React.FC<props> = ({ children }) => {
             <div className="p-4 flex flex-col gap-2 overflow-y-auto h-[300px]">
               {messages.map((m, index) =>
                 m.sender === user?.UserId ? (
-                  <div className="flex justify-end mb-4">
+                  <div className="flex justify-end mb-4" key={index}>
                     <div className="mr-2 py-3 px-4 bg-blue-400 rounded-bl-3xl rounded-tl-3xl rounded-tr-xl text-white">
                       {m?.text}
                     </div>

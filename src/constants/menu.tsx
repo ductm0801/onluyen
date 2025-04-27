@@ -130,6 +130,12 @@ export const menus: Record<
       isShow: true,
     },
     {
+      label: "Lịch dạy học",
+      path: "/instructor/schedule",
+      icon: IMAGES.scheduleIcon,
+      isShow: true,
+    },
+    {
       label: "Khoá học",
       path: "/instructor/course",
       icon: IMAGES.courseIcon,

@@ -548,7 +548,23 @@ export const startCourse = async (id: string) => {
   return res.data;
 };
 export const getStudentCourseProgress = async () => {
-  const res = await axiosClient.get(`/api/student-course/student`);
+  const res = await axiosClient.get(`/api/student-course/student-paging`);
+  return res.data;
+};
+export const getStudentCourse = async () => {
+  const res = await axiosClient.get(`/api/student-course/student-paging`);
+  return res.data;
+};
+export const getStudentSchedule = async (
+  startDate: string,
+  endDate: string
+) => {
+  const res = await axiosClient.get(`/api/schedules/timeSlotToStudy`, {
+    params: {
+      startDate,
+      endDate,
+    },
+  });
   return res.data;
 };
 export const getTransactionList = async (
@@ -821,12 +837,12 @@ export const sendConsultantRequestMessage = async (body: any) => {
   return res.data;
 };
 export const getConsultantRequestChat = async (
-  receiver: string | string[],
+  receiverId: string | string[],
   consultantRequesstId: string | string[]
 ) => {
   const res = await axiosClient.get(`/api/chat/get_messages_consultant`, {
     params: {
-      receiver,
+      receiverId,
       consultantRequesstId,
     },
   });
@@ -834,5 +850,18 @@ export const getConsultantRequestChat = async (
 };
 export const getMeetLink = async (timeSlotId: string) => {
   const res = await axiosClient.get(`/api/schedules/meetlink/${timeSlotId}`);
+  return res.data;
+};
+export const getInstructorSchedule = async (
+  startDate: string,
+  endDate: string
+) => {
+  const res = await axiosClient.get(`/api/schedules/timeSlotToTeach`, {
+    params: { startDate, endDate },
+  });
+  return res.data;
+};
+export const updateNoti = async (notiId: string) => {
+  const res = await axiosClient.put(`/api/chat/update_isread/${notiId}`);
   return res.data;
 };

@@ -187,7 +187,8 @@ export type ICourse = {
   subjectId: string;
   subjectName: string;
   imageUrl: string;
-  duration: string;
+  timeSlotDuration: string;
+  courseDuration: string;
   isJoined: boolean;
   courseType: number;
   isStarted: boolean;
@@ -195,6 +196,7 @@ export type ICourse = {
   courseStatus: keyof typeof courseStatusEnum;
   instructorId: string;
   instructorName: string;
+  totalTimeSlotAmount: string;
   lessons: ILessons;
   studentCourseId: string;
   trialAllowance: boolean;
@@ -316,6 +318,7 @@ export type IInstructorDetail = {
   };
 };
 export type ICourseProgress = {
+  id: string;
   courseId: string;
   title: string;
   description: string;

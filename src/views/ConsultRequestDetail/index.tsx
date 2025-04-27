@@ -125,7 +125,10 @@ const ConsultRequestDetail = () => {
     try {
       if (!data) return;
       const res = await getConsultantRequestChat(
-        data.studentInfo.user.id,
+        user?.Role === "Consultant"
+          ? data.studentInfo.user.id
+          : "12FFC162-D2D0-420A-8806-647253B09E95",
+
         data.id
       );
       if (res) setMessages(res);
@@ -144,7 +147,10 @@ const ConsultRequestDetail = () => {
     try {
       await sendConsultantRequestMessage({
         consultantRequestId: data.id,
-        receiver: data.studentInfo.user.id,
+        receiver:
+          user?.Role === "Consultant"
+            ? data.studentInfo.user.id
+            : "12FFC162-D2D0-420A-8806-647253B09E95",
         text: values.text,
       });
     } catch (err) {
@@ -182,17 +188,29 @@ const ConsultRequestDetail = () => {
         </div>
         <div className="flex items-center gap-4">
           <p className="text-gray-500">Trạng thái:</p>
-          {statusOptions.map((item, index) => (
+          {user?.Role === "Consultant" ? (
+            <>
+              {statusOptions.map((item, index) => (
+                <button
+                  key={index}
+                  className={`${
+                    status === item.value ? "bg-blue-600" : "bg-gray-200"
+                  } text-white font-bold py-2 px-4 rounded-full`}
+                  onClick={() => handleUpdateRequest(item.value)}
+                >
+                  {item.label}
+                </button>
+              ))}
+            </>
+          ) : (
             <button
-              key={index}
-              className={`${
-                status === item.value ? "bg-blue-600" : "bg-gray-200"
-              } text-white font-bold py-2 px-4 rounded-full`}
-              onClick={() => handleUpdateRequest(item.value)}
+              className={`
+                bg-blue-600
+               text-white font-bold py-2 px-4 rounded-full`}
             >
-              {item.label}
+              {statusOptions.find((item) => item.value === status)?.label}
             </button>
-          ))}
+          )}
         </div>
       </div>
       <div className="grid grid-cols-2 gap-4 mt-4">
