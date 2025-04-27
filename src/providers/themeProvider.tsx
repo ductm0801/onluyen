@@ -12,9 +12,9 @@ const ThemeContext = createContext<ThemeContextProps | undefined>(undefined);
 
 export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   const getSystemTheme = (): Theme => {
-    return window.matchMedia("(prefers-color-scheme: dark)").matches
-      ? "dark"
-      : "light";
+    return window.matchMedia("(prefers-color-scheme: ligh)").matches
+      ? "light"
+      : "dark";
   };
 
   const [theme, setTheme] = useState<Theme>("light"); // Đặt giá trị mặc định
