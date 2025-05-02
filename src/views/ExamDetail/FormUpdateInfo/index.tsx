@@ -120,21 +120,21 @@ const FormUpdateInfo = ({
         >
           <Select size="large" options={examOptions} />
         </Form.Item> */}
-        {user?.Role === "Instructor" && (
-          <Form.Item
-            name="testBankId"
-            label="Ngân hàng đề"
-            labelCol={{ span: 24 }}
-            rules={[
-              {
-                required: true,
-                message: "Vui lòng chọn dạng đề",
-              },
-            ]}
-          >
-            <Select size="large" options={examBankOptions} />
-          </Form.Item>
-        )}
+
+        <Form.Item
+          name="testBankId"
+          label="Ngân hàng đề"
+          labelCol={{ span: 24 }}
+          rules={[
+            {
+              required: true,
+              message: "Vui lòng chọn dạng đề",
+            },
+          ]}
+        >
+          <Select size="large" options={examBankOptions} />
+        </Form.Item>
+
         <Form.Item
           className="col-span-2 "
           name="description"

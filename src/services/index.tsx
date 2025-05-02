@@ -371,6 +371,7 @@ export const getQuestionNotInExam = async (
         difficulty: filter.difficulty,
         type: filter.type,
         searchTerm: filter.search,
+        subjectId: filter.subjectId,
       },
     }
   );
@@ -863,5 +864,13 @@ export const getInstructorSchedule = async (
 };
 export const updateNoti = async (notiId: string) => {
   const res = await axiosClient.put(`/api/chat/update_isread/${notiId}`);
+  return res.data;
+};
+export const updatePassword = async (body: any) => {
+  const res = await axiosClient.post(`/api/accounts/updatePassword`, body);
+  return res.data;
+};
+export const resetPassword = async (body: any) => {
+  const res = await axiosClient.post(`/api/accounts/forgotPassword`, body);
   return res.data;
 };

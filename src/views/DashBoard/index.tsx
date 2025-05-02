@@ -66,7 +66,7 @@ const DashBoard = () => {
     labels: analyzeData?.map((a: any) => a.yearMonth),
     datasets: [
       {
-        label: "Tổng Lợi nhuận",
+        label: "Tổng doanh thu",
         data: analyzeData?.map((a: any) => a.totalRevenue),
         borderColor: "rgba(75, 192, 192, 1)",
         backgroundColor: "rgba(75, 192, 192, 0.3)",
@@ -97,7 +97,7 @@ const DashBoard = () => {
       <div className="flex items-center gap-4">
         <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
           <h4 className="font-bold text-gray-800 text-title-sm dark:text-white/90">
-            Tổng lợi nhuận{" "}
+            Tổng doanh thu{" "}
             {revenueData?.totalBalance?.toLocaleString("vi-VN") || 0}đ
           </h4>
         </div>

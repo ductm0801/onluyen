@@ -15,7 +15,6 @@ import {
   Form,
   Image,
   Input,
-  InputNumber,
   Modal,
   Radio,
   Select,
@@ -27,10 +26,11 @@ import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
+import ChangePassword from "@/components/ChangePassword";
 import CustomButton from "@/components/CustomButton";
 import banks from "@/constants/data/bank.json";
-import { Radar } from "react-chartjs-2";
 import { IMAGES } from "@/constants/images";
+import { Radar } from "react-chartjs-2";
 Chart.register(...registerables);
 
 const genderOptions = [
@@ -364,6 +364,11 @@ const Profile = () => {
           )}
         </div>
       ),
+    },
+    {
+      value: 2,
+      label: "Đổi mật khẩu",
+      children: <ChangePassword />,
     },
   ];
   if (user?.instructor) {
