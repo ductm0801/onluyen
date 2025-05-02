@@ -2,11 +2,13 @@ import Paging from "@/components/Paging";
 import { IMAGES } from "@/constants/images";
 import { renderMathContent } from "@/constants/utils";
 import { IExam, IQuestion, IQuestionBank } from "@/models";
+import { useAuth } from "@/providers/authProvider";
 import { useLoading } from "@/providers/loadingProvider";
 import {
   getQuestionBank,
   getQuestionByBank,
   getQuestionNotInExam,
+  getSubject,
   previewExcelTemplate,
   updateExamQuestion,
 } from "@/services";
@@ -55,6 +57,7 @@ const FormUpdateExam: React.FC<Props> = ({
     value: "",
   });
   const { setLoading } = useLoading();
+  const { user } = useAuth();
   const [detail, setDetail] = useState(false);
 
   const qDetail = useRef<IQuestion | null>(null);
@@ -66,10 +69,12 @@ const FormUpdateExam: React.FC<Props> = ({
   const [totalQuestionInExam, setTotalQuestionInExam] = useState(
     exam?.totalItemsCount
   );
+  const [subject, setSubject] = useState([]);
   const [filter, setFilter] = useState({
     type: "",
     difficulty: "",
     search: "",
+    subjectId: "",
   });
   const [pageSize, setPageSize] = useState(10);
   const [currentPage, setCurrentPage] = useState(0);
@@ -77,6 +82,7 @@ const FormUpdateExam: React.FC<Props> = ({
   const [totalPages, setTotalPages] = useState(1);
 
   const params = useParams();
+  console.log(filter);
 
   useEffect(() => {
     setExamQuestions(exam?.questions || []);
@@ -98,8 +104,24 @@ const FormUpdateExam: React.FC<Props> = ({
       setLoading(false);
     }
   };
+  const fetchSubject = async () => {
+    try {
+      setLoading(true);
+      const res = await getSubject();
+      if (res) {
+        setSubject(res.data);
+      }
+    } catch (err) {
+      console.log(err);
+      setLoading(false);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     fetchQuestionBank();
+    fetchSubject();
   }, []);
   const fetchQuestion = async () => {
     try {
@@ -238,6 +260,22 @@ const FormUpdateExam: React.FC<Props> = ({
                 })
               }
             />
+            {user?.Role === "ExamManager" && (
+              <Select
+                placeholder="Môn học"
+                options={subject.map((s: any) => ({
+                  label: s.subjectName,
+                  value: s.id,
+                }))}
+                allowClear
+                onChange={(value) =>
+                  setFilter({
+                    ...filter,
+                    subjectId: value,
+                  })
+                }
+              />
+            )}
           </div>
           <div className="flex items-center gap-2">
             <div className="relative">
