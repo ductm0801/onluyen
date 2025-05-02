@@ -867,10 +867,10 @@ export const updateNoti = async (notiId: string) => {
   return res.data;
 };
 export const updatePassword = async (body: any) => {
-  const res = await axiosClient.post(`/api/accounts/updatePassword`, body);
+  const res = await axiosClient.put(`/api/accounts/updatePassword`, body);
   return res.data;
 };
 export const resetPassword = async (body: any) => {
-  const res = await axiosClient.post(`/api/accounts/forgotPassword`, body);
+  const res = await axiosClient.put(`/api/accounts/forgotPassword`, body);
   return res.data;
 };
