@@ -874,3 +874,13 @@ export const resetPassword = async (body: any) => {
   const res = await axiosClient.put(`/api/accounts/forgotPassword`, body);
   return res.data;
 };
+export const getNewsPaging = async (pageIndex: number, pageSize: number) => {
+  const res = await axiosClient.get(`/api/article`, {
+    params: { pageIndex, pageSize },
+  });
+  return res.data;
+};
+export const createNews = async (body: any) => {
+  const res = await axiosClient.post(`/api/article`, body);
+  return res.data;
+};

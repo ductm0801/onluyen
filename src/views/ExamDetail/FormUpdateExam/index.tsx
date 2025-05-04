@@ -82,7 +82,6 @@ const FormUpdateExam: React.FC<Props> = ({
   const [totalPages, setTotalPages] = useState(1);
 
   const params = useParams();
-  console.log(filter);
 
   useEffect(() => {
     setExamQuestions(exam?.questions || []);
@@ -184,18 +183,26 @@ const FormUpdateExam: React.FC<Props> = ({
     }
   };
 
-  const handleUpdateExam = async () => {
+  const handleUpdateExam = async (data?: any) => {
     try {
+      if (data) {
+        const dataQuestionId = data.map((q: IQuestion) => q.id);
+        const prevExamQuestion = examQuestions.map((q) => q.id);
+        setLoading(true);
+        await updateExamQuestion(id, [...prevExamQuestion, ...dataQuestionId]);
+        toast.success("Cập nhật thành công!");
+        return;
+      }
       const dataQuestionId = examQuestions.map((q) => q.id);
       setLoading(true);
       await updateExamQuestion(id, dataQuestionId);
-      fetchQuestion();
       toast.success("Cập nhật thành công!");
     } catch (error: any) {
       console.error(error);
       toast.error(error.response.data.message);
     } finally {
       setLoading(false);
+      fetchQuestion();
       fetchExam();
     }
   };
@@ -222,6 +229,9 @@ const FormUpdateExam: React.FC<Props> = ({
   useEffect(() => {
     setTotalQuestionInExam(examQuestions.length);
   }, [examQuestions]);
+  const handleSelectAll = () => {
+    handleUpdateExam(dataQuestion);
+  };
   return (
     <div className="flex flex-col gap-8">
       <h1 className="text-3xl font-bold text-center">
@@ -306,10 +316,7 @@ const FormUpdateExam: React.FC<Props> = ({
             </div>
             <div
               className="text-blue-500 text-lg font-bold whitespace-nowrap cursor-pointer hover:text-blue-600"
-              onClick={() => {
-                setExamQuestions([...examQuestions, ...dataQuestion]);
-                setDataQuestion([]);
-              }}
+              onClick={() => handleSelectAll()}
             >
               Chọn tất cả {dataQuestion.length} câu hỏi
             </div>

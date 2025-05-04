@@ -189,6 +189,12 @@ export const menus: Record<
   ],
   Consultant: [
     {
+      label: "Tin tức",
+      path: "/consultant/news",
+      icon: IMAGES.newsIcon,
+      isShow: true,
+    },
+    {
       label: "Tin nhắn",
       path: "/consultant/message",
       icon: IMAGES.chatIcon,
