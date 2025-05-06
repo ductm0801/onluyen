@@ -884,3 +884,18 @@ export const createNews = async (body: any) => {
   const res = await axiosClient.post(`/api/article`, body);
   return res.data;
 };
+export const createFeedback = async (
+  body: any,
+  courseId: string | string[]
+) => {
+  const res = await axiosClient.post(`/api/feedback/${courseId}`, body);
+  return res.data;
+};
+export const updateNews = async (newsId: string | string[], body: any) => {
+  const res = await axiosClient.put(`/api/article/${newsId}`, body);
+  return res.data;
+};
+export const hideNews = async (newsId: string | string[]) => {
+  const res = await axiosClient.put(`/api/article/delete/${newsId}`);
+  return res.data;
+};
