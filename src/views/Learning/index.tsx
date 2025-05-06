@@ -2,12 +2,15 @@
 import { IMAGES } from "@/constants/images";
 import { ICourse, ILesson } from "@/models";
 import { useLoading } from "@/providers/loadingProvider";
-import { getCourseDetail, getCourseLearning } from "@/services";
+import { createFeedback, getCourseDetail, getCourseLearning } from "@/services";
 import "plyr-react/plyr.css";
 import dynamic from "next/dynamic";
 import { useParams } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 import Paging from "@/components/Paging";
+import { Button, Form, Input, Modal, Rate, Tooltip } from "antd";
+import { toast } from "react-toastify";
+import { set } from "lodash";
 const VideoPlayer = dynamic(() => import("@/components/VideoPlayer"), {
   ssr: false,
 });
@@ -24,7 +27,8 @@ const Learning = () => {
   const [activeLesson, setActiveLesson] = useState<ILesson | undefined>(
     undefined
   );
-
+  const [feedback, setFeedback] = useState(false);
+  const [form] = Form.useForm();
   const { setLoading } = useLoading();
   const fetchCourseDetail = async () => {
     try {
@@ -48,6 +52,19 @@ const Learning = () => {
   useEffect(() => {
     fetchCourseDetail();
   }, [params.id, currentPage, isSaveProgress]);
+  const onFinish = async (values: any) => {
+    try {
+      setLoading(true);
+      await createFeedback(values, course?.courseId || "");
+      toast.success("Cảm ơn bạn đã đánh giá");
+    } catch (e: any) {
+      toast.error(e.response.data.message);
+      setLoading(false);
+    } finally {
+      setLoading(false);
+      setFeedback(false);
+    }
+  };
 
   if (!course) return null;
 
@@ -181,6 +198,41 @@ const Learning = () => {
           </div>
         </div>
       </div>
+      <Tooltip title="Đánh giá khóa học">
+        <img
+          src={IMAGES.feedbackIcon}
+          alt="learning"
+          className="fixed bottom-24 right-10 z-20 w-10 cursor-pointer"
+          onClick={() => setFeedback(true)}
+        />
+      </Tooltip>
+      <Modal
+        title="Đánh giá khóa học"
+        open={feedback}
+        onCancel={() => setFeedback(false)}
+        footer={null}
+      >
+        <Form form={form} onFinish={onFinish}>
+          <Form.Item name="rating" initialValue={5}>
+            <Rate defaultValue={5} />
+          </Form.Item>
+          <Form.Item
+            name="content"
+            label="Nội dung đánh giá"
+            labelCol={{ span: 24 }}
+            rules={[{ required: true, message: "Vui lòng nhập đánh giá" }]}
+          >
+            <Input.TextArea className="!h-[100px]" />
+          </Form.Item>
+          <Form.Item>
+            <div className="flex justify-end">
+              <Button type="primary" htmlType="submit">
+                Đánh giá
+              </Button>
+            </div>
+          </Form.Item>
+        </Form>
+      </Modal>
     </div>
   );
 };

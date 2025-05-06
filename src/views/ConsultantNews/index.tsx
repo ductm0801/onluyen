@@ -2,10 +2,16 @@
 import Paging from "@/components/Paging";
 import { IMAGES } from "@/constants/images";
 import { useLoading } from "@/providers/loadingProvider";
-import { createNews, getNewsPaging, uploadImg } from "@/services";
+import {
+  createNews,
+  getNewsPaging,
+  hideNews,
+  updateNews,
+  uploadImg,
+} from "@/services";
 import { Button, Form, Input, Modal, Upload } from "antd";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
@@ -127,6 +133,9 @@ const ConsultantNews = () => {
   const [create, setCreate] = useState(false);
   const [imageUrl, setImageUrl] = useState<any>({});
   const [form] = Form.useForm();
+  const [edit, setEdit] = useState(false);
+  const detail = useRef<any | null>(null);
+
   const fetchData = async () => {
     try {
       setLoading(true);
@@ -165,13 +174,66 @@ const ConsultantNews = () => {
     setImageUrl(file);
     try {
       const res = await uploadImg(formData);
-
       form.setFieldValue("videoUrl", res.url);
-
       setLoading(false);
     } catch (error: any) {
       setLoading(false);
       toast.error(error.response.data.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+  const handleEdit = (item: any) => {
+    setEdit(true);
+    detail.current = item;
+    form.setFieldsValue(item);
+  };
+  const handleCloseEdit = () => {
+    setEdit(false);
+    detail.current = null;
+    form.resetFields();
+  };
+  useEffect(() => {
+    if (detail.current) {
+      const initialImg = {
+        uid: `-${detail.current.id}`,
+        name: `image${detail.current.id}.png`,
+        status: "done" as const,
+        url: detail.current.videoUrl,
+      };
+      // const bannerMerge = initialBanner.at(0);
+      setImageUrl(initialImg);
+      //   setImageUrl(data.imageUrl);
+    }
+  }, [detail.current, edit]);
+  const editNews = async (values: any) => {
+    try {
+      console.log(detail.current);
+      setLoading(true);
+      await updateNews(detail.current.id, values);
+
+      toast.success("Cập nhật tin tức thành công!");
+
+      setEdit(false);
+      fetchData();
+    } catch (e: any) {
+      setLoading(false);
+      toast.error(e.response?.data.message);
+    } finally {
+      setLoading(false);
+      form.resetFields();
+      detail.current = null;
+    }
+  };
+  const handleDelete = async (id: string) => {
+    try {
+      setLoading(true);
+      await hideNews(id);
+      toast.success("Ẩn bài đăng thành công!");
+      fetchData();
+    } catch (e: any) {
+      setLoading(false);
+      toast.error(e.response?.data.message);
     } finally {
       setLoading(false);
     }
@@ -234,12 +296,12 @@ const ConsultantNews = () => {
                   onClick={() => router.push(`/consultant/news/${a.id}`)}
                 >
                   <img
-                    className="w-10 h-10 rounded-full"
-                    src={a.videoUrl || IMAGES.defaultMale}
+                    className="w-20 aspect-[3/2] object-contain"
+                    src={a.videoUrl || ""}
                     alt="avatar"
                   />
                   <div className="ps-3">
-                    <div className="text-base group-hover:underline group-hover:text-blue-500  font-semibold">
+                    <div className="text-base max-w-[200px] truncate  font-semibold">
                       {a.title}
                     </div>
                   </div>
@@ -252,7 +314,9 @@ const ConsultantNews = () => {
                     dangerouslySetInnerHTML={{ __html: a.content }}
                   />
                 </td>
-                <td className="px-6 py-4">Đang hoạt động</td>
+                <td className="px-6 py-4">
+                  {a.isDeleted ? "Tạm ngưng" : " Đang hoạt động"}
+                </td>
                 <td className="px-6 py-4 ">
                   <div className="flex flex-col items-center">
                     <p>{moment(a.creationDate).format("DD/MM/YYYY")}</p>
@@ -261,23 +325,23 @@ const ConsultantNews = () => {
                     </p>
                   </div>
                 </td>
-                {/* <td className="px-6 py-4">
-                  {a.status ? (
+                <td className="px-6 py-4">
+                  <div className="flex items-center justify-center gap-2">
                     <div
                       className="font-medium text-blue-600 dark:text-blue-500 hover:underline cursor-pointer"
-                      onClick={() => handleConfirm(a, "Active")}
+                      onClick={() => handleEdit(a)}
                     >
-                      Hiện người dùng
+                      Sửa
                     </div>
-                  ) : (
+
                     <div
-                      className="font-medium text-red-600 dark:text-red-500 hover:underline cursor-pointer ms-3"
-                      onClick={() => handleConfirm(a, "Inactive")}
+                      className="font-medium text-red-600 dark:text-red-500 hover:underline cursor-pointer ms-3 whitespace-nowrap"
+                      onClick={() => handleDelete(a.id)}
                     >
-                      Ẩn người dùng
+                      Ẩn bài đăng
                     </div>
-                  )}
-                </td> */}
+                  </div>
+                </td>
               </tr>
             ))}
         </tbody>
@@ -292,7 +356,7 @@ const ConsultantNews = () => {
       {create && (
         <Modal
           open={create}
-          onCancel={() => setCreate(false)}
+          onCancel={() => (setCreate(false), form.resetFields())}
           footer={null}
           width={1000}
         >
@@ -312,6 +376,68 @@ const ConsultantNews = () => {
                 onChange={handleChangeImage}
                 maxCount={1}
                 // fileList={imageUrl ? [imageUrl] : []}
+              >
+                {typeof form.getFieldValue(["videoUrl"]) === "string"
+                  ? "Đổi hình"
+                  : "Thêm hình"}
+              </Upload>
+            </Form.Item>
+            <Form.Item
+              name="title"
+              label="Tiêu đề"
+              labelCol={{ span: 24 }}
+              rules={[{ required: true, message: "Vui lòng nhập tiêu đề" }]}
+            >
+              <Input className="w-full" placeholder="Tiêu đề" />
+            </Form.Item>
+            <Form.Item
+              name="content"
+              label="Nội dung"
+              labelCol={{ span: 24 }}
+              rules={[{ required: true, message: "Vui lòng nhập nội dung" }]}
+            >
+              <ReactQuill
+                theme="snow"
+                placeholder="Nội dung..."
+                modules={quillModules}
+                formats={quillFormats}
+                className="h-60"
+              />
+            </Form.Item>
+            <Form.Item>
+              <div className="flex justify-end mt-16">
+                <Button type="primary" htmlType="submit">
+                  Xác nhận
+                </Button>
+              </div>
+            </Form.Item>
+          </Form>
+        </Modal>
+      )}
+      {edit && (
+        <Modal
+          open={edit}
+          onCancel={() => handleCloseEdit()}
+          footer={null}
+          width={1000}
+        >
+          <Form
+            form={form}
+            onFinish={editNews}
+            initialValues={detail.current || null}
+            className="w-full max-h-[800px] overflow-auto"
+          >
+            <Form.Item
+              name="videoUrl"
+              label="Hình ảnh"
+              labelCol={{ span: 24 }}
+              rules={[{ required: true, message: "Vui lòng nhập hình ảnh" }]}
+            >
+              <Upload
+                listType="picture-card"
+                onChange={handleChangeImage}
+                maxCount={1}
+                fileList={imageUrl ? [imageUrl] : []}
               >
                 {typeof form.getFieldValue(["videoUrl"]) === "string"
                   ? "Đổi hình"
