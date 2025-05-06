@@ -2,7 +2,12 @@
 import { IMAGES } from "@/constants/images";
 import { ICourse, IInstructor, IInstructorDetail } from "@/models";
 import { useLoading } from "@/providers/loadingProvider";
-import { getAllInstructor, getCourse, getCourseByStudent } from "@/services";
+import {
+  getAllInstructor,
+  getCourse,
+  getCourseByStudent,
+  getNewsPaging,
+} from "@/services";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
@@ -26,6 +31,10 @@ const menu = [
     title: "Giảng viên",
     href: "#giang-vien",
   },
+  {
+    title: "Tin tức",
+    href: "#tin-tuc",
+  },
 ];
 const items = [
   IMAGES.about1,
@@ -42,6 +51,7 @@ const Intro = () => {
   const { setLoading } = useLoading();
   const [course, setCourse] = useState<ICourse[]>([]);
   const [instructor, setInstructor] = useState<IInstructorDetail[]>([]);
+  const [news, setNews] = useState([]);
 
   const router = useRouter();
   const { user, logout } = useAuth();
@@ -56,6 +66,18 @@ const Intro = () => {
   const handleSlidePrev = () => {
     if (!swiperRef.current) return;
     swiperRef.current.swiper.slidePrev();
+  };
+
+  const fetchNews = async () => {
+    try {
+      setLoading(true);
+      const res = await getNewsPaging(0, 10);
+      if (res) setNews(res.data.items);
+    } catch (e: any) {
+      setLoading(false);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const fetchCourse = async () => {
@@ -74,6 +96,7 @@ const Intro = () => {
   useEffect(() => {
     fetchCourse();
     fetchInstructor();
+    fetchNews();
   }, []);
   const fetchInstructor = async () => {
     try {
@@ -350,6 +373,32 @@ const Intro = () => {
               className=" cursor-pointer border-white rounded-full border w-[40px]"
               onClick={() => handleSlideNext()}
             />
+          </div>
+        </div>
+        <div id="tin-tuc" className="max-w-[1300px] mx-auto">
+          <h1 className="text-[#2E90FA] font-bold text-[60px]">Tin tức</h1>
+          <div className="grid grid-cols-3 gap-4">
+            {news.map((n: any, index) => (
+              <div
+                key={index}
+                className="bg-white p-4 border  rounded-[20px] shadow-md overflow-hidden"
+              >
+                <img
+                  src={n?.videoUrl || ""}
+                  alt="course"
+                  className="w-full object-contain"
+                />
+                <div className="p-4">
+                  <p className="text-[#2E90FA] font-bold text-lg">{n.title}</p>
+                </div>
+                <div
+                  className="bg-[#1244A2] text-white rounded-lg text-center py-3 cursor-pointer"
+                  onClick={() => router.push(`/news/${n.id}`)}
+                >
+                  Chi tiết
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </div>
