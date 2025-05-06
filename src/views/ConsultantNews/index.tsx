@@ -1,6 +1,5 @@
 "use client";
 import Paging from "@/components/Paging";
-import { IMAGES } from "@/constants/images";
 import { useLoading } from "@/providers/loadingProvider";
 import {
   createNews,
@@ -10,12 +9,12 @@ import {
   uploadImg,
 } from "@/services";
 import { Button, Form, Input, Modal, Upload } from "antd";
-import { useRouter } from "next/navigation";
-import React, { useEffect, useRef, useState } from "react";
-import { toast } from "react-toastify";
-import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css";
 import moment from "moment";
+import dynamic from "next/dynamic";
+import { useEffect, useRef, useState } from "react";
+const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
+import "react-quill/dist/quill.snow.css";
+import { toast } from "react-toastify";
 
 const cols = [
   {
@@ -129,7 +128,6 @@ const ConsultantNews = () => {
   const [pageSize, setPageSize] = useState(10);
   const [totalItems, setTotalItems] = useState(0);
   const [totalPageCount, setTotalPageCount] = useState(0);
-  const router = useRouter();
   const [create, setCreate] = useState(false);
   const [imageUrl, setImageUrl] = useState<any>({});
   const [form] = Form.useForm();
@@ -293,7 +291,6 @@ const ConsultantNews = () => {
                 <th
                   scope="row"
                   className="flex group cursor-pointer items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white"
-                  onClick={() => router.push(`/consultant/news/${a.id}`)}
                 >
                   <img
                     className="w-20 aspect-[3/2] object-contain"
