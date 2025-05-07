@@ -67,7 +67,10 @@ const StudentForm: React.FC<props> = ({ setIsRegist }) => {
 
       <div className="flex gap-2 items-center w-full">
         <Form.Item
-          rules={[{ required: true, message: "Không bỏ trống mật khẩu" }]}
+          rules={[
+            { required: true, message: "Không bỏ trống mật khẩu" },
+            { min: 8 },
+          ]}
           name="password"
           label={<b className="text-white">Mật khẩu</b>}
           labelCol={{ span: 24 }}
@@ -92,6 +95,7 @@ const StudentForm: React.FC<props> = ({ setIsRegist }) => {
           rules={[
             { required: true, message: "Không bỏ trống mật khẩu" },
             { validator: validateConfirmPassword },
+            { min: 8 },
           ]}
           className="w-full"
           label={<b className="text-white">Xác nhận mật khẩu</b>}

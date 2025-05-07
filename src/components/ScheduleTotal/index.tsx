@@ -4,12 +4,14 @@ import dayjs from "dayjs";
 import { useLoading } from "@/providers/loadingProvider";
 import { getMeetLink } from "@/services";
 import { toast } from "react-toastify";
+import Schedule from "../Schedule";
 
 type props = {
   data: any;
   currentWeek: any;
   setStartDate: any;
   setEndDate: any;
+  fetchData: any;
 };
 
 const dayOfWeekOrder = [
@@ -37,6 +39,7 @@ const ScheduleTotal: FC<props> = ({
   currentWeek,
   setStartDate,
   setEndDate,
+  fetchData,
 }) => {
   const { setLoading } = useLoading();
   const getMonday = (dateStr: string) => {
@@ -139,42 +142,7 @@ const ScheduleTotal: FC<props> = ({
           setEndDate(endDate);
         }}
       />
-      <div className="overflow-auto py-4">
-        <table className="table-fixed border border-separate border-spacing-2 rounded-[20px] p-4 w-full">
-          <thead>
-            <tr>
-              <th className=" relative bg-[#1244A2] w-[100px]  text-start text-[10px] rounded-xl text-white px-2 pt-4">
-                Thời gian
-                <p className="absolute inset-0 z-50 text-end px-2 pb-4 bg-[#FDB022] border border-[#FDB022] rounded-xl clip-half">
-                  Ngày
-                </p>
-              </th>
-              {dayOfWeekOrder.map((day) => (
-                <th
-                  key={day}
-                  className=" text-white bg-[#FDB022] rounded-xl px-4 py-2"
-                >
-                  {dayOfWeekLabels[day]}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {timeSlots.map((time) => (
-              <tr key={time}>
-                <td className=" border-gray-300 py-2 text-center font-medium bg-[#1244A2] text-white rounded-xl">
-                  {time}
-                </td>
-                {dayOfWeekOrder.map((day) => (
-                  <td key={day} className="rounded-xl border">
-                    {getCell(day, time)}
-                  </td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      <Schedule data={data} fetchData={fetchData} />
     </div>
   );
 };
