@@ -899,3 +899,13 @@ export const hideNews = async (newsId: string | string[]) => {
   const res = await axiosClient.put(`/api/article/delete/${newsId}`);
   return res.data;
 };
+export const changeTimeSlot = async (
+  learningSlotId: string | string[],
+  body: any
+) => {
+  const res = await axiosClient.post(
+    `/api/schedules/cancelAndRescheduleSlotAsync/${learningSlotId}`,
+    body
+  );
+  return res.data;
+};

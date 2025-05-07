@@ -147,7 +147,7 @@ const FormUpdateSchedule: FC<props> = ({ duration }) => {
       </div>
       <div>
         <h2 className="text-3xl font-bold mb-4 text-center">📅 Lịch dạy</h2>
-        <Schedule data={data} />
+        <Schedule data={data} fetchData={fetchData} />
       </div>
       {create && (
         <Modal

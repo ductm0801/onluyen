@@ -44,6 +44,7 @@ const MyCourse = () => {
         setEndDate={setEndDate}
         data={data}
         currentWeek={currentWeek}
+        fetchData={fetchData}
       />
     </div>
   );

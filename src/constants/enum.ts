@@ -109,3 +109,13 @@ export const dayOfWeekOptions = [
   { value: "ThuBay", label: "Thứ bảy" },
   { value: "ChuNhat", label: "Chủ nhật" },
 ];
+
+export const LearningSlotTypeEnum = {
+  0: "Theo lịch",
+  1: "Bù lịch",
+};
+export const LearningSlotStatusEnum = {
+  0: "Chưa bắt đầu",
+  1: "Hoàn thành",
+  2: "Đã hủy",
+};
