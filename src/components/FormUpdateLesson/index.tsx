@@ -56,7 +56,7 @@ const FormUpdateLesson: React.FC<props> = ({
                 <Image
                   width={160}
                   height={90}
-                  src={lesson.imageUrl}
+                  src={lesson.imageUrl || IMAGES.about2}
                   alt={lesson.title}
                   className="object-cover aspect-video"
                 />
