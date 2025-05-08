@@ -2,7 +2,8 @@
 import CircularProgess from "@/components/CircularProgress";
 import { examEnum, questionEnum } from "@/constants/enum";
 import { renderMathContent } from "@/constants/utils";
-
+import "katex/contrib/mhchem";
+import "katex/dist/katex.min.css";
 import { IExam } from "@/models";
 import { useExamLeave } from "@/providers/examProvider";
 import { useLoading } from "@/providers/loadingProvider";

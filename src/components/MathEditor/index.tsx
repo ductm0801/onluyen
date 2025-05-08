@@ -3,7 +3,7 @@
 import React, { useRef, useEffect } from "react";
 import katex from "katex";
 import "katex/dist/katex.min.css";
-
+import "katex/contrib/mhchem";
 import FormulaModal from "@/components/FormulaModal";
 import { renderMathContent } from "@/constants/utils";
 
