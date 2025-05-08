@@ -76,11 +76,11 @@ const FormUpdateLesson: React.FC<props> = ({
                     <img src={IMAGES.editIcon} alt="edit" className="w-4  r" />
                   </div>
                 </Tooltip>
-                <Tooltip title="Xóa bài học" className="cursor-pointer">
+                {/* <Tooltip title="Xóa bài học" className="cursor-pointer">
                   <div className="p-2 rounded-lg bg-red-500 cursor-pointer">
                     <img src={IMAGES.trashIcon} alt="edit" className="w-4   " />
                   </div>
-                </Tooltip>
+                </Tooltip> */}
               </div>
             </div>
             <div
