@@ -349,7 +349,7 @@ const Intro = () => {
                       </p>
 
                       <img
-                        src={IMAGES.instructorDefault}
+                        src={ins.user.imageUrl || IMAGES.instructorDefault}
                         alt="instructor"
                         className="w-[280px] aspect-[280/336] object-cover rounded-xl"
                       />

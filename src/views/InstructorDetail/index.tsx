@@ -63,7 +63,8 @@ const InstructorDetail = () => {
         <Image
           width={150}
           height={150}
-          src={IMAGES.defaultAvatar}
+          src={detail?.user.imageUrl || IMAGES.defaultAvatar}
+          className="object-contain"
           alt="avatar"
         />
         <div>
