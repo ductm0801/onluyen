@@ -68,6 +68,7 @@ const QuestionDetail: React.FC<props> = ({
   const onFinish = async (values: IQuestion) => {
     try {
       if (!question) return;
+      setLoading(true);
       const res = await updateQuestion(values, question.id);
       if (res) {
         toast.success("Sửa câu hỏi thành công!");
@@ -75,6 +76,7 @@ const QuestionDetail: React.FC<props> = ({
         handleClose();
       }
     } catch (err: any) {
+      setLoading(false);
       toast.error(err.response.data.message);
       return;
     } finally {
