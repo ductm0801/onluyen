@@ -269,7 +269,10 @@ const Intro = () => {
               hành cùng bạn trên hành trình chinh phục kỳ thi quan trọng này.
               Hãy bắt đầu luyện tập ngay hôm nay để đạt kết quả tốt nhất!
             </p>
-            <div className="text-white bg-[#1244A2] flex items-center gap-2 py-[10px] px-[14px] rounded-md">
+            <div
+              className="text-white bg-[#1244A2] flex items-center gap-2 cursor-pointer py-[10px] px-[14px] rounded-md"
+              onClick={() => router.push(user ? "/student/home" : "/login")}
+            >
               Xem thêm
               <svg
                 width="8"
