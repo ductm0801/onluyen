@@ -4,6 +4,7 @@ import { IExam } from "@/models";
 import { useLoading } from "@/providers/loadingProvider";
 import { examResult, getExamAIAnalyze, postConsultRequest } from "@/services";
 import { Modal } from "antd";
+import { error } from "console";
 import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
@@ -26,10 +27,6 @@ const Result = () => {
     } catch (e: any) {
       setLoading(false);
       toast.error(e.response.data.message);
-      if (e.response.data.message === "Không tìm thấy bàì làm với ID.") {
-        router.replace(`/404`);
-        return;
-      }
     } finally {
       setLoading(false);
     }

@@ -5,7 +5,7 @@ import { IMAGES } from "@/constants/images";
 import { IExam } from "@/models";
 import { useLoading } from "@/providers/loadingProvider";
 import { examResult } from "@/services";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 
 const ResultDetail = () => {
@@ -13,6 +13,7 @@ const ResultDetail = () => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const { setLoading } = useLoading();
   const params = useParams();
+  const router = useRouter();
 
   const listRef = useRef<HTMLUListElement>(null);
   const itemRefs = useRef<(HTMLLIElement | null)[]>([]);
@@ -32,8 +33,13 @@ const ResultDetail = () => {
       setLoading(true);
       const res = await examResult(params.id, 0, 100);
       setExam(res.data);
-    } catch (e) {
+    } catch (e: any) {
       setLoading(false);
+      console.log(e);
+      if (e.response.data.message === "Không tìm thấy bàì làm với ID.") {
+        router.replace(`/404`);
+        return;
+      }
     } finally {
       setLoading(false);
     }
