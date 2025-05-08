@@ -909,3 +909,17 @@ export const changeTimeSlot = async (
   );
   return res.data;
 };
+export const getGeneralExam = async (
+  pageIndex: number,
+  pageSize: number,
+  universityId?: string
+) => {
+  const res = await axiosClient.get(`/api/exam/GeneralPaging`, {
+    params: {
+      pageIndex,
+      pageSize,
+      universityId,
+    },
+  });
+  return res.data;
+};

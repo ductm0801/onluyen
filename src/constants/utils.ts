@@ -53,3 +53,16 @@ export const getCurrentWeekRange = () => {
     endDate: endOfWeek.format("YYYY-MM-DD"),
   };
 };
+export const parseGvizDate = (dateStr: string): string => {
+  const match = dateStr.match(/Date\((\d+),(\d+),(\d+)\)/);
+  if (!match) return dateStr;
+
+  const [_, year, month, day] = match.map(Number);
+  const d = new Date(year, month, day);
+
+  const dd = String(d.getDate()).padStart(2, "0");
+  const mm = String(d.getMonth() + 1).padStart(2, "0");
+  const yyyy = d.getFullYear();
+
+  return `${dd}-${mm}-${yyyy}`;
+};
