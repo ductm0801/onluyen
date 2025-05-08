@@ -167,12 +167,12 @@ const ModalUpdateLesson = ({
                 name="imageUrl"
                 label="Hình ảnh"
                 labelCol={{ span: 24 }}
-                rules={[
-                  {
-                    required: true,
-                    message: "Vui lòng chọn ảnh",
-                  },
-                ]}
+                // rules={[
+                //   {
+                //     required: true,
+                //     message: "Vui lòng chọn ảnh",
+                //   },
+                // ]}
               >
                 <Upload
                   listType="picture-card"
