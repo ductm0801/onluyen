@@ -20,7 +20,7 @@ const cols = [
   {
     name: "Tiêu đề",
     className:
-      "px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white rounded-s-lg",
+      "px-6 py-4 font-medium min-w-[300px] text-gray-900 whitespace-nowrap dark:text-white rounded-s-lg",
   },
   {
     name: "Nội dung",
