@@ -371,6 +371,7 @@ export const getQuestionNotInExam = async (
         difficulty: filter.difficulty,
         type: filter.type,
         searchTerm: filter.search,
+        subjectId: filter.subjectId,
       },
     }
   );
@@ -863,5 +864,66 @@ export const getInstructorSchedule = async (
 };
 export const updateNoti = async (notiId: string) => {
   const res = await axiosClient.put(`/api/chat/update_isread/${notiId}`);
+  return res.data;
+};
+export const updatePassword = async (body: any) => {
+  const res = await axiosClient.put(`/api/accounts/updatePassword`, body);
+  return res.data;
+};
+export const resetPassword = async (body: any) => {
+  const res = await axiosClient.put(`/api/accounts/forgotPassword`, body);
+  return res.data;
+};
+export const getNewsPaging = async (pageIndex: number, pageSize: number) => {
+  const res = await axiosClient.get(`/api/article`, {
+    params: { pageIndex, pageSize },
+  });
+  return res.data;
+};
+export const createNews = async (body: any) => {
+  const res = await axiosClient.post(`/api/article`, body);
+  return res.data;
+};
+export const createFeedback = async (
+  body: any,
+  courseId: string | string[]
+) => {
+  const res = await axiosClient.post(`/api/feedback/${courseId}`, body);
+  return res.data;
+};
+export const updateNews = async (newsId: string | string[], body: any) => {
+  const res = await axiosClient.put(`/api/article/${newsId}`, body);
+  return res.data;
+};
+export const hideNews = async (newsId: string | string[]) => {
+  const res = await axiosClient.put(`/api/article/delete/${newsId}`);
+  return res.data;
+};
+export const changeTimeSlot = async (
+  learningSlotId: string | string[],
+  body: any
+) => {
+  const res = await axiosClient.post(
+    `/api/schedules/cancelAndRescheduleSlotAsync/${learningSlotId}`,
+    body
+  );
+  return res.data;
+};
+export const getGeneralExam = async (
+  pageIndex: number,
+  pageSize: number,
+  universityId?: string
+) => {
+  const res = await axiosClient.get(`/api/exam/GeneralPaging`, {
+    params: {
+      pageIndex,
+      pageSize,
+      universityId,
+    },
+  });
+  return res.data;
+};
+export const getNewDetail = async (id: string | string[]) => {
+  const res = await axiosClient.get(`/api/article/${id}`);
   return res.data;
 };

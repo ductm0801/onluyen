@@ -36,6 +36,7 @@ const InstructorSchedule = () => {
         setEndDate={setEndDate}
         data={data}
         currentWeek={currentWeek}
+        fetchData={fetchData}
       />
     </div>
   );

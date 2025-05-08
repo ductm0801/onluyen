@@ -4,9 +4,9 @@ import { menus } from "@/constants/menu";
 import { ILoginRequest, User } from "@/models";
 import { useAuth } from "@/providers/authProvider";
 import { useLoading } from "@/providers/loadingProvider";
-import { login } from "@/services";
+import { login, resetPassword } from "@/services";
 import Regist from "@/views/Regist";
-import { Form } from "antd";
+import { Form, Input } from "antd";
 import { jwtDecode } from "jwt-decode";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
@@ -19,6 +19,7 @@ const Login = () => {
   const [isRegist, setIsRegist] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const { setLoading } = useLoading();
+  const [isForgotPassword, setIsForgotPassword] = useState(false);
 
   const handleSubmit = async (values: ILoginRequest) => {
     try {
@@ -43,6 +44,21 @@ const Login = () => {
       setLoading(false);
     }
   };
+  const handleForgot = async (value: any) => {
+    try {
+      setLoading(true);
+      await resetPassword(value);
+      toast.success(
+        "Mật khẩu mới đã được gửi đến địa chỉ email của bạn. Vui lòng kiểm tra hộp thư đến (bao gồm cả thư rác nếu cần) và sử dụng mật khẩu mới để đăng nhập."
+      );
+    } catch (e: any) {
+      setLoading(false);
+      toast.error(e.response?.data.message);
+    } finally {
+      setLoading(false);
+      setIsForgotPassword(false);
+    }
+  };
 
   return (
     <div className="bg-[#2b4182] h-screen w-screen flex items-center justify-center relative overflow-x-hidden">
@@ -51,12 +67,15 @@ const Login = () => {
           isRegist ? "w-[600px] " : "w-[390px]"
         } rounded-[20px] relative flex flex-col gap-8 px-[45px] py-[15px]`}
       >
-        {isRegist && (
+        {(isRegist || isForgotPassword) && (
           <img
             src={IMAGES.backIcon}
             alt="back"
             className="absolute top-8 left-10 cursor-pointer w-[40px]  filter brightness-0 invert"
-            onClick={() => setIsRegist(false)}
+            onClick={() => {
+              setIsRegist(false);
+              setIsForgotPassword(false);
+            }}
           />
         )}
         <div className="flex items-center justify-center gap-4">
@@ -67,6 +86,33 @@ const Login = () => {
         </div>
         {isRegist ? (
           <Regist setIsRegist={setIsRegist} />
+        ) : isForgotPassword ? (
+          <Form form={form} onFinish={handleForgot}>
+            <Form.Item
+              name="email"
+              rules={[
+                { required: true, message: "Vui lòng nhập email" },
+                {
+                  type: "email",
+                  message: "Email không hợp lệ",
+                },
+              ]}
+            >
+              <input
+                className="w-full p-[10px] rounded-[10px] bg-[#e3eaff] focus:border-[#5882c1] text-[#2b4182] focus:outline-none focus:ring-0"
+                type="text"
+                placeholder="Email"
+              />
+            </Form.Item>
+            <Form.Item>
+              <button
+                type="submit"
+                className="bg-[#ffc022] rounded-[10px] text-white w-full h-[47px] flex items-center justify-center cursor-pointer"
+              >
+                Xác nhận
+              </button>
+            </Form.Item>
+          </Form>
         ) : (
           <Form form={form} onFinish={handleSubmit}>
             <Form.Item
@@ -101,15 +147,11 @@ const Login = () => {
                 />
               </div>
             </Form.Item>
-            <div className="text-white flex gap-2 justify-end pb-3 items-center">
-              Chưa có tài khoản?{" "}
-              <span
-                className="text-[#ffc022] font-bold cursor-pointer"
-                onClick={() => setIsRegist(true)}
-              >
-                {" "}
-                Đăng ký ngay{" "}
-              </span>
+            <div
+              className="text-[#ffc022] font-bold cursor-pointer  pb-3 text-end"
+              onClick={() => setIsForgotPassword(true)}
+            >
+              Quên mật khẩu
             </div>
             <Form.Item>
               <button
@@ -119,6 +161,16 @@ const Login = () => {
                 Đăng nhập
               </button>
             </Form.Item>
+            <div className="text-white flex gap-2 justify-center pb-3 items-center">
+              Chưa có tài khoản?{" "}
+              <span
+                className="text-[#ffc022] font-bold cursor-pointer"
+                onClick={() => setIsRegist(true)}
+              >
+                {" "}
+                Đăng ký ngay{" "}
+              </span>
+            </div>
           </Form>
         )}
       </div>

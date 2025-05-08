@@ -7,14 +7,16 @@ import { useLoading } from "@/providers/loadingProvider";
 import {
   enrollExam,
   getExamBySubjectId,
+  getGeneralExam,
   getStudentCourseProgress,
   getSubject,
+  getUniversity,
   paymentExamCode,
   takeExam,
 } from "@/services";
-import { Button, Input, Modal } from "antd";
+import { Button, Input, Modal, Select } from "antd";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { use, useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import "swiper/css";
 import "swiper/css/pagination";
@@ -30,11 +32,13 @@ const Home = () => {
   const [subjects, setSubjects] = useState<Subject[]>([]);
   const { setLoading } = useLoading();
   const [active, setActive] = useState("");
-
+  const [gExam, setGExam] = useState<any[]>([]);
   const [open, setOpen] = useState(false);
+  const [universities, setUniversites] = useState<any[]>([]);
   const subjectRefs = useRef<(HTMLDivElement | null)[]>([]);
   const examDetail = useRef<any>();
-  const [cSubject, setCSubject] = useState<Subject[]>([]);
+  const [uniId, setUniId] = useState(undefined);
+
   const [items, setItems] = useState<ICourseProgress[]>([]);
 
   const fetCourseProgress = async () => {
@@ -76,7 +80,7 @@ const Home = () => {
   const fetchSubject = async () => {
     try {
       setLoading(true);
-      const res = await getSubject(true);
+      const res = await getSubject(false);
       if (res) {
         setSubjects(res.data);
         setActive(res.data[0].id);
@@ -88,12 +92,26 @@ const Home = () => {
       setLoading(false);
     }
   };
-  const fetchSubjectNoGeneral = async () => {
+  const fetchGeneralExam = async () => {
     try {
       setLoading(true);
-      const res = await getSubject();
+      const res = await getGeneralExam(0, 10, uniId);
       if (res) {
-        setCSubject(res.data);
+        setGExam(res.data.items);
+      }
+    } catch (err) {
+      console.error(err);
+      setLoading(false);
+    } finally {
+      setLoading(false);
+    }
+  };
+  const fetchUniversity = async () => {
+    try {
+      setLoading(true);
+      const res = await getUniversity();
+      if (res) {
+        setUniversites(res.data);
       }
     } catch (err) {
       console.error(err);
@@ -103,9 +121,14 @@ const Home = () => {
     }
   };
   useEffect(() => {
+    fetchGeneralExam();
+  }, [uniId]);
+
+  useEffect(() => {
     fetchSubject();
-    fetchSubjectNoGeneral();
+
     fetCourseProgress();
+    fetchUniversity();
   }, []);
   const [pageIndex, setPageIndex] = useState(0);
   const [exam, setExam] = useState([]);
@@ -316,8 +339,8 @@ const Home = () => {
       <div className="flex flex-col gap-6">
         <div className="text-2xl font-bold">Môn học</div>
         <div className="flex gap-4 flex-wrap">
-          {cSubject &&
-            cSubject.map((s) => (
+          {subjects &&
+            subjects.map((s) => (
               <div
                 key={s.id}
                 className={` border cursor-pointer hover:border-blue-600 transition-all duration-300 rounded-lg px-4 py-[21px] w-[112px] h-[138px] flex flex-col items-center gap-2`}
@@ -410,7 +433,76 @@ const Home = () => {
             ))}
         </div>
       </div>
-
+      <div className="flex flex-col gap-6">
+        <div className="text-2xl font-bold">Đề thi tổng hợp</div>
+        <div className="flex items-center gap-2">
+          Lọc theo{" "}
+          <Select
+            allowClear
+            options={universities.map((u) => ({
+              value: u.id,
+              label: u.universityName,
+            }))}
+            onChange={(e) => setUniId(e)}
+            value={uniId}
+            className="w-[200px]"
+            placeholder="Trường đại học"
+          />
+        </div>
+        <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-4">
+          {gExam &&
+            gExam.map((e: any) => (
+              <div
+                className="flex justify-between border w-full border-[#D0D5DD] rounded-xl p-4"
+                key={e.id}
+              >
+                <div className="flex flex-col justify-items-center gap-2">
+                  <p className="font-bold text-start">{e.examName}</p>
+                  <p className="font-bold text-sm text-start">
+                    {e.universityName}
+                  </p>
+                  <p className="line-clamp-1 text-md flex items-center gap-1">
+                    <img
+                      src={IMAGES.clockIcon}
+                      alt="icon"
+                      className="w-[20px]"
+                    />
+                    {e.maxTestLength} phút
+                  </p>
+                  <p className="line-clamp-1 text-md flex items-center gap-1">
+                    <img
+                      src={IMAGES.priceIcon}
+                      alt="icon"
+                      className="w-[20px]"
+                    />
+                    {e.price.toLocaleString("vi-VN")}đ
+                  </p>
+                </div>
+                <div className="self-end flex-shrink-0">
+                  {e.enrollmentId ? (
+                    <CustomButton
+                      text="Vào thi ngay"
+                      textHover="Đừng ngại"
+                      onClick={() => handleOpenPopup(e)}
+                    />
+                  ) : e.freeAttempts > 0 ? (
+                    <CustomButton
+                      text="Nhận mã thi"
+                      textHover="Đừng ngại"
+                      onClick={() => handleOpenPopup(e)}
+                    />
+                  ) : (
+                    <CustomButton
+                      text="Mua mã thi"
+                      textHover="Đừng ngại"
+                      onClick={() => handleBuyExamCode(e)}
+                    />
+                  )}
+                </div>
+              </div>
+            ))}
+        </div>
+      </div>
       {open && (
         <Modal
           open={open}

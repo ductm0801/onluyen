@@ -12,7 +12,7 @@ import {
 } from "@ant-design/icons";
 import { Button, Checkbox, Form, Input, Radio, Select, Upload } from "antd";
 import React, { useEffect, useState } from "react";
-import "react-quill/dist/quill.snow.css";
+
 import { toast } from "react-toastify";
 import MathEditor from "../MathEditor";
 const { TextArea } = Input;

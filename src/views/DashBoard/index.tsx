@@ -1,17 +1,31 @@
 "use client";
+import { IMAGES } from "@/constants/images";
 import { useLoading } from "@/providers/loadingProvider";
-import React, { useEffect, useState } from "react";
-import { Chart, registerables } from "chart.js/auto";
-import { Bar } from "react-chartjs-2";
 import { getAdminRevenue, getAdminTransactionDashboard } from "@/services";
+import { Rate } from "antd";
+import axios from "axios";
+import { Chart, registerables } from "chart.js/auto";
+import dayjs from "dayjs";
+import { useEffect, useState } from "react";
+import { Bar, Pie } from "react-chartjs-2";
 import { toast } from "react-toastify";
 Chart.register(...registerables);
+const tableHeaders = [
+  "date",
+  "name",
+  "mail",
+  "result",
+  "rate",
+  "comment",
+  "isTakeExam",
+];
 
 const DashBoard = () => {
   const { setLoading } = useLoading();
   const [filterType, setFilterType] = useState("month");
   const [analyzeData, setAnalyzeData] = useState<any[]>([]);
   const [revenueData, setRevenueData] = useState<any>({});
+  const [reviewData, setReviewData] = useState<any[]>([]);
   const fetchData = async () => {
     setLoading(true);
     try {
@@ -50,7 +64,7 @@ const DashBoard = () => {
       },
       title: {
         display: true,
-        text: "THỐNG KÊ LỢI NHUẬN",
+        text: "THỐNG KÊ DOANH THU",
       },
     },
     scales: {
@@ -66,7 +80,7 @@ const DashBoard = () => {
     labels: analyzeData?.map((a: any) => a.yearMonth),
     datasets: [
       {
-        label: "Tổng Lợi nhuận",
+        label: "Tổng doanh thu",
         data: analyzeData?.map((a: any) => a.totalRevenue),
         borderColor: "rgba(75, 192, 192, 1)",
         backgroundColor: "rgba(75, 192, 192, 0.3)",
@@ -91,13 +105,179 @@ const DashBoard = () => {
       },
     ],
   };
+  const fetchGgChart = async () => {
+    setLoading(true);
+    try {
+      const url = `https://docs.google.com/spreadsheets/d/1PN3Yjg3JSK4PPEeatlUwPjeapUaGig8TG30E4f-JZhc/gviz/tq?tqx=out:json`;
+      const res = await axios.get(url);
+      const text = res.data;
 
+      const json = JSON.parse(text.substring(47).slice(0, -2));
+      const table = json.table;
+
+      // const headers = table.cols.map((col: any) => col.label);
+
+      const rows = table.rows.map((row: any) =>
+        row.c.map((cell: any) => (cell ? cell.v : null))
+      );
+
+      const formattedData = rows.map((row: any) => {
+        const obj: Record<string, any> = {};
+
+        tableHeaders.forEach((header: string, index: number) => {
+          const val = row[index];
+          if (typeof val === "string" && val.startsWith("Date(")) {
+            const match = val.match(/Date\((\d+),(\d+),(\d+)/);
+            if (match) {
+              const [_, year, month, day] = match.map(Number);
+              obj[header] = dayjs(new Date(year, month, day)).format(
+                "DD-MM-YYYY"
+              );
+            }
+          } else {
+            obj[header] = val;
+          }
+        });
+        return obj;
+      });
+
+      setReviewData(formattedData);
+    } catch (error: any) {
+      toast.error(error?.response?.data?.message || "Có lỗi xảy ra");
+    } finally {
+      setLoading(false);
+    }
+  };
+  const countByResult = {
+    Đậu: 0,
+    "Không Đậu": 0,
+    "Chưa có kết quả": 0,
+  };
+  const rateCounts = {
+    1: 0,
+    2: 0,
+    3: 0,
+    4: 0,
+    5: 0,
+  };
+
+  reviewData.forEach((item: any) => {
+    if (item.result === "Đậu") countByResult["Đậu"]++;
+    else if (item.result === "Không Đậu") countByResult["Không Đậu"]++;
+    else countByResult["Chưa có kết quả"]++;
+  });
+
+  reviewData.forEach((item: any) => {
+    const rate = Number(item.rate);
+    if (rate >= 1 && rate <= 5) {
+      rateCounts[rate as 1 | 2 | 3 | 4 | 5]++;
+    }
+  });
+  const total = reviewData.length;
+  const rateProgress = Object.entries(rateCounts).map(([star, count]) => ({
+    star: Number(star),
+    count,
+    percentage: (count / total) * 100,
+  }));
+  const validRates = reviewData
+    .map((item: any) => Number(item.rate))
+    .filter((rate) => rate >= 1 && rate <= 5);
+
+  const totalValidRates = validRates.length;
+  const sumRates = validRates.reduce((acc, rate) => acc + rate, 0);
+
+  const averageRate = totalValidRates > 0 ? sumRates / totalValidRates : 0;
+  const formattedAverageRate = Number(averageRate.toFixed(1));
+
+  const excelData = {
+    labels: ["Đậu", "Không Đậu", "Chưa có kết quả"],
+    datasets: [
+      {
+        data: [
+          countByResult["Đậu"],
+          countByResult["Không Đậu"],
+          countByResult["Chưa có kết quả"],
+        ],
+        backgroundColor: [
+          "rgba(75, 192, 192, 0.2)",
+          "rgba(255, 99, 132, 0.2)",
+          "rgba(54, 162, 235, 0.2)",
+        ],
+        borderColor: [
+          "rgba(75, 192, 192, 1)",
+          "rgba(255, 99, 132, 1)",
+          "rgba(54, 162, 235, 1)",
+        ],
+        borderWidth: 1,
+      },
+    ],
+  };
+  console.log(reviewData);
+  useEffect(() => {
+    fetchGgChart();
+  }, []);
   return (
     <div>
+      <div className="flex flex-col gap-4">
+        <div className="flex items-center gap-8 w-full">
+          <div className="1/2 flex flex-col gap-4">
+            <Pie data={excelData} />
+            <div className="flex flex-col items-center gap-2">
+              <p className="font-bold"> {averageRate.toFixed(1)}/5</p>
+              <Rate value={averageRate} allowHalf disabled />
+              <p className="font-bold text-lg text-blue-500">
+                {" "}
+                {reviewData.length} đánh giá
+              </p>
+            </div>
+          </div>
+          <div className="w-1/2">
+            {rateProgress.map(({ star, count, percentage }) => (
+              <div key={star} className="mb-8">
+                <div className="flex justify-between text-sm">
+                  <span>{star} ⭐</span>
+                  <span>{count}</span>
+                </div>
+                <div className="w-full bg-gray-200 rounded h-2">
+                  <div
+                    className="bg-yellow-400 h-2 rounded"
+                    style={{ width: `${percentage}%` }}
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="w-full">
+          <div className="flex flex-col gap-4 max-h-[500px] overflow-auto">
+            {reviewData.map((r: any, idx) => (
+              <div
+                key={idx}
+                className="flex flex-col gap-2 shadow-lg rounded-xl p-4"
+              >
+                <div className="flex items-center gap-2">
+                  <img
+                    src={IMAGES.defaultAvatar}
+                    alt="avatar"
+                    className="w-8 aspect-square rounded-full border"
+                  />
+
+                  <p className="text-xs"> {r.name}</p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Rate value={r.rate} disabled />
+                  <p className="text-xs">{r.date}</p>
+                </div>
+                <p>{r.comment}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
       <div className="flex items-center gap-4">
         <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
           <h4 className="font-bold text-gray-800 text-title-sm dark:text-white/90">
-            Tổng lợi nhuận{" "}
+            Tổng doanh thu{" "}
             {revenueData?.totalBalance?.toLocaleString("vi-VN") || 0}đ
           </h4>
         </div>
