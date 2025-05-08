@@ -3,8 +3,9 @@
 import React, { useRef, useEffect } from "react";
 import katex from "katex";
 import "katex/dist/katex.min.css";
-import "katex/contrib/mhchem";
+
 import FormulaModal from "@/components/FormulaModal";
+import { renderMathContent } from "@/constants/utils";
 
 interface MathEditorProps {
   value?: string;
@@ -23,20 +24,8 @@ const MathEditor: React.FC<MathEditorProps> = ({ value, onChange }) => {
   };
 
   const renderPreview = (text: string) => {
-    // Replace $...$ with rendered formula
-    let rendered = text.replace(/\$(.*?)\$/g, (_, formula) => {
-      try {
-        return katex.renderToString(formula, { throwOnError: false });
-      } catch {
-        return formula;
-      }
-    });
-
-    // Replace newline with <br>
-    rendered = rendered.replace(/\n/g, "<br>");
-
     if (previewRef.current) {
-      previewRef.current.innerHTML = rendered;
+      previewRef.current.innerHTML = renderMathContent(text || "");
     }
   };
 
