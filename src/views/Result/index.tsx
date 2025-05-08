@@ -23,8 +23,9 @@ const Result = () => {
       setLoading(true);
       const res = await examResult(params.id, currentPage, pageSize);
       setResult(res.data);
-    } catch (e) {
+    } catch (e: any) {
       setLoading(false);
+      toast.error(e.response.data.message);
     } finally {
       setLoading(false);
     }
