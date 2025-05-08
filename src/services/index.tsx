@@ -91,6 +91,7 @@ export const getQuestionByBank = async (
         difficulty: filter.difficulty,
         type: filter.type,
         searchTerm: filter.search,
+        subjectId: filter.subjectId,
       },
     }
   );

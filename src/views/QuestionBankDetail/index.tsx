@@ -1,7 +1,7 @@
 "use client";
 import Paging from "@/components/Paging";
 import { difficultyEnum, questionEnum } from "@/constants/enum";
-import { IQuestion, IQuestionBank } from "@/models";
+import { IQuestion, IQuestionBank, Subject } from "@/models";
 import { useLoading } from "@/providers/loadingProvider";
 import {
   createBulkQuestion,
@@ -9,6 +9,7 @@ import {
   downloadExcelTemplate,
   getQuestionBank,
   getQuestionByBank,
+  getSubject,
   previewExcelTemplate,
 } from "@/services";
 import { useParams, useRouter } from "next/navigation";
@@ -20,6 +21,7 @@ import { InboxOutlined } from "@ant-design/icons";
 import _ from "lodash";
 import { toast } from "react-toastify";
 import { renderMathContent } from "@/constants/utils";
+import { useAuth } from "@/providers/authProvider";
 
 const cols = [
   {
@@ -81,15 +83,19 @@ const BankDetail = () => {
   const [confirm, setConfirm] = useState(false);
   const [questionId, setQuestionId] = useState("");
   const [createBulk, setCreateBulk] = useState(false);
+  const [subject, setSubject] = useState<Subject[]>([]);
   const [validQuestion, setValidQuestion] = useState<any[]>([]);
   const [invalidQuestion, setInvalidQuestion] = useState<any[]>([]);
   const [form] = Form.useForm();
+  const { user } = useAuth();
   const [active, setActive] = useState(0);
   const [filter, setFilter] = useState({
     type: "",
     difficulty: "",
     search: "",
+    subjectId: "",
   });
+
   const handleDeleteQuestion = async () => {
     try {
       setLoading(true);
@@ -225,6 +231,24 @@ const BankDetail = () => {
     setInvalidQuestion([]);
   };
 
+  const fetchSubject = async () => {
+    try {
+      setLoading(true);
+      const res = await getSubject();
+      if (res) {
+        setSubject(res.data);
+      }
+    } catch (err) {
+      console.log(err);
+      setLoading(false);
+    } finally {
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
+    fetchSubject();
+  }, []);
+
   return (
     <>
       <div className="relative overflow-x-auto">
@@ -272,6 +296,23 @@ const BankDetail = () => {
                 })
               }
             />
+            {user?.Role === "ExamManager" && (
+              <Select
+                options={subject.map((item) => ({
+                  label: item.subjectName,
+                  value: item.id,
+                }))}
+                allowClear
+                placeholder="Chọn môn học"
+                onChange={(value) =>
+                  setFilter({
+                    ...filter,
+                    subjectId: value,
+                  })
+                }
+                showSearch
+              />
+            )}
             <div className="relative">
               <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
                 <svg
