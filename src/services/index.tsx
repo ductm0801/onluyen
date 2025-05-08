@@ -923,3 +923,7 @@ export const getGeneralExam = async (
   });
   return res.data;
 };
+export const getNewDetail = async (id: string | string[]) => {
+  const res = await axiosClient.get(`/api/article/${id}`);
+  return res.data;
+};

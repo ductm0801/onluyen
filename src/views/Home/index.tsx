@@ -37,7 +37,7 @@ const Home = () => {
   const [universities, setUniversites] = useState<any[]>([]);
   const subjectRefs = useRef<(HTMLDivElement | null)[]>([]);
   const examDetail = useRef<any>();
-  const [uniId, setUniId] = useState("");
+  const [uniId, setUniId] = useState(undefined);
 
   const [items, setItems] = useState<ICourseProgress[]>([]);
 
@@ -457,8 +457,9 @@ const Home = () => {
                 key={e.id}
               >
                 <div className="flex flex-col justify-items-center gap-2">
-                  <p className="font-bold min-h-[50px] text-start">
-                    {e.examName}
+                  <p className="font-bold text-start">{e.examName}</p>
+                  <p className="font-bold text-sm text-start">
+                    {e.universityName}
                   </p>
                   <p className="line-clamp-1 text-md flex items-center gap-1">
                     <img

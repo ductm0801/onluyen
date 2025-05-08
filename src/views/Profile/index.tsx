@@ -353,13 +353,13 @@ const Profile = () => {
               <div className="w-1/2">
                 <Radar data={data} options={options} />
               </div>
-              <div className="self-end">
+              {/* <div className="self-end">
                 <CustomButton
                   text="Nhận phân tích từ AI"
                   textHover="Đừng ngại"
                   onClick={() => getAIRecommend()}
                 />
-              </div>
+              </div> */}
             </div>
           )}
         </div>
