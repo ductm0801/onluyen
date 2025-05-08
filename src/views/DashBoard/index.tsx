@@ -274,7 +274,7 @@ const DashBoard = () => {
           </div>
         </div>
       </div>
-      <div className="flex items-center gap-4">
+      <div className="flex items-stretch gap-4">
         <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
           <h4 className="font-bold text-gray-800 text-title-sm dark:text-white/90">
             Tổng doanh thu{" "}
@@ -299,8 +299,10 @@ const DashBoard = () => {
           </h4>
         </div>
         <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
-          <h4 className="font-bold text-gray-800 text-title-sm dark:text-white/90">
-            Hoa hồng giảng viên{" "}
+          <h4 className="font-bold flex items-center gap-4 text-gray-800 text-title-sm dark:text-white/90">
+            <span className="flex flex-col items-center">
+              Hoa hồng giảng viên<span>(đã rút)</span>
+            </span>
             {revenueData?.withdrawBalance?.toLocaleString("vi-VN") || 0}đ
           </h4>
         </div>
