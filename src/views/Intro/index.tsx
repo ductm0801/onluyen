@@ -388,7 +388,7 @@ const Intro = () => {
                   <img
                     src={n?.videoUrl || ""}
                     alt="course"
-                    className="w-full object-contain"
+                    className="w-full object-cover aspect-[3/2]"
                   />
                   <div className="p-4">
                     <p className="text-[#2E90FA] font-bold text-lg">
