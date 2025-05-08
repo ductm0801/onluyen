@@ -42,6 +42,7 @@ const NewsDetail = () => {
                   [&_blockquote>p]:!text-primary800 [&_blockquote>p]:font-semibold [&_blockquote>p]:border-l-[1px] [&_blockquote>p]:border-primary800 [&_blockquote>p]:pl-3
                   [&_blockquote>div]:!text-primary800 [&_blockquote>div]:font-semibold [&_blockquote>div]:border-l-[1px] [&_blockquote>div]:border-primary800 [&_blockquote>div]:pl-3
                   [&_a]:break-all [&_a]:inline [&_a]:hyphens-auto [&_a]:word-wrap-break-word
+                  [&_img]:place-self-center
                   "
         dangerouslySetInnerHTML={{ __html: news.content }}
       />
