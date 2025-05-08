@@ -29,6 +29,7 @@ export const ExamLeaveProvider = ({
 
   const examPath = examId ? `/student/exam/${examId}` : null;
   const resultPath = examId ? `/student/exam/result/${examId}` : null;
+  const notFoundPath = "/404";
   const router = useRouter();
   const submitExam = () => {
     if (!examId) return;
@@ -54,7 +55,7 @@ export const ExamLeaveProvider = ({
   };
 
   useEffect(() => {
-    if (pathname === resultPath) {
+    if (pathname === resultPath || pathname === notFoundPath) {
       return;
     }
     const confirmSubmit = () => {

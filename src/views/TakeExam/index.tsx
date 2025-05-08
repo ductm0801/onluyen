@@ -54,7 +54,7 @@ const TakeExam = () => {
           return;
         }
         if (error.response.data.message === "Không tìm thấy bàì làm với ID.") {
-          router.replace(`/student`);
+          router.replace(`/404`);
           return;
         }
       } finally {

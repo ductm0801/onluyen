@@ -65,4 +65,5 @@ export const IMAGES = {
   scheduleIcon: "/assets/schedule.svg",
   newsIcon: "/assets/news.svg",
   feedbackIcon: "/assets/feedback.svg",
+  notFound: "/assets/notFound.png",
 };
