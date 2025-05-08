@@ -26,6 +26,9 @@ const Result = () => {
     } catch (e: any) {
       setLoading(false);
       toast.error(e.response.data.message);
+      if (e.response.data.message === "Không tìm thấy bàì làm với ID.") {
+        router.replace("/404");
+      }
     } finally {
       setLoading(false);
     }
