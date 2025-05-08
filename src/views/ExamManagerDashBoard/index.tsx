@@ -2,11 +2,16 @@
 import Paging from "@/components/Paging";
 import { IExam, Subject } from "@/models";
 import { useLoading } from "@/providers/loadingProvider";
-import { getExamAnalyze, getExamBySubjectId, getSubject } from "@/services";
+import {
+  getExamAnalyze,
+  getExamBySubjectId,
+  getExamInsight,
+  getSubject,
+} from "@/services";
 import { Select } from "antd";
 import { Chart, registerables } from "chart.js/auto";
-import { useEffect, useRef, useState } from "react";
-import { Bar, Line } from "react-chartjs-2";
+import { use, useEffect, useRef, useState } from "react";
+import { Bar, Line, PolarArea } from "react-chartjs-2";
 Chart.register(...registerables);
 
 const Dashboard = () => {
@@ -14,7 +19,7 @@ const Dashboard = () => {
   const { setLoading } = useLoading();
   const [active, setActive] = useState("");
   const subjectRefs = useRef<(HTMLDivElement | null)[]>([]);
-
+  const [insightData, setInsightData] = useState<any | null>(null);
   const [examActive, setExamActive] = useState("");
   const [year, setYear] = useState(new Date().getFullYear());
 
@@ -80,6 +85,23 @@ const Dashboard = () => {
     fetchAnalyze();
   }, [examActive, year]);
 
+  const fetchInsight = async () => {
+    try {
+      setLoading(true);
+      const res = await getExamInsight();
+      if (res) {
+        setInsightData(res.data);
+      }
+    } catch (err) {
+      console.error(err);
+      setLoading(false);
+    } finally {
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
+    fetchInsight();
+  }, []);
   const options = {
     responsive: true,
     plugins: {
@@ -88,7 +110,7 @@ const Dashboard = () => {
       },
       title: {
         display: true,
-        text: "THỐNG KÊ LỢI NHUẬN",
+        text: "THỐNG KÊ DOANH THU",
       },
     },
     scales: {
@@ -105,7 +127,7 @@ const Dashboard = () => {
     labels: analyzeData?.monthlyStatistics?.map((a: any) => a.month),
     datasets: [
       {
-        label: "Lợi nhuận",
+        label: "Doanh thu",
         data: analyzeData?.monthlyStatistics?.map((a: any) => a.revenue),
         borderColor: "rgba(75, 192, 192)",
         backgroundColor: "rgba(75, 192, 192, 0.5)",
@@ -180,6 +202,43 @@ const Dashboard = () => {
       },
     ],
   };
+
+  const dataInsight = {
+    labels: insightData
+      ?.filter((a: any) => a.totalStudentTakeExam > 0)
+      .map((a: any) => a.examName),
+    datasets: [
+      {
+        label: "Số lượng học sinh",
+        data: insightData
+          ?.filter((a: any) => a.totalStudentTakeExam > 0)
+          .map((a: any) => a.totalStudentTakeExam),
+        backgroundColor: [
+          "rgba(255, 99, 132, 0.5)",
+          "rgba(54, 162, 235, 0.5)",
+          "rgba(255, 206, 86, 0.5)",
+          "rgba(75, 192, 192, 0.5)",
+          "rgba(153, 102, 255, 0.5)",
+          "rgba(255, 159, 64, 0.5)",
+          "rgba(199, 199, 199, 0.5)",
+          "rgba(83, 102, 255, 0.5)",
+          "rgba(255, 102, 255, 0.5)",
+          "rgba(102, 255, 178, 0.5)",
+          "rgba(255, 153, 153, 0.5)",
+          "rgba(102, 178, 255, 0.5)",
+          "rgba(255, 255, 102, 0.5)",
+          "rgba(178, 102, 255, 0.5)",
+          "rgba(255, 128, 0, 0.5)",
+          "rgba(0, 204, 102, 0.5)",
+          "rgba(255, 51, 153, 0.5)",
+          "rgba(102, 255, 255, 0.5)",
+          "rgba(153, 255, 102, 0.5)",
+          "rgba(255, 204, 229, 0.5)",
+        ],
+        borderWidth: 1,
+      },
+    ],
+  };
   const subjectOptions = subjects.map((subject) => ({
     value: subject.id,
     label: subject.subjectName,
@@ -214,10 +273,13 @@ const Dashboard = () => {
       </div>
 
       <div className="grid grid-cols-4 gap-4">
-        <div className="shadow-lg col-span-3 rounded-lg p-4 bg-white dark:bg-white/[0.03]">
-          <Bar options={options} data={data} className="!h-full" />
+        <div className="shadow-lg col-span-2 rounded-lg p-4 bg-white dark:bg-white/[0.03]">
+          <Bar options={options} data={data} />
         </div>
-        <div className="grid grid-cols-1 gap-4">
+        <div className="shadow-lg col-span-2 rounded-lg p-4 bg-white dark:bg-white/[0.03]">
+          <PolarArea data={dataInsight} />
+        </div>
+        <div className="grid grid-cols-4 col-span-4 gap-4">
           <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
             <h4 className="font-bold text-gray-800 text-title-sm dark:text-white/90">
               {analyzeData?.totalRevenue.toLocaleString("vi-VN")}đ
