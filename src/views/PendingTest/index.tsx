@@ -5,7 +5,8 @@ import { examEnum, pendingExamEnum } from "@/constants/enum";
 import { IExam } from "@/models";
 import { useLoading } from "@/providers/loadingProvider";
 import { getExamPending, updateTestStatus } from "@/services";
-import { useEffect, useRef, useState } from "react";
+import _ from "lodash";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 const cols = [
   {
@@ -44,6 +45,7 @@ const PendingTest = () => {
   const [open, setOpen] = useState(false);
   const { setLoading } = useLoading();
   const detail = useRef<IExam>();
+  const [searchTerm, setSearchTerm] = useState(undefined);
 
   const handleOpen = (item: IExam) => {
     setOpen(true);
@@ -54,10 +56,10 @@ const PendingTest = () => {
     detail.current = undefined;
   };
 
-  const fetchExamByBankId = async () => {
+  const fetchExam = async () => {
     try {
       setLoading(true);
-      const res = await getExamPending(currentPage, pageSize);
+      const res = await getExamPending(currentPage, pageSize, searchTerm);
       setExam(res.data.items);
       setPageSize(res.data.pageSize);
       setTotalItems(res.data.totalItemsCount);
@@ -70,8 +72,14 @@ const PendingTest = () => {
     }
   };
   useEffect(() => {
-    fetchExamByBankId();
-  }, []);
+    fetchExam();
+  }, [currentPage, searchTerm]);
+  const handleSearch = useCallback(
+    _.debounce((value) => {
+      setSearchTerm(value);
+    }, 1000),
+    []
+  );
 
   return (
     <div className="relative overflow-x-auto">
@@ -99,6 +107,7 @@ const PendingTest = () => {
             id="table-search-users"
             className="block p-2 ps-10 text-sm focus:ring-0 focus:outline-none text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white "
             placeholder="Tìm kiếm"
+            onChange={(e) => handleSearch(e.target.value)}
           />
         </div>
       </div>
@@ -163,7 +172,7 @@ const PendingTest = () => {
         <ModaReviewTest
           onClose={handleClose}
           data={detail.current}
-          fetchExamByBankId={fetchExamByBankId}
+          fetchExamByBankId={fetchExam}
         />
       )}
     </div>

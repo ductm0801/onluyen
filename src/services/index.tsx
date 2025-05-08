@@ -215,11 +215,16 @@ export const getTransactionHistory = async (
   return res.data;
 };
 
-export const getExamPending = async (pageIndex: number, pageSize: number) => {
+export const getExamPending = async (
+  pageIndex: number,
+  pageSize: number,
+  searchTerm?: string
+) => {
   const res = await axiosClient.get(`/api/test/contributedList`, {
     params: {
       pageIndex,
       pageSize,
+      searchTerm,
     },
   });
   return res.data;
