@@ -938,3 +938,7 @@ export const sentFormtoMail = async () => {
   const res = await axiosClient.post(`/api/student-course/sendlinktomail`);
   return res.data;
 };
+export const getExamInsight = async () => {
+  const res = await axiosClient.get(`/api/exam/insight`);
+  return res.data;
+};

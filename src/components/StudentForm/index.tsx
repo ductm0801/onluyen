@@ -69,7 +69,7 @@ const StudentForm: React.FC<props> = ({ setIsRegist }) => {
         <Form.Item
           rules={[
             { required: true, message: "Không bỏ trống mật khẩu" },
-            { min: 8 },
+            { min: 8, message: "Mật khẩu tối thiểu 8 ký tự" },
           ]}
           name="password"
           label={<b className="text-white">Mật khẩu</b>}
@@ -95,7 +95,7 @@ const StudentForm: React.FC<props> = ({ setIsRegist }) => {
           rules={[
             { required: true, message: "Không bỏ trống mật khẩu" },
             { validator: validateConfirmPassword },
-            { min: 8 },
+            { min: 8, message: "Mật khẩu tối thiểu 8 ký tự" },
           ]}
           className="w-full"
           label={<b className="text-white">Xác nhận mật khẩu</b>}
