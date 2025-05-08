@@ -12,6 +12,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 import Nav from "../Nav";
+import path from "node:path";
 
 type props = {
   children: React.ReactNode;
@@ -142,14 +143,19 @@ const DefaultLayout: React.FC<props> = ({ children }) => {
       <Nav sidebarOpen={sidebarOpen} closeSidebar={closeSidebar} />
       <div
         className={
-          !user || pathName === "/" || pathName === "/login"
+          !user ||
+          pathName === "/" ||
+          pathName === "/login" ||
+          pathName === "/404"
             ? ""
             : "xl:ml-[288px]"
         }
       >
         <nav
           className={`${
-            pathName === "/login" || pathName === "/" ? "hidden" : "block"
+            pathName === "/login" || pathName === "/" || pathName === "/404"
+              ? "hidden"
+              : "block"
           } flex flex-wrap z-30 items-center justify-between min-h-[84px] top-[10px] px-0 py-2 mx-[10px] xl:mr-[10px] xl:ml-[4px] rounded-2xl lg:flex-nowrap lg:justify-start sticky backdrop-saturate-200 backdrop-blur-2xl bg-[#111c44cc] transform transition-transform duration-300 ease-in-out ${
             isTopHidden ? "-translate-y-full" : "translate-y-0"
           }`}
@@ -315,7 +321,7 @@ const DefaultLayout: React.FC<props> = ({ children }) => {
         </nav>
         <div
           className={
-            pathName === "/login" || pathName === "/"
+            pathName === "/login" || pathName === "/" || pathName === "/404"
               ? ""
               : "xl:max-w-[70vw] xl:px-0 px-4 py-8 mx-auto overflow-visible"
           }
