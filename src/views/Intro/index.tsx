@@ -391,7 +391,7 @@ const Intro = () => {
                     className="w-full object-cover aspect-[3/2]"
                   />
                   <div className="p-4">
-                    <p className="text-[#2E90FA] font-bold text-lg">
+                    <p className="text-[#2E90FA] font-bold text-lg line-clamp-2">
                       {n.title}
                     </p>
                   </div>

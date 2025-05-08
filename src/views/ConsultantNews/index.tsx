@@ -131,6 +131,7 @@ const ConsultantNews = () => {
   const [create, setCreate] = useState(false);
   const [imageUrl, setImageUrl] = useState<any>({});
   const [form] = Form.useForm();
+  const [form2] = Form.useForm();
   const [edit, setEdit] = useState(false);
   const detail = useRef<any | null>(null);
 
@@ -184,12 +185,12 @@ const ConsultantNews = () => {
   const handleEdit = (item: any) => {
     setEdit(true);
     detail.current = item;
-    form.setFieldsValue(item);
+    form2.setFieldsValue(item);
   };
   const handleCloseEdit = () => {
     setEdit(false);
     detail.current = null;
-    form.resetFields();
+    form2.resetFields();
   };
   useEffect(() => {
     if (detail.current) {
@@ -206,7 +207,6 @@ const ConsultantNews = () => {
   }, [detail.current, edit]);
   const editNews = async (values: any) => {
     try {
-      console.log(detail.current);
       setLoading(true);
       await updateNews(detail.current.id, values);
 
@@ -219,7 +219,7 @@ const ConsultantNews = () => {
       toast.error(e.response?.data.message);
     } finally {
       setLoading(false);
-      form.resetFields();
+      form2.resetFields();
       detail.current = null;
     }
   };
@@ -419,7 +419,7 @@ const ConsultantNews = () => {
           width={1000}
         >
           <Form
-            form={form}
+            form={form2}
             onFinish={editNews}
             initialValues={detail.current || null}
             className="w-full max-h-[800px] overflow-auto"
