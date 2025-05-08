@@ -12,6 +12,7 @@ import {
   Subject,
 } from "@/models";
 import { message } from "antd";
+import { registry } from "chart.js";
 
 export const login = async (body: ILoginRequest) => {
   const res = await axiosClient.post("/api/accounts/login", body);
@@ -925,5 +926,9 @@ export const getGeneralExam = async (
 };
 export const getNewDetail = async (id: string | string[]) => {
   const res = await axiosClient.get(`/api/article/${id}`);
+  return res.data;
+};
+export const sentFormtoMail = async () => {
+  const res = await axiosClient.post(`/api/student-course/sendlinktomail`);
   return res.data;
 };

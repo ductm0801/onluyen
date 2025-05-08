@@ -1,8 +1,12 @@
 "use client";
 import { IMAGES } from "@/constants/images";
 import { useLoading } from "@/providers/loadingProvider";
-import { getAdminRevenue, getAdminTransactionDashboard } from "@/services";
-import { Rate } from "antd";
+import {
+  getAdminRevenue,
+  getAdminTransactionDashboard,
+  sentFormtoMail,
+} from "@/services";
+import { Button, Rate } from "antd";
 import axios from "axios";
 import { Chart, registerables } from "chart.js/auto";
 import dayjs from "dayjs";
@@ -212,7 +216,18 @@ const DashBoard = () => {
       },
     ],
   };
-  console.log(reviewData);
+  const handleSendMail = async () => {
+    try {
+      setLoading(true);
+      const res = await sentFormtoMail();
+      toast.success(res.message);
+    } catch (e: any) {
+      setLoading(false);
+      toast.error(e?.response.data.message);
+    } finally {
+      setLoading(false);
+    }
+  };
   useEffect(() => {
     fetchGgChart();
   }, []);
@@ -246,6 +261,11 @@ const DashBoard = () => {
                 </div>
               </div>
             ))}
+          </div>
+          <div>
+            <Button type="primary" onClick={() => handleSendMail()}>
+              Gửi khảo sát
+            </Button>
           </div>
         </div>
         <div className="w-full">
