@@ -224,7 +224,7 @@ const DefaultLayout: React.FC<props> = ({ children }) => {
                           className={`group-hover:h-[452px] h-0 transition-all overflow-hidden   bg-white duration-300 shadow-lg w-full  max-w-[388px] ease-in-out absolute top-16 right-16 rounded-xl z-50`}
                         >
                           {noti.length > 0 ? (
-                            <div className="flex flex-col overflow-y-auto gap-3  py-4 px-6">
+                            <div className="flex flex-col overflow-y-auto gap-3 h-full overflow-auto  py-4 px-6">
                               {noti.map((noti, index) => (
                                 <div
                                   key={index}

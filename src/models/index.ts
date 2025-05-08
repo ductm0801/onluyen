@@ -302,6 +302,7 @@ export type IInstructorDetail = {
     phoneNumber: number;
     address: string;
     gender: string;
+    imageUrl: string;
   };
   instructor: {
     id: string;

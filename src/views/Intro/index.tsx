@@ -349,7 +349,7 @@ const Intro = () => {
                       </p>
 
                       <img
-                        src={IMAGES.instructorDefault}
+                        src={ins.user.imageUrl || IMAGES.instructorDefault}
                         alt="instructor"
                         className="w-[280px] aspect-[280/336] object-cover rounded-xl"
                       />
@@ -378,27 +378,31 @@ const Intro = () => {
         <div id="tin-tuc" className="max-w-[1300px] mx-auto">
           <h1 className="text-[#2E90FA] font-bold text-[60px]">Tin tức</h1>
           <div className="grid grid-cols-3 gap-4">
-            {news.map((n: any, index) => (
-              <div
-                key={index}
-                className="bg-white p-4 border  rounded-[20px] shadow-md overflow-hidden"
-              >
-                <img
-                  src={n?.videoUrl || ""}
-                  alt="course"
-                  className="w-full object-contain"
-                />
-                <div className="p-4">
-                  <p className="text-[#2E90FA] font-bold text-lg">{n.title}</p>
-                </div>
+            {news
+              .filter((item: any) => !item?.isDelete)
+              .map((n: any, index) => (
                 <div
-                  className="bg-[#1244A2] text-white rounded-lg text-center py-3 cursor-pointer"
-                  onClick={() => router.push(`/news/${n.id}`)}
+                  key={index}
+                  className="bg-white p-4 border  rounded-[20px] shadow-md overflow-hidden"
                 >
-                  Chi tiết
+                  <img
+                    src={n?.videoUrl || ""}
+                    alt="course"
+                    className="w-full object-contain"
+                  />
+                  <div className="p-4">
+                    <p className="text-[#2E90FA] font-bold text-lg">
+                      {n.title}
+                    </p>
+                  </div>
+                  <div
+                    className="bg-[#1244A2] text-white rounded-lg text-center py-3 cursor-pointer"
+                    onClick={() => router.push(`/news/${n.id}`)}
+                  >
+                    Chi tiết
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
           </div>
         </div>
       </div>

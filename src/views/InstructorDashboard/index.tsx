@@ -17,11 +17,11 @@ import dayjs from "dayjs";
 Chart.register(...registerables);
 
 const money = [
+  { value: 100000 },
+  { value: 200000 },
+  { value: 300000 },
+  { value: 500000 },
   { value: 1000000 },
-  { value: 2000000 },
-  { value: 3000000 },
-  { value: 5000000 },
-  { value: 10000000 },
 ];
 export const renderBgColorStatus = (status: keyof typeof statusEnum) => {
   switch (status) {
@@ -420,9 +420,9 @@ const InstructorDashboard = () => {
                 disabled
                 value={
                   selectAmount === "another"
-                    ? ((amount ?? 0) * 70) / 100
+                    ? (amount ?? 0) * (user?.instructor?.commissionRate ?? 0.7)
                     : typeof selectAmount === "number"
-                    ? (selectAmount * 70) / 100
+                    ? selectAmount * (user?.instructor?.commissionRate ?? 0.7)
                     : 0
                 }
                 className="w-full"

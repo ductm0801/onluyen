@@ -142,7 +142,25 @@ const ScheduleTotal: FC<props> = ({
           setEndDate(endDate);
         }}
       />
+
       <Schedule data={data} fetchData={fetchData} />
+      <div>
+        <div className="flex items-center gap-2">
+          {" "}
+          <div className="bg-[#1244A2] w-4 aspect-square" />
+          Chưa bắt đầu
+        </div>
+        <div className="flex items-center gap-2">
+          {" "}
+          <div className="bg-[#30e04d]/80  w-4 aspect-square" />
+          Hoàn thành
+        </div>
+        <div className="flex items-center gap-2">
+          {" "}
+          <div className="bg-red-500  w-4 aspect-square" />
+          Đã hủy
+        </div>
+      </div>
     </div>
   );
 };
