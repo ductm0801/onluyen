@@ -1,15 +1,12 @@
 "use client";
+import ModalCreateQuestionBank from "@/components/ModalCreateQuestionBank";
 import Paging from "@/components/Paging";
-import { difficultyEnum, questionEnum } from "@/constants/enum";
-import { IQuestion, IQuestionBank } from "@/models";
+import { IQuestionBank } from "@/models";
+import { useAuth } from "@/providers/authProvider";
 import { useLoading } from "@/providers/loadingProvider";
 import { getQuestionBank } from "@/services";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
-import QuestionDetail from "./Detail";
-import { Select } from "antd";
-import ModalCreateQuestionBank from "@/components/ModalCreateQuestionBank";
-import { useAuth } from "@/providers/authProvider";
+import { useEffect, useState } from "react";
 const cols = [
   {
     name: "Tên bộ câu hỏi",
@@ -80,7 +77,7 @@ const Question = () => {
           </div>
 
           <div>
-            <div className="relative">
+            {/* <div className="relative">
               <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
                 <svg
                   className="w-4 h-4 text-gray-500 dark:text-gray-400"
@@ -104,7 +101,7 @@ const Question = () => {
                 className="block p-2 ps-10 text-sm focus:ring-0 focus:outline-none text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white "
                 placeholder="Tìm kiếm"
               />
-            </div>
+            </div> */}
           </div>
         </div>
         <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
