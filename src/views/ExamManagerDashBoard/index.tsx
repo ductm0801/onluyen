@@ -204,15 +204,11 @@ const Dashboard = () => {
   };
 
   const dataInsight = {
-    labels: insightData
-      ?.filter((a: any) => a.totalStudentTakeExam > 0)
-      .map((a: any) => a.examName),
+    labels: insightData?.map((a: any) => a.examName),
     datasets: [
       {
         label: "Số lượng học sinh",
-        data: insightData
-          ?.filter((a: any) => a.totalStudentTakeExam > 0)
-          .map((a: any) => a.totalStudentTakeExam),
+        data: insightData?.map((a: any) => a.totalStudentTakeExam),
         backgroundColor: [
           "rgba(255, 99, 132, 0.5)",
           "rgba(54, 162, 235, 0.5)",
@@ -273,12 +269,6 @@ const Dashboard = () => {
       </div>
 
       <div className="grid grid-cols-4 gap-4">
-        <div className="shadow-lg col-span-2 rounded-lg p-4 bg-white dark:bg-white/[0.03]">
-          <Bar options={options} data={data} />
-        </div>
-        <div className="shadow-lg col-span-2 rounded-lg p-4 bg-white dark:bg-white/[0.03]">
-          <PolarArea data={dataInsight} />
-        </div>
         <div className="grid grid-cols-4 col-span-4 gap-4">
           <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
             <h4 className="font-bold text-gray-800 text-title-sm dark:text-white/90">
@@ -406,6 +396,12 @@ const Dashboard = () => {
               </div>
             </div>
           </div>
+        </div>
+        <div className="shadow-lg col-span-2 rounded-lg p-4 bg-white dark:bg-white/[0.03]">
+          <Bar options={options} data={data} />
+        </div>
+        <div className="shadow-lg col-span-2 rounded-lg p-4 bg-white dark:bg-white/[0.03]">
+          <PolarArea data={dataInsight} />
         </div>
 
         <div className="shadow-lg col-span-2 rounded-lg p-4 bg-white dark:bg-white/[0.03]">
