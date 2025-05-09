@@ -98,11 +98,11 @@ const DefaultLayout: React.FC<props> = ({ children }) => {
     setSidebarOpen(!sidebarOpen);
   };
   const handleOpenNoti = (noti: any) => {
+    setNotiDetail(true);
+    notiRef.current = noti;
     if (!noti.isRead) {
       updateNoti(noti.notiId);
     }
-    setNotiDetail(true);
-    notiRef.current = noti;
   };
   const handleCloseNoti = () => {
     setNotiDetail(false);
@@ -217,7 +217,6 @@ const DefaultLayout: React.FC<props> = ({ children }) => {
                             src={IMAGES.bellIcon}
                             alt="bell"
                             className="w-[30px]  cursor-pointer"
-                            onClick={() => setOpenNoti((prev) => !prev)}
                           />
                           {notReadNotis.length > 0 && (
                             <div className="absolute -top-1 -right-1 bg-red-500 w-5 flex items-center justify-center text-xs  text-center text-white aspect-square rounded-full">
@@ -411,9 +410,9 @@ const DefaultLayout: React.FC<props> = ({ children }) => {
           />
         )}
       </div>
-      {openNoti && notiDetail && (
+      {notiDetail && (
         <Modal
-          open={openNoti}
+          open={notiDetail}
           onCancel={handleCloseNoti}
           footer={null}
           title="Chi tiết thông báo"
