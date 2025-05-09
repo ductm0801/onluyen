@@ -293,6 +293,12 @@ const ConsultRequestDetail = () => {
                     autoSize={{ minRows: 1, maxRows: 4 }}
                     className="w-full border  py-2 px-3 rounded-xl field-sizing-content"
                     placeholder="Nhập tin nhắn ở đây..."
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" && !e.shiftKey) {
+                        e.preventDefault();
+                        form.submit();
+                      }
+                    }}
                   />
                 </Form.Item>
                 <Form.Item noStyle>
