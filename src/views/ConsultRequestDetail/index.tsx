@@ -62,6 +62,8 @@ const ConsultRequestDetail = () => {
   const [form] = Form.useForm();
   const [status, setStatus] = useState(0);
   const { user } = useAuth();
+  const [message, setMessage] = useState("");
+  const [isSending, setIsSending] = useState(false);
 
   const fetchData = async () => {
     try {
@@ -142,8 +144,10 @@ const ConsultRequestDetail = () => {
     });
   }, [params.id, data]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const handleSubmit = async (values: any) => {
-    if (!data) return;
+  const handleSubmit = async () => {
+    if (!data || !message.trim() || isSending) return;
+
+    setIsSending(true);
     try {
       await sendConsultantRequestMessage({
         consultantRequestId: data.id,
@@ -151,12 +155,19 @@ const ConsultRequestDetail = () => {
           user?.Role === "Consultant"
             ? data.studentInfo.user.id
             : "12FFC162-D2D0-420A-8806-647253B09E95",
-        text: values.text,
+        text: message.trim(),
       });
+      setMessage(""); // Xóa sau khi gửi
     } catch (err) {
       console.log(err);
     } finally {
-      form.resetFields();
+      setIsSending(false);
+    }
+  };
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault(); // Ngăn xuống dòng
+      handleSubmit(); // Gửi tin nhắn
     }
   };
   const scrollToBottom = () => {
@@ -257,8 +268,13 @@ const ConsultRequestDetail = () => {
                 {messages.map((m: any, index) =>
                   m.sender === user?.UserId ? (
                     <div className="flex justify-end mb-4" key={index}>
-                      <div className="mr-2 py-3 px-4 bg-blue-400 rounded-bl-3xl rounded-tl-3xl rounded-tr-xl text-white">
-                        {m?.text}
+                      <div
+                        className="mr-2 py-3 px-4 bg-blue-400 rounded-bl-3xl rounded-tl-3xl rounded-tr-xl text-white"
+                        dangerouslySetInnerHTML={{
+                          __html: m?.text.replace(/\n/g, "<br/>"),
+                        }}
+                      >
+                        {/* {m?.text} */}
                       </div>
                       <img
                         src={m.senderImageUrl || IMAGES.defaultAvatar}
@@ -273,8 +289,13 @@ const ConsultRequestDetail = () => {
                         className="object-cover h-8 w-8 rounded-full"
                         alt=""
                       />
-                      <div className="ml-2 py-3 px-4 bg-gray-400 rounded-br-3xl rounded-tr-3xl rounded-tl-xl text-white">
-                        {m?.text}
+                      <div
+                        className="ml-2 py-3 px-4 bg-gray-400 rounded-br-3xl rounded-tr-3xl rounded-tl-xl text-white"
+                        dangerouslySetInnerHTML={{
+                          __html: m?.text.replace(/\n/g, "<br/>"),
+                        }}
+                      >
+                        {/* {m?.text} */}
                       </div>
                     </div>
                   )
@@ -283,37 +304,24 @@ const ConsultRequestDetail = () => {
               </div>
             </div>
             {status === 1 && (
-              <Form
-                form={form}
-                onFinish={handleSubmit}
-                className="py-5 relative"
-              >
-                <Form.Item name="text" noStyle>
-                  <Input.TextArea
-                    autoSize={{ minRows: 1, maxRows: 4 }}
-                    className="w-full border  py-2 px-3 rounded-xl field-sizing-content"
-                    placeholder="Nhập tin nhắn ở đây..."
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" && !e.shiftKey) {
-                        e.preventDefault();
-                        form.submit();
-                      }
-                    }}
-                  />
-                </Form.Item>
-                <Form.Item noStyle>
-                  <button
-                    type="submit"
-                    className="absolute top-1/2 right-3 -translate-y-1/2"
-                  >
-                    <img
-                      src={IMAGES.sendIcon}
-                      alt="send"
-                      className="w-[20px]"
-                    />
-                  </button>
-                </Form.Item>
-              </Form>
+              <div className="relative mt-4">
+                <Input.TextArea
+                  autoSize={{ minRows: 1, maxRows: 4 }}
+                  className="w-full border  py-2 px-3 rounded-xl field-sizing-content"
+                  placeholder="Nhập tin nhắn ở đây..."
+                  onChange={(e) => setMessage(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  value={message}
+                />
+
+                <button
+                  type="button"
+                  onClick={handleSubmit}
+                  className="absolute top-1/2 right-3 -translate-y-1/2"
+                >
+                  <img src={IMAGES.sendIcon} alt="send" className="w-[20px]" />
+                </button>
+              </div>
             )}
           </div>
         </div>
