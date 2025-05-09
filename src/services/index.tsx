@@ -942,3 +942,9 @@ export const getExamInsight = async () => {
   const res = await axiosClient.get(`/api/exam/insight`);
   return res.data;
 };
+export const getFeedback = async (pageIndex: number, pageSize: number) => {
+  const res = await axiosClient.get(`/api/feedback/paging`, {
+    params: { pageIndex, pageSize },
+  });
+  return res.data;
+};

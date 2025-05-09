@@ -47,6 +47,12 @@ export const menus: Record<
       icon: IMAGES.coursePending,
       isShow: true,
     },
+    {
+      label: "Phản hồi người dùng",
+      path: "/admin/feedback",
+      icon: IMAGES.feedbackIcon,
+      isShow: true,
+    },
   ],
   Student: [
     {
