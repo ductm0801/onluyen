@@ -1,9 +1,10 @@
-import { IMAGES } from "@/constants/images";
 import { renderMathContent } from "@/constants/utils";
 import { IExam } from "@/models";
 import { useLoading } from "@/providers/loadingProvider";
 import { getExamDetail, reviewreviewTestStatus } from "@/services";
 import { Image } from "antd";
+import "katex/contrib/mhchem";
+import "katex/dist/katex.min.css";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
@@ -136,8 +137,11 @@ const ModaReviewTest: React.FC<props> = ({
                               ? "text-green-500"
                               : "text-gray-600"
                           }  `}
+                          dangerouslySetInnerHTML={{
+                            __html: renderMathContent(answer.content),
+                          }}
                         >
-                          {answer.content}
+                          {/* {answer.content} */}
                           {answer.imageUrl && (
                             <Image
                               width={48}
@@ -149,8 +153,13 @@ const ModaReviewTest: React.FC<props> = ({
                         </li>
                       ))}
                     </ul>
-                    <p className="text-sm text-gray-600">
-                      {question.answerText}
+                    <p
+                      className="text-sm text-gray-600"
+                      dangerouslySetInnerHTML={{
+                        __html: renderMathContent(question.answerText || ""),
+                      }}
+                    >
+                      {/* {question.answerText} */}
                     </p>
                   </li>
                 ))}
