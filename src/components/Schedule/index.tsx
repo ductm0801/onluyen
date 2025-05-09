@@ -47,11 +47,6 @@ const Schedule: FC<Props> = ({ data, fetchData }) => {
   const [cancel, setCancel] = useState(false);
   const [learningSlotId, setLearningSlotId] = useState<string>("");
 
-  const convertToTime = (timeStr: string) => {
-    const hour = parseInt(timeStr.split(" ")[0], 10);
-    return `${hour.toString().padStart(2, "0")}:00`;
-  };
-
   const generateSchedule = () => {
     const schedule: any[] = [];
 
@@ -69,12 +64,16 @@ const Schedule: FC<Props> = ({ data, fetchData }) => {
           schedule[dayIndex].push({
             id: scheduleItem.id,
             note: scheduleItem.note,
-            startTime: convertToTime(scheduleItem.startTime),
-            endTime: convertToTime(scheduleItem.endTime),
+            startTime: dayjs(scheduleItem.startTime, "HH:mm:ss").format(
+              "HH:mm"
+            ),
+            endTime: dayjs(scheduleItem.endTime, "HH:mm:ss").format("HH:mm"),
             courseId: scheduleItem.courseId,
             slotDate: scheduleItem.slotDate,
             status: scheduleItem.status,
             type: scheduleItem.type,
+            courseTitle: scheduleItem.courseTitle,
+            instructorName: scheduleItem.instructor.user.fullName,
           });
         }
       } else {
@@ -89,9 +88,11 @@ const Schedule: FC<Props> = ({ data, fetchData }) => {
             schedule[dayIndex].push({
               id: slot.id,
               note: scheduleItem.note,
-              startTime: convertToTime(slot.startTime),
-              endTime: convertToTime(slot.endTime),
+              startTime: dayjs(slot.startTime, "HH:mm:ss").format("HH:mm"),
+              endTime: dayjs(slot.endTime, "HH:mm:ss").format("HH:mm"),
+              courseTitle: scheduleItem.courseTitle,
               courseId: scheduleItem.courseId,
+              instructorName: scheduleItem.instructor.user.fullName,
             });
           }
         });
@@ -199,6 +200,11 @@ const Schedule: FC<Props> = ({ data, fetchData }) => {
                     daySchedule.map((slot, idx) => (
                       <Popover
                         key={idx}
+                        title={
+                          <>
+                            {slot.courseTitle} - {slot.instructorName}
+                          </>
+                        }
                         className="cursor-pointer w-full block"
                         content={
                           <div>
