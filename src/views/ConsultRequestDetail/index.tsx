@@ -19,7 +19,7 @@ import { toast } from "react-toastify";
 import { db } from "@/firebase/config";
 import { collection, onSnapshot } from "firebase/firestore";
 import { useAuth } from "@/providers/authProvider";
-import { Form } from "antd";
+import { Form, Input } from "antd";
 Chart.register(...registerables);
 
 const statusOptions = [
@@ -289,15 +289,10 @@ const ConsultRequestDetail = () => {
                 className="py-5 relative"
               >
                 <Form.Item name="text" noStyle>
-                  <textarea
+                  <Input.TextArea
+                    autoSize={{ minRows: 1, maxRows: 4 }}
                     className="w-full border  py-2 px-3 rounded-xl field-sizing-content"
                     placeholder="Nhập tin nhắn ở đây..."
-                    // onKeyDown={(e) => {
-                    //   if (e.key === "Enter" && !e.shiftKey) {
-                    //     e.preventDefault();
-                    //     form.submit();
-                    //   }
-                    // }}
                   />
                 </Form.Item>
                 <Form.Item noStyle>
