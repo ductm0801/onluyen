@@ -429,6 +429,35 @@ const InstructorDashboard = () => {
                 placeholder="Số tiền"
               />
             </Form.Item>
+            <Form.Item
+              label="Phí nền tảng"
+              labelCol={{ span: 24 }}
+              className="mt-4 mb-0"
+            >
+              <InputNumber
+                suffix="đ"
+                onChange={(v: any) => setAmount(v)}
+                formatter={(value) =>
+                  `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                }
+                disabled
+                value={
+                  selectAmount === "another"
+                    ? Math.ceil(
+                        (amount ?? 0) *
+                          (1 - (user?.instructor?.commissionRate ?? 0.7))
+                      )
+                    : typeof selectAmount === "number"
+                    ? Math.ceil(
+                        selectAmount *
+                          (1 - (user?.instructor?.commissionRate ?? 0.7))
+                      )
+                    : 0
+                }
+                className="w-full"
+                placeholder="Số tiền"
+              />
+            </Form.Item>
             <div className="flex justify-end mt-2">
               <Form.Item>
                 <button
