@@ -24,6 +24,8 @@ import { toast } from "react-toastify";
 type Props = {
   data: any[];
   fetchData: any;
+  startDate?: string;
+  endDate?: string;
 };
 
 const renderBgColor = (status: number) => {
@@ -73,7 +75,7 @@ const Schedule: FC<Props> = ({ data, fetchData }) => {
             status: scheduleItem.status,
             type: scheduleItem.type,
             courseTitle: scheduleItem.courseTitle,
-            instructorName: scheduleItem.instructor.user.fullName,
+            // instructorName: scheduleItem.instructor?.user.fullName,
           });
         }
       } else {
