@@ -52,7 +52,10 @@ const Nav: React.FC<props> = ({ sidebarOpen, closeSidebar }) => {
         &times;
       </div>
       <div className="flex flex-col gap-6 h-full ">
-        <div className="flex items-center gap-4">
+        <div
+          className="flex items-center gap-4  cursor-pointer"
+          onClick={() => router.replace("/")}
+        >
           <img src={IMAGES.logo} alt="logo" className="w-12" />
           <div className="font-bold text-[30px] leading-[38px] text-white">
             Ôn luyện

@@ -6,7 +6,7 @@ import { IExam } from "@/models";
 import { useLoading } from "@/providers/loadingProvider";
 import { examResult } from "@/services";
 import { useParams, useRouter } from "next/navigation";
-import React, { useEffect, useRef, useState } from "react";
+import React, { use, useEffect, useRef, useState } from "react";
 
 const ResultDetail = () => {
   const [exam, setExam] = useState<IExam | null>(null);
@@ -47,8 +47,14 @@ const ResultDetail = () => {
   useEffect(() => {
     fetchResult();
   }, []);
+
   if (!exam) return;
   const currentQuestion = exam.questions[currentQuestionIndex];
+
+  const selectedQuestionIds = exam.questions
+    .filter((q) => q.answers.some((a) => a.isSelected))
+    .map((q) => q.id);
+  console.log(selectedQuestionIds);
   return (
     <div className="bg-white h-[80vh] flex flex-col w-full rounded-[10px] shadow-[0px_0px_5px_rgba(0, 0, 0, 0.1)]">
       <div className="flex justify-between items-center pb-16">
@@ -148,7 +154,13 @@ const ResultDetail = () => {
               }}
               key={q.id}
               className={`w-8 h-8 flex-shrink-0 flex items-center justify-center rounded-lg text-center shadow-[0px_0px_3px_rgba(0,0,0,0.3)] cursor-pointer 
-            ${index === currentQuestionIndex ? "border-2 border-[#273d30]" : ""}
+            ${
+              index === currentQuestionIndex ? "border-2 border-[#273d30]" : ""
+            } ${
+                selectedQuestionIds.includes(q.id)
+                  ? "bg-blue-300 text-white"
+                  : ""
+              }
            `}
               onClick={() => setCurrentQuestionIndex(index)}
             >
