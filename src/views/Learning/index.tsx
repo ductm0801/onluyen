@@ -130,7 +130,7 @@ const Learning = () => {
               </div>
             </div>
           </li>
-          <ul className="flex justify-end items-center  text-sm h-8">
+          {/* <ul className="flex justify-end items-center  text-sm h-8">
             <li>
               <button
                 onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 0))}
@@ -174,7 +174,7 @@ const Learning = () => {
                 Trang sau
               </button>
             </li>
-          </ul>
+          </ul> */}
         </ul>
       </div>
 
