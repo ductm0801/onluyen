@@ -76,6 +76,7 @@ const Schedule: FC<Props> = ({ data, fetchData }) => {
             type: scheduleItem.type,
             courseTitle: scheduleItem.courseTitle,
             instructorName: scheduleItem.instructor?.user.fullName,
+            studentName: scheduleItem.student?.user.fullName,
           });
         }
       } else {
@@ -204,7 +205,10 @@ const Schedule: FC<Props> = ({ data, fetchData }) => {
                         key={idx}
                         title={
                           <>
-                            {slot.courseTitle} - {slot.instructorName}
+                            {slot.courseTitle} -{" "}
+                            {user?.Role === "Instructor"
+                              ? slot.studentName
+                              : slot.instructorName}
                           </>
                         }
                         className="cursor-pointer w-full block"
