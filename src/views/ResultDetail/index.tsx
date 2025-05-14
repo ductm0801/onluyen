@@ -66,6 +66,9 @@ const ResultDetail = () => {
           <h5>
             Câu hỏi {currentQuestionIndex + 1} trên {exam.questions.length}
           </h5>
+          <p className="font-bold text-lg">
+            Môn: {currentQuestion.subjectName}
+          </p>
           <p
             className="text-2xl font-bold"
             dangerouslySetInnerHTML={{ __html: currentQuestion.title }}
@@ -122,7 +125,7 @@ const ResultDetail = () => {
         </div>
         <div className="relative mt-12">
           <CircularProgess
-            className="flex-shrink-0 w-[120px] aspect-square"
+            className="flex-shrink-0 w-[200px] aspect-square"
             gaugePrimaryColor="#FDB022"
             gaugeSecondaryColor="#1244A2"
             max={exam.totalGrade}

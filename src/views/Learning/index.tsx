@@ -5,7 +5,7 @@ import { useLoading } from "@/providers/loadingProvider";
 import { createFeedback, getCourseDetail, getCourseLearning } from "@/services";
 import "plyr-react/plyr.css";
 import dynamic from "next/dynamic";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 import Paging from "@/components/Paging";
 import { Button, Form, Input, Modal, Rate, Tooltip } from "antd";
@@ -24,6 +24,7 @@ const Learning = () => {
   const [totalItems, setTotalItems] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const videoPlayerRef = useRef<any>(null);
+  const router = useRouter();
   const [activeLesson, setActiveLesson] = useState<ILesson | undefined>(
     undefined
   );
@@ -42,8 +43,12 @@ const Learning = () => {
           res.data.lessons.items[res.data.highestCompletedLessonOrder]
         );
       }
-    } catch (err) {
+    } catch (err: any) {
       setLoading(false);
+      if (err?.response?.data.message === "Invalid User operation !") {
+        router.replace(`/404`);
+        return;
+      }
     } finally {
       setLoading(false);
     }
