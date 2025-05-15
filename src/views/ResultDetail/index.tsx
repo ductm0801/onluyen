@@ -5,6 +5,7 @@ import { IMAGES } from "@/constants/images";
 import { IExam } from "@/models";
 import { useLoading } from "@/providers/loadingProvider";
 import { examResult } from "@/services";
+import _ from "lodash";
 import { useParams, useRouter } from "next/navigation";
 import React, { use, useEffect, useRef, useState } from "react";
 
@@ -14,9 +15,11 @@ const ResultDetail = () => {
   const { setLoading } = useLoading();
   const params = useParams();
   const router = useRouter();
+  const [activeSubjcet, setActiveSubject] = useState<string | null>(null);
 
   const listRef = useRef<HTMLUListElement>(null);
   const itemRefs = useRef<(HTMLLIElement | null)[]>([]);
+  const subRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
     if (itemRefs.current[currentQuestionIndex]) {
@@ -27,6 +30,18 @@ const ResultDetail = () => {
       });
     }
   }, [currentQuestionIndex]);
+  useEffect(() => {
+    const subjectIndex = activeSubjcet
+      ? subjectNames.indexOf(activeSubjcet)
+      : -1;
+    if (subjectIndex !== -1 && subRefs.current[subjectIndex]) {
+      subRefs.current[subjectIndex]?.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest",
+        inline: "center",
+      });
+    }
+  }, [activeSubjcet]);
 
   const fetchResult = async () => {
     try {
@@ -49,12 +64,17 @@ const ResultDetail = () => {
   }, []);
 
   if (!exam) return;
-  const currentQuestion = exam.questions[currentQuestionIndex];
+  const groupedQuestions = _.groupBy(exam.questions, "subjectName");
+  const subjectNames = Object.keys(groupedQuestions);
+  const filteredQuestions = activeSubjcet
+    ? exam.questions.filter((q) => q.subjectName === activeSubjcet)
+    : exam.questions;
+
+  const currentQuestion = filteredQuestions[currentQuestionIndex];
 
   const selectedQuestionIds = exam.questions
     .filter((q) => q.answers.some((a) => a.isSelected))
     .map((q) => q.id);
-  console.log(selectedQuestionIds);
   return (
     <div className="bg-white h-[80vh] flex flex-col w-full rounded-[10px] shadow-[0px_0px_5px_rgba(0, 0, 0, 0.1)]">
       <div className="flex justify-between items-center pb-16">
@@ -64,11 +84,33 @@ const ResultDetail = () => {
       <div className="flex">
         <div className="flex-1 flex flex-col gap-4">
           <h5>
-            Câu hỏi {currentQuestionIndex + 1} trên {exam.questions.length}
+            Câu hỏi {currentQuestionIndex + 1} trên {filteredQuestions.length}
           </h5>
-          <p className="font-bold text-lg">
-            Môn: {currentQuestion.subjectName}
-          </p>
+          <div className="font-bold flex items-start  gap-2 text-lg">
+            <div
+              className={`${
+                !activeSubjcet && "bg-[#F0F4FF] text-[#1E40AF]"
+              } border whitespace-nowrap cursor-pointer px-2 py-1 rounded-md`}
+              onClick={() => setActiveSubject(null)}
+            >
+              Tất cả
+            </div>
+            <div className="flex items-center gap-4 max-w-[700px] pr-4 overflow-x-auto">
+              {subjectNames.map((name, index) => (
+                <div
+                  ref={(el) => {
+                    subRefs.current[index] = el;
+                  }}
+                  className={`${
+                    activeSubjcet === name && "bg-[#F0F4FF]   text-[#1E40AF]"
+                  } border whitespace-nowrap cursor-pointer px-2 py-1 rounded-md`}
+                  onClick={() => setActiveSubject(name)}
+                >
+                  {name}
+                </div>
+              ))}
+            </div>
+          </div>
           <p
             className="text-2xl font-bold"
             dangerouslySetInnerHTML={{ __html: currentQuestion.title }}
@@ -150,7 +192,7 @@ const ResultDetail = () => {
           ref={listRef}
           className="flex items-center gap-6 w-[75%] overflow-x-auto p-[1px]"
         >
-          {exam.questions.map((q, index) => (
+          {filteredQuestions.map((q, index) => (
             <li
               ref={(el) => {
                 itemRefs.current[index] = el;
@@ -161,8 +203,8 @@ const ResultDetail = () => {
               index === currentQuestionIndex ? "border-2 border-[#273d30]" : ""
             } ${
                 selectedQuestionIds.includes(q.id)
-                  ? "bg-blue-300 text-white"
-                  : ""
+                  ? "bg-[#1244A2] text-white"
+                  : "bg-white text-black"
               }
            `}
               onClick={() => setCurrentQuestionIndex(index)}
@@ -173,10 +215,10 @@ const ResultDetail = () => {
         </ul>
         <button
           className="py-1 px-4 flex-shrink-0 text-sm border border-[#273d30] text-[#273d30] rounded-xl"
-          disabled={currentQuestionIndex === exam.questions.length - 1}
+          disabled={currentQuestionIndex === filteredQuestions.length - 1}
           onClick={() =>
             setCurrentQuestionIndex((prev) =>
-              Math.min(prev + 1, exam.questions.length - 1)
+              Math.min(prev + 1, filteredQuestions.length - 1)
             )
           }
         >

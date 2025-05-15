@@ -12,6 +12,7 @@ import { Image, Modal } from "antd";
 import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
+import _ from "lodash";
 
 const TakeExam = () => {
   const { setLoading } = useLoading();
@@ -23,9 +24,10 @@ const TakeExam = () => {
     Record<string, { ids: string[]; text: string }>
   >({});
   const router = useRouter();
+  const [activeSubjcet, setActiveSubject] = useState<string | null>(null);
   const listRef = useRef<HTMLUListElement>(null);
   const itemRefs = useRef<(HTMLLIElement | null)[]>([]);
-
+  const subRefs = useRef<(HTMLDivElement | null)[]>([]);
   useEffect(() => {
     if (itemRefs.current[currentQuestionIndex]) {
       itemRefs.current[currentQuestionIndex]?.scrollIntoView({
@@ -35,6 +37,18 @@ const TakeExam = () => {
       });
     }
   }, [currentQuestionIndex]);
+  useEffect(() => {
+    const subjectIndex = activeSubjcet
+      ? subjectNames.indexOf(activeSubjcet)
+      : -1;
+    if (subjectIndex !== -1 && subRefs.current[subjectIndex]) {
+      subRefs.current[subjectIndex]?.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest",
+        inline: "center",
+      });
+    }
+  }, [activeSubjcet]);
 
   useEffect(() => {
     const fetchExam = async () => {
@@ -194,8 +208,14 @@ const TakeExam = () => {
   }, [params.id, setExamId]);
 
   if (!exam) return <></>;
+  const groupedQuestions = _.groupBy(exam.questions, "subjectName");
+  const subjectNames = Object.keys(groupedQuestions);
+  const filteredQuestions = activeSubjcet
+    ? exam.questions.filter((q) => q.subjectName === activeSubjcet)
+    : exam.questions;
 
-  const currentQuestion = exam.questions[currentQuestionIndex];
+  const currentQuestion = filteredQuestions[currentQuestionIndex];
+  // const currentQuestion = exam.questions[currentQuestionIndex];
 
   return (
     <div className="bg-white min-h-[50rem] w-full rounded-[10px] shadow-[0px_0px_5px_rgba(0, 0, 0, 0.1)]">
@@ -220,11 +240,33 @@ const TakeExam = () => {
       <div className="flex gap-16">
         <div className="flex-1 flex flex-col gap-4">
           <h5>
-            Câu hỏi {currentQuestionIndex + 1} trên {exam.questions.length}
+            Câu hỏi {currentQuestionIndex + 1} trên {filteredQuestions.length}
           </h5>
-          <p className="font-bold text-lg">
-            Môn: {currentQuestion.subjectName}
-          </p>
+          <div className="font-bold flex items-start  gap-2 text-lg">
+            <div
+              className={`${
+                !activeSubjcet && "bg-[#F0F4FF] text-[#1E40AF]"
+              } border whitespace-nowrap cursor-pointer px-2 py-1 rounded-md`}
+              onClick={() => setActiveSubject(null)}
+            >
+              Tất cả
+            </div>
+            <div className="flex items-center gap-4 max-w-[700px] pr-4 overflow-x-auto">
+              {subjectNames.map((name, index) => (
+                <div
+                  ref={(el) => {
+                    subRefs.current[index] = el;
+                  }}
+                  className={`${
+                    activeSubjcet === name && "bg-[#F0F4FF]   text-[#1E40AF]"
+                  } border whitespace-nowrap cursor-pointer px-2 py-1 rounded-md`}
+                  onClick={() => setActiveSubject(name)}
+                >
+                  {name}
+                </div>
+              ))}
+            </div>
+          </div>
           <p
             className="text-2xl font-bold"
             // dangerouslySetInnerHTML={{
@@ -329,7 +371,7 @@ const TakeExam = () => {
           ref={listRef}
           className="flex items-center gap-6 w-[75%] overflow-x-auto p-[1px]"
         >
-          {exam.questions.map((q, index) => (
+          {filteredQuestions.map((q, index) => (
             <li
               ref={(el) => {
                 itemRefs.current[index] = el;
@@ -354,10 +396,10 @@ const TakeExam = () => {
         </ul>
         <button
           className="py-1 px-4 flex-shrink-0 text-sm border border-[#273d30] text-[#273d30] rounded-xl"
-          disabled={currentQuestionIndex === exam.questions.length - 1}
+          disabled={currentQuestionIndex === filteredQuestions.length - 1}
           onClick={() =>
             setCurrentQuestionIndex((prev) =>
-              Math.min(prev + 1, exam.questions.length - 1)
+              Math.min(prev + 1, filteredQuestions.length - 1)
             )
           }
         >
