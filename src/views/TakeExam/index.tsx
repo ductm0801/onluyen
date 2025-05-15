@@ -12,7 +12,7 @@ import { Image, Modal } from "antd";
 import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
-import _ from "lodash";
+import _, { set } from "lodash";
 
 const TakeExam = () => {
   const { setLoading } = useLoading();
@@ -260,7 +260,10 @@ const TakeExam = () => {
                   className={`${
                     activeSubjcet === name && "bg-[#F0F4FF]   text-[#1E40AF]"
                   } border whitespace-nowrap cursor-pointer px-2 py-1 rounded-md`}
-                  onClick={() => setActiveSubject(name)}
+                  onClick={() => {
+                    setActiveSubject(name);
+                    setCurrentQuestionIndex(0);
+                  }}
                 >
                   {name}
                 </div>

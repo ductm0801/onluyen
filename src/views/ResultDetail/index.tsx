@@ -6,8 +6,12 @@ import { IExam } from "@/models";
 import { useLoading } from "@/providers/loadingProvider";
 import { examResult } from "@/services";
 import _ from "lodash";
+import "katex/contrib/mhchem";
+import "katex/dist/katex.min.css";
 import { useParams, useRouter } from "next/navigation";
 import React, { use, useEffect, useRef, useState } from "react";
+import { renderMathContent } from "@/constants/utils";
+import { Image } from "antd";
 
 const ResultDetail = () => {
   const [exam, setExam] = useState<IExam | null>(null);
@@ -104,7 +108,10 @@ const ResultDetail = () => {
                   className={`${
                     activeSubjcet === name && "bg-[#F0F4FF]   text-[#1E40AF]"
                   } border whitespace-nowrap cursor-pointer px-2 py-1 rounded-md`}
-                  onClick={() => setActiveSubject(name)}
+                  onClick={() => {
+                    setActiveSubject(name);
+                    setCurrentQuestionIndex(0);
+                  }}
                 >
                   {name}
                 </div>
@@ -113,7 +120,11 @@ const ResultDetail = () => {
           </div>
           <p
             className="text-2xl font-bold"
-            dangerouslySetInnerHTML={{ __html: currentQuestion.title }}
+            dangerouslySetInnerHTML={{
+              __html: renderMathContent(
+                currentQuestion.title.replace(/\n/g, "<br/>")
+              ),
+            }}
           ></p>{" "}
           <span>{questionEnum[currentQuestion.type]}</span>
           <ul className="flex flex-wrap gap-8 mt-4">
@@ -144,15 +155,30 @@ const ResultDetail = () => {
                   ) : isWrongSelected ? (
                     <img src={IMAGES.notCorrect} alt="correct" />
                   ) : isNotSelected ? null : null}
-                  {currentQuestion.type !== 2 && (
-                    <span className="ml-2">
-                      {String.fromCharCode(65 + index)}.
-                    </span>
+                  <p className="flex items-start">
+                    {currentQuestion.type !== 2 && (
+                      <span className="ml-2">
+                        {String.fromCharCode(65 + index)}.
+                      </span>
+                    )}
+                    <span
+                      className="ml-4"
+                      dangerouslySetInnerHTML={{
+                        __html: renderMathContent(
+                          answer.content.replace(/\n/g, "<br/>")
+                        ),
+                      }}
+                    ></span>
+                  </p>
+                  {answer.imageUrl && (
+                    <Image
+                      width={100}
+                      height={100}
+                      src={answer.imageUrl}
+                      alt="img"
+                      className="object-cover"
+                    />
                   )}
-                  <span
-                    className="ml-4"
-                    dangerouslySetInnerHTML={{ __html: content }}
-                  ></span>
                 </li>
               );
             })}
