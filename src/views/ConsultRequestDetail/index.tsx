@@ -20,6 +20,7 @@ import { db } from "@/firebase/config";
 import { collection, onSnapshot } from "firebase/firestore";
 import { useAuth } from "@/providers/authProvider";
 import { Form, Input } from "antd";
+import { pendingExamEnum } from "@/constants/enum";
 Chart.register(...registerables);
 
 const statusOptions = [
@@ -28,6 +29,18 @@ const statusOptions = [
   { label: "Từ chối", value: 2 },
   { label: "Hoàn thành", value: 3 },
 ];
+const statusEnum = {
+  0: "Chờ duyệt",
+  1: "Chấp nhận",
+  2: "Từ chối",
+  3: "Hoàn thành",
+};
+const statusColor = {
+  0: "text-yellow-500 bg-yellow-100",
+  1: "text-green-500 bg-green-100",
+  2: "text-red-500 bg-red-100",
+  3: "text-blue-500 bg-blue-100",
+};
 
 const cols = [
   {
@@ -179,6 +192,34 @@ const ConsultRequestDetail = () => {
     scrollToBottom();
   }, [messages, openChat]);
 
+  const renderStatusbutton = (status: number) => {
+    switch (status) {
+      case 0:
+        return (
+          <div>
+            <button className="bg-green-500 text-white font-bold py-2 px-4 rounded-full">
+              Chấp Nhận
+            </button>
+            <button className="bg-red-500 text-white font-bold py-2 px-4 rounded-full">
+              Từ chối
+            </button>
+          </div>
+        );
+      case 1:
+        return (
+          <button className="bg-blue-500 text-white font-bold py-2 px-4 rounded-full">
+            Hoàn thành
+          </button>
+        );
+      case 2:
+        return null;
+      case 3:
+        return null;
+      default:
+        return null;
+    }
+  };
+
   if (!data) return null;
   return (
     <div>
@@ -190,37 +231,38 @@ const ConsultRequestDetail = () => {
             className="w-20 h-20 rounded-full object-cover mb-4 border"
           />
           <div>
-            <h2 className="text-xl font-semibold">
-              {data.studentInfo.user.fullName}
-            </h2>
+            <div className="flex items-center gap-2">
+              <h2 className="text-xl font-semibold">
+                {data.studentInfo.user.fullName}{" "}
+              </h2>
+              <p
+                className={`text-xs p-2 rounded-xl ${
+                  statusColor[data.status as keyof typeof statusColor]
+                } `}
+              >
+                {statusEnum[data.status as keyof typeof statusEnum]}
+              </p>
+            </div>
             <p className="text-gray-500">{data.studentInfo.user.email}</p>
             <p className="text-gray-500">{data.studentInfo.user.phoneNumber}</p>
           </div>
         </div>
         <div className="flex items-center gap-4">
-          <p className="text-gray-500">Trạng thái:</p>
           {user?.Role === "Consultant" ? (
             <>
-              {statusOptions.map((item, index) => (
-                <button
-                  key={index}
-                  className={`${
-                    status === item.value ? "bg-blue-600" : "bg-gray-200"
-                  } text-white font-bold py-2 px-4 rounded-full`}
-                  onClick={() => handleUpdateRequest(item.value)}
-                >
-                  {item.label}
-                </button>
-              ))}
+              <>{renderStatusbutton(status)}</>
             </>
           ) : (
-            <button
-              className={`
+            <>
+              <p className="text-gray-500">Trạng thái:</p>
+              <button
+                className={`
                 bg-blue-600
-               text-white font-bold py-2 px-4 rounded-full`}
-            >
-              {statusOptions.find((item) => item.value === status)?.label}
-            </button>
+                text-white font-bold py-2 px-4 rounded-full`}
+              >
+                {statusOptions.find((item) => item.value === status)?.label}
+              </button>
+            </>
           )}
         </div>
       </div>

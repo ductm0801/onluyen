@@ -40,7 +40,7 @@ export const courseStatusEnum = {
 };
 export const consultEnum = {
   0: "Chờ duyệt",
-  1: "Đang xử lí",
+  1: "Chấp nhận",
   2: "Từ chối ",
   3: "Hoàn thành",
 };

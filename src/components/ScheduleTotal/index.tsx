@@ -147,7 +147,7 @@ const ScheduleTotal: FC<props> = ({
       <div>
         <div className="flex items-center gap-2">
           {" "}
-          <div className="bg-[#1244A2] w-4 aspect-square" />
+          <div className="bg-[#1244A2]/80 w-4 aspect-square" />
           Chưa bắt đầu
         </div>
         <div className="flex items-center gap-2">

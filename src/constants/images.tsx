@@ -66,4 +66,7 @@ export const IMAGES = {
   newsIcon: "/assets/news.svg",
   feedbackIcon: "/assets/feedback.svg",
   notFound: "/assets/notFound.png",
+  threeDots: "/assets/threeDots.svg",
+  clockIconYellow: "/assets/clockIconYellow.svg",
+  arrowRightWhite: "/assets/arrowRightWhite.svg",
 };
