@@ -212,5 +212,11 @@ export const menus: Record<
       icon: IMAGES.consultantIcon,
       isShow: true,
     },
+    {
+      label: "Chi tiết bài làm",
+      icon: IMAGES.examResult,
+      path: "/consultant/result-detail",
+      isShow: true,
+    },
   ],
 };

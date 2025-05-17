@@ -10,7 +10,7 @@ import {
   sendMessage,
   updateConsultRequest,
 } from "@/services";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 import { Chart, registerables } from "chart.js/auto";
 import { Radar } from "react-chartjs-2";
@@ -19,8 +19,9 @@ import { toast } from "react-toastify";
 import { db } from "@/firebase/config";
 import { collection, onSnapshot } from "firebase/firestore";
 import { useAuth } from "@/providers/authProvider";
-import { Form, Input } from "antd";
-import { pendingExamEnum } from "@/constants/enum";
+import { Form, Input, Modal, Tooltip } from "antd";
+import { difficultyEnum, pendingExamEnum } from "@/constants/enum";
+import { RequestCookiesAdapter } from "next/dist/server/web/spec-extension/adapters/request-cookies";
 Chart.register(...registerables);
 
 const statusOptions = [
@@ -64,6 +65,11 @@ const cols = [
     className:
       "px-6 py-4 font-medium text-center  whitespace-nowrap  rounded-e-lg",
   },
+  {
+    name: "hành động",
+    className:
+      "px-6 py-4 font-medium text-center  whitespace-nowrap  rounded-e-lg",
+  },
 ];
 
 const ConsultRequestDetail = () => {
@@ -77,6 +83,17 @@ const ConsultRequestDetail = () => {
   const { user } = useAuth();
   const [message, setMessage] = useState("");
   const [isSending, setIsSending] = useState(false);
+  const [resultDetail, setResultDetail] = useState<any>(false);
+  const detail = useRef<any>(null);
+  const router = useRouter();
+  const handleOpenDetail = (item: any) => {
+    detail.current = item;
+    setResultDetail(true);
+  };
+  const handleCloseDetail = () => {
+    detail.current = null;
+    setResultDetail(false);
+  };
 
   const fetchData = async () => {
     try {
@@ -188,6 +205,7 @@ const ConsultRequestDetail = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
+  console.log(detail);
   useEffect(() => {
     scrollToBottom();
   }, [messages, openChat]);
@@ -197,17 +215,26 @@ const ConsultRequestDetail = () => {
       case 0:
         return (
           <div>
-            <button className="bg-green-500 text-white font-bold py-2 px-4 rounded-full">
+            <button
+              className="bg-green-500 text-white font-bold py-2 px-4 rounded-full"
+              onClick={() => handleUpdateRequest(1)}
+            >
               Chấp Nhận
             </button>
-            <button className="bg-red-500 text-white font-bold py-2 px-4 rounded-full">
+            <button
+              className="bg-red-500 text-white font-bold py-2 px-4 rounded-full"
+              onClick={() => handleUpdateRequest(2)}
+            >
               Từ chối
             </button>
           </div>
         );
       case 1:
         return (
-          <button className="bg-blue-500 text-white font-bold py-2 px-4 rounded-full">
+          <button
+            className="bg-blue-500 text-white font-bold py-2 px-4 rounded-full"
+            onClick={() => handleUpdateRequest(3)}
+          >
             Hoàn thành
           </button>
         );
@@ -289,13 +316,24 @@ const ConsultRequestDetail = () => {
       <div className="mt-4 min-h-[600px] relative border rounded-xl shadow-md overflow-hidden">
         <div className="flex items-center justify-between px-8 py-[40px]">
           <p className="text-[#101828] font-bold text-2xl">Kết quả làm bài</p>
-
-          <button
-            className="bg-[#1244A2] text-white w-[200px] text-center  rounded-xl py-3 cursor-pointer"
-            onClick={() => setOpenChat((prev) => !prev)}
-          >
-            Liên hệ
-          </button>
+          <div className="flex items-center gap-4">
+            <button
+              className=" text-blue-500 border-2 border-blue-500 w-[200px] text-center  rounded-xl py-3 cursor-pointer"
+              onClick={() =>
+                router.push(
+                  `/consultant/result-detail/${data.testAttemptInfo.testAttemptId}`
+                )
+              }
+            >
+              Xem chi tiết bài làm
+            </button>
+            <button
+              className="bg-[#1244A2] text-white w-[200px] text-center  rounded-xl py-3 cursor-pointer"
+              onClick={() => setOpenChat((prev) => !prev)}
+            >
+              Liên hệ
+            </button>
+          </div>
 
           <div
             className={`absolute top-24 right-0 max-w-[1008px] w-full bg-white shadow-lg rounded-lg p-4 transition-transform duration-300 ${
@@ -394,12 +432,24 @@ const ConsultRequestDetail = () => {
                       </div>
                     </div>
                   </th>
-                  <td className="px-6 py-4 text-center">{a.totalQuestions}</td>
                   <td className="px-6 py-4 text-center">
-                    {a.studentCorrectAnswers}
+                    {a.totalAmountOfQuestions}
                   </td>
                   <td className="px-6 py-4 text-center">
-                    {a.totalQuestions - a.studentCorrectAnswers}
+                    {a.totalStudentCorrectAnswers}
+                  </td>
+                  <td className="px-6 py-4 text-center">
+                    {a.totalAmountOfQuestions - a.totalStudentCorrectAnswers}
+                  </td>
+                  <td className="px-6 py-4 text-center flex items-center justify-center">
+                    <Tooltip title="Xem chi tiết" placement="top">
+                      <img
+                        src={IMAGES.eyeShow}
+                        alt="eye"
+                        className="w-[20px]"
+                        onClick={() => handleOpenDetail(a)}
+                      />
+                    </Tooltip>
                   </td>
                 </tr>
               ))}
@@ -431,6 +481,68 @@ const ConsultRequestDetail = () => {
               } giây`}
         </p>
       </div>
+      {detail.current && resultDetail && (
+        <Modal
+          open={resultDetail}
+          onCancel={handleCloseDetail}
+          width={800}
+          footer={null}
+          centered
+          title={`Chi tiết kết quả ${detail.current?.subjectName}`}
+          className="rounded-2xl"
+        >
+          <div className="flex flex-col gap-4">
+            <table className="table-auto w-full rounded-xl overflow-hidden text-sm border border-gray-200">
+              <thead>
+                <tr className="bg-blue-300 text-white text-center">
+                  <th className="w-[120px] py-2 border-b text-left"></th>
+                  {detail.current?.difficulties.map((a: any, idx: number) => (
+                    <th key={idx} className="px-4 py-2 border-b">
+                      {
+                        difficultyEnum[
+                          a.difficulty as keyof typeof difficultyEnum
+                        ]
+                      }
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                <tr className="text-center border-t">
+                  <td className="px-4 py-2 border-b text-left font-medium">
+                    Tổng số câu
+                  </td>
+                  {detail.current?.difficulties.map((a: any, idx: number) => (
+                    <td key={idx} className="px-4 py-2 border-b">
+                      {a.amountOfQuestions}
+                    </td>
+                  ))}
+                </tr>
+                <tr className="text-center border-t">
+                  <td className="px-4 py-2 border-b text-left font-medium">
+                    Số câu đúng
+                  </td>
+                  {detail.current?.difficulties.map((a: any, idx: number) => (
+                    <td key={idx} className="px-4 py-2 border-b">
+                      {a.studentCorrectAnswers}
+                    </td>
+                  ))}
+                </tr>
+                <tr className="text-center border-t">
+                  <td className="px-4 py-2 border-b text-left font-medium">
+                    Số câu sai
+                  </td>
+                  {detail.current?.difficulties.map((a: any, idx: number) => (
+                    <td key={idx} className="px-4 py-2 border-b">
+                      {a.amountOfQuestions - a.studentCorrectAnswers}
+                    </td>
+                  ))}
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </Modal>
+      )}
     </div>
   );
 };

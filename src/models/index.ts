@@ -370,8 +370,8 @@ export type IConsultRequest = {
     subjectScores: [
       {
         subjectName: string;
-        studentCorrectAnswers: number;
-        totalQuestions: number;
+        totalStudentCorrectAnswers: number;
+        totalAmountOfQuestions: number;
       }
     ];
     isPass: false;
