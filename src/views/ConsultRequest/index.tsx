@@ -11,15 +11,15 @@ import { useEffect, useState } from "react";
 const renderBgColorStatus = (status: keyof typeof consultEnum) => {
   switch (status) {
     case 1:
-      return "from-orange-600 to-orange-300";
+      return "from-green-600 to-green-300";
     case 2:
       return "from-red-600 to-red-400";
     case 3:
-      return "from-emerald-600 to-teal-400";
+      return "from-blue-600 to-blue-400";
     case 0:
-      return "from-slate-600 to-slate-300";
+      return "from-yellow-600 to-yellow-300";
     default:
-      return "from-emerald-500 to-teal-400";
+      return "from-yellow-500 to-teal-400";
   }
 };
 const statusOptions = [

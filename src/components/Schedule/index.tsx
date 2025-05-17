@@ -20,6 +20,7 @@ import {
 import moment from "moment";
 import React, { FC, useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import { IMAGES } from "@/constants/images";
 
 type Props = {
   data: any[];
@@ -31,7 +32,7 @@ type Props = {
 const renderBgColor = (status: number) => {
   switch (status) {
     case 0:
-      return "bg-[#1244A2]";
+      return "bg-[#1244A2]/80";
     case 1:
       return "bg-[#30e04d]/80";
     case 2:
@@ -177,6 +178,7 @@ const Schedule: FC<Props> = ({ data, fetchData }) => {
     form.resetFields();
     setLearningSlotId("");
   };
+
   return (
     <div className="overflow-x-auto py-4">
       <table className="w-full border-separate border rounded-xl text-sm text-center border-spacing-2">
@@ -201,59 +203,101 @@ const Schedule: FC<Props> = ({ data, fetchData }) => {
                 <td key={day.value}>
                   {Array.isArray(daySchedule) &&
                     daySchedule.map((slot, idx) => (
-                      <Popover
-                        key={idx}
-                        title={
-                          <>
-                            {slot.courseTitle} -{" "}
-                            {user?.Role === "Instructor"
-                              ? slot.studentName
-                              : slot.instructorName}
-                          </>
-                        }
-                        className="cursor-pointer w-full block"
-                        content={
-                          <div>
-                            <div
-                              className="cursor-pointer hover:underline mb-2 hover:text-blue-500"
-                              onClick={() => handleGetMeetLink(slot)}
-                            >
-                              Đi đến lớp học
-                            </div>
-                            {user?.Role === "Instructor" && (
-                              <div
-                                className="cursor-pointer hover:underline mb-2 hover:text-blue-500"
-                                onClick={() => handleCancel(slot)}
-                              >
-                                Dời ngày học
-                              </div>
-                            )}
-                          </div>
-                        }
+                      <div
+                        className={`w-full text-left border px-2 py-1 mb-2 ${renderBgColor(
+                          slot.status
+                        )}  text-white rounded-md`}
                       >
-                        <div
-                          className={`w-full border px-2 py-1 mb-2 ${renderBgColor(
-                            slot.status
-                          )}  text-white rounded-md`}
-                        >
-                          <div className="text-[11px]">{slot.note}</div>
-                          <div className="font-semibold text-[12px]">
-                            {slot.startTime} - {slot.endTime}
-                          </div>
-                          <div className="text-[11px]">
-                            {slot.slotDate
-                              ? moment(slot.slotDate).format("DD-MM-YYYY")
-                              : null}
-                          </div>
-                          <div className="text-[11px]">
-                            {
-                              LearningSlotTypeEnum[
-                                slot.type as keyof typeof LearningSlotTypeEnum
-                              ]
-                            }
-                          </div>
+                        <div className="flex items-start gap-2">
+                          <p>{slot.courseTitle}</p>
+
+                          {user?.Role === "Instructor"
+                            ? ((slot.slotDate &&
+                                moment(slot.slotDate).isSame(
+                                  moment(),
+                                  "day"
+                                )) ||
+                                slot.status === 0) && (
+                                <Popover
+                                  content={
+                                    <div className="flex flex-col gap-2">
+                                      {slot.slotDate &&
+                                        moment(slot.slotDate).isSame(
+                                          moment(),
+                                          "day"
+                                        ) && (
+                                          <div
+                                            className="flex items-center cursor-pointer gap-2"
+                                            onClick={() =>
+                                              handleGetMeetLink(slot)
+                                            }
+                                          >
+                                            Đi đến lớp học
+                                            <img
+                                              src={IMAGES.arrowRightWhite}
+                                              alt="icon"
+                                              className=" bg-[#1244A2] rounded-full p-0.5 ml-auto w-6  hover:scale-110 transition-all duration-200"
+                                            />
+                                          </div>
+                                        )}
+                                      {slot.status === 0 && (
+                                        <div
+                                          className="flex cursor-pointer items-center gap-2"
+                                          onClick={() => handleCancel(slot)}
+                                        >
+                                          Dời lịch học
+                                          <img
+                                            src={IMAGES.clockIconYellow}
+                                            className=" bg-[#1244A2]  rounded-full ml-auto p-0.5  w-6  hover:scale-110 transition-all duration-200"
+                                          />
+                                        </div>
+                                      )}
+                                    </div>
+                                  }
+                                  placement="top"
+                                >
+                                  <img
+                                    src={IMAGES.threeDots}
+                                    alt="icon"
+                                    className="w-4 h-4 cursor-pointer mt-2"
+                                  />
+                                </Popover>
+                              )
+                            : slot.slotDate &&
+                              moment(slot.slotDate).isSame(moment(), "day") && (
+                                <Tooltip title="Đi đến lớp học" placement="top">
+                                  <img
+                                    className="cursor-pointer bg-[#1244A2] rounded-full mt-1 p-0.5  hover:scale-110 transition-all duration-200"
+                                    onClick={() => handleGetMeetLink(slot)}
+                                    src={IMAGES.arrowRightWhite}
+                                  />
+                                </Tooltip>
+                              )}
                         </div>
-                      </Popover>
+                        {/* <p>
+                          {" "}
+                          {user?.Role === "Instructor"
+                            ? slot.studentName
+                            : slot.instructorName}
+                        </p> */}
+
+                        <div className="text-[11px]">{slot.note}</div>
+                        <div className="font-semibold text-[12px]">
+                          {slot.startTime} - {slot.endTime}
+                        </div>
+                        <div className="text-[11px]">
+                          {slot.slotDate
+                            ? moment(slot.slotDate).format("DD-MM-YYYY")
+                            : null}
+                        </div>
+                        <div className="text-[11px]">
+                          {
+                            LearningSlotTypeEnum[
+                              slot.type as keyof typeof LearningSlotTypeEnum
+                            ]
+                          }
+                        </div>
+                      </div>
                     ))}
                 </td>
               );
