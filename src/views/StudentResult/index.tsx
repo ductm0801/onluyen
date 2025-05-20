@@ -53,6 +53,7 @@ const StudentResult = () => {
   const router = useRouter();
   const [resultDetail, setResultDetail] = useState<{
     testHistory: any[];
+    totalItemsCount: number;
   } | null>(null);
   const handleOpenDetail = (item: IEXamResult) => {
     setViewDetail(true);
@@ -83,11 +84,7 @@ const StudentResult = () => {
     if (!detail.current) return;
     try {
       setLoading(true);
-      const res = await getHistoryExamDetail(
-        detail.current?.id,
-        currentDetailPage,
-        detailpageSize
-      );
+      const res = await getHistoryExamDetail(detail.current?.id, 0, 100);
       if (res) setResultDetail(res.data);
       setDetailTotalItems(res.data.totalItemsCount);
       setDetailTotalPages(res.data.totalPageCount);
@@ -201,6 +198,8 @@ const StudentResult = () => {
           title="Chi tiết kết quả"
           onCancel={() => handleCloseDetail()}
           footer={null}
+          width={800}
+          className="rounded-[20px] max-h-[600px] overflow-hidden"
         >
           <div className="p-4 max-h-[600px] overflow-y-auto">
             {resultDetail?.testHistory?.map((item: any, index: number) => (
@@ -210,7 +209,7 @@ const StudentResult = () => {
               >
                 <div className="flex-shrink-0 w-[90%]">
                   <p className="flex items-center justify-between">
-                    Điểm thi lần {index + 1}:{" "}
+                    Điểm thi lần {resultDetail.totalItemsCount - index}:{" "}
                     <span
                       className={`font-bold ${
                         item.isPass ? "text-[#17B26A]" : " text-[#F04438]"
@@ -255,13 +254,13 @@ const StudentResult = () => {
               </div>
             ))}
           </div>
-          <Paging
+          {/* <Paging
             setCurrentPage={setCurrentDetailPage}
             currentPage={currentDetailPage}
             pageSize={detailpageSize}
             totalItems={detailTotalItems}
             totalPages={detailTotalPages}
-          />
+          /> */}
         </Modal>
       )}
     </div>

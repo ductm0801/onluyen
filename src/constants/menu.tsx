@@ -216,7 +216,7 @@ export const menus: Record<
       label: "Chi tiết bài làm",
       icon: IMAGES.examResult,
       path: "/consultant/result-detail",
-      isShow: true,
+      isShow: false,
     },
   ],
 };
