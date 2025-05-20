@@ -957,3 +957,13 @@ export const getPlatformFee = async (pageIndex: number, pageSize: number) => {
   );
   return res.data;
 };
+export const getStudentExamHistory = async (
+  pageIndex: number,
+  pageSize: number,
+  id: string | string[]
+) => {
+  const res = await axiosClient.get(`/api/consultRequest/examResult/${id}`, {
+    params: { pageIndex, pageSize },
+  });
+  return res.data;
+};

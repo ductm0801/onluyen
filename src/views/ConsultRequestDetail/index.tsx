@@ -1,27 +1,27 @@
 "use client";
+import { difficultyEnum } from "@/constants/enum";
 import { IMAGES } from "@/constants/images";
+import { db } from "@/firebase/config";
 import { IConsultRequest } from "@/models";
+import { useAuth } from "@/providers/authProvider";
 import { useLoading } from "@/providers/loadingProvider";
 import {
-  getChat,
   getConsultantRequestChat,
   getConsultRequestDetail,
+  getStudentExamHistory,
   sendConsultantRequestMessage,
-  sendMessage,
   updateConsultRequest,
 } from "@/services";
+import { Form, Input, Modal, Popover, Select, Tooltip } from "antd";
+import { Chart, registerables } from "chart.js/auto";
+import { collection, onSnapshot } from "firebase/firestore";
+import { set } from "lodash";
+import { GitCompare } from "lucide-react";
+import moment from "moment";
 import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
-import { Chart, registerables } from "chart.js/auto";
 import { Radar } from "react-chartjs-2";
-import moment from "moment";
 import { toast } from "react-toastify";
-import { db } from "@/firebase/config";
-import { collection, onSnapshot } from "firebase/firestore";
-import { useAuth } from "@/providers/authProvider";
-import { Form, Input, Modal, Tooltip } from "antd";
-import { difficultyEnum, pendingExamEnum } from "@/constants/enum";
-import { RequestCookiesAdapter } from "next/dist/server/web/spec-extension/adapters/request-cookies";
 Chart.register(...registerables);
 
 const statusOptions = [
@@ -85,7 +85,11 @@ const ConsultRequestDetail = () => {
   const [isSending, setIsSending] = useState(false);
   const [resultDetail, setResultDetail] = useState<any>(false);
   const detail = useRef<any>(null);
+  const [studentHistory, setStudentHistory] = useState<any>(null);
+  const [openPopup, setOpenPopup] = useState(false);
   const router = useRouter();
+  const [openCompare, setOpenCompare] = useState(false);
+  const [examCompare, setExamCompare] = useState<any>(null);
   const handleOpenDetail = (item: any) => {
     detail.current = item;
     setResultDetail(true);
@@ -205,7 +209,6 @@ const ConsultRequestDetail = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  console.log(detail);
   useEffect(() => {
     scrollToBottom();
   }, [messages, openChat]);
@@ -245,6 +248,28 @@ const ConsultRequestDetail = () => {
       default:
         return null;
     }
+  };
+  const getStudetnExamHistory = async () => {
+    try {
+      setLoading(true);
+      setOpenPopup(true);
+      const res = await getStudentExamHistory(0, 20, params.id);
+      setStudentHistory(res.data);
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setLoading(false);
+    }
+  };
+  const handleOpenCompare = (item: any) => {
+    setOpenCompare(true);
+    setOpenPopup(false);
+    setExamCompare(item);
+  };
+  const handleCloseCompare = () => {
+    setOpenCompare(false);
+    setOpenPopup(false);
+    setExamCompare(null);
   };
 
   if (!data) return null;
@@ -315,7 +340,17 @@ const ConsultRequestDetail = () => {
       </div>
       <div className="mt-4 min-h-[600px] relative border rounded-xl shadow-md overflow-hidden">
         <div className="flex items-center justify-between px-8 py-[40px]">
-          <p className="text-[#101828] font-bold text-2xl">Kết quả làm bài</p>
+          <div className="flex flex-col gap-2">
+            <p className="text-[#101828] font-bold text-2xl">Kết quả làm bài</p>
+            <button
+              type="button"
+              className="flex items-center gap-2 underline text-blue-500"
+              onClick={() => getStudetnExamHistory()}
+            >
+              Lịch sử thi
+            </button>
+          </div>
+
           <div className="flex items-center gap-4">
             <button
               className=" text-blue-500 border-2 border-blue-500 w-[200px] text-center  rounded-xl py-3 cursor-pointer"
@@ -541,6 +576,93 @@ const ConsultRequestDetail = () => {
               </tbody>
             </table>
           </div>
+        </Modal>
+      )}
+      {openPopup && (
+        <Modal
+          open={openPopup}
+          onCancel={() => setOpenPopup(false)}
+          width={800}
+          footer={null}
+          centered
+          title={`Lịch sử thi của ${data.studentInfo.user.fullName}`}
+          className="rounded-2xl overflow-y-auto max-h-[600px]"
+        >
+          {studentHistory &&
+            studentHistory.testHistory.map((item: any, index: number) => (
+              <div
+                key={index}
+                className="border-b p-4 mb-4 flex items-center gap-3"
+              >
+                <div className="flex-shrink-0 w-[90%]">
+                  <p className="flex items-center justify-between">
+                    Điểm thi lần {studentHistory.totalItemsCount - index}:{" "}
+                    <span
+                      className={`font-bold ${
+                        item.isPass ? "text-[#17B26A]" : "text-[#F04438]"
+                      } `}
+                    >
+                      {Math.round(item.grade)} /{item.testTotalGrade} điểm
+                    </span>
+                  </p>
+                  <div className="flex items-center justify-between">
+                    Thời gian thi:{" "}
+                    <p className="font-bold">
+                      {moment(item.publishedDate).diff(
+                        moment(item.attemptDate),
+                        "seconds"
+                      ) >
+                      item.testLength * 60
+                        ? `${item.testLength} phút`
+                        : `${moment(item.publishedDate).diff(
+                            moment(item.attemptDate),
+                            "minutes"
+                          )} phút ${
+                            moment(item.publishedDate).diff(
+                              moment(item.attemptDate),
+                              "seconds"
+                            ) % 60
+                          } giây`}
+                    </p>
+                  </div>
+                </div>
+                <Popover
+                  content={
+                    <div className="flex flex-col gap-2">
+                      <div
+                        className="flex items-center gap-2 cursor-pointer"
+                        onClick={() => handleOpenCompare(item)}
+                      >
+                        So sánh{" "}
+                        <GitCompare color="#3b82f6" className="ml-auto" />
+                      </div>
+                      <div
+                        className="flex items-center gap-2  cursor-pointer"
+                        onClick={() =>
+                          router.push(
+                            `/consultant/result-detail/${item.testAttemptId}`
+                          )
+                        }
+                      >
+                        Xem bài làm
+                        <img
+                          src={IMAGES.eyeShow}
+                          alt="detail"
+                          className="w-[20px]"
+                        />
+                      </div>
+                    </div>
+                  }
+                  placement="top"
+                >
+                  <img
+                    src={IMAGES.threeDotsBlack}
+                    alt="icon"
+                    className="w-4 h-4 cursor-pointer mt-2"
+                  />
+                </Popover>
+              </div>
+            ))}
         </Modal>
       )}
     </div>

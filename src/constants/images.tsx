@@ -67,6 +67,7 @@ export const IMAGES = {
   feedbackIcon: "/assets/feedback.svg",
   notFound: "/assets/notFound.png",
   threeDots: "/assets/threeDots.svg",
+  threeDotsBlack: "/assets/threeDotsBlack.svg",
   clockIconYellow: "/assets/clockIconYellow.svg",
   arrowRightWhite: "/assets/arrowRightWhite.svg",
 };
