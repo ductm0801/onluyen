@@ -283,8 +283,10 @@ const DashBoard = () => {
   };
   useEffect(() => {
     fetchGgChart();
-    fetchPlatformTransaction();
   }, []);
+  useEffect(() => {
+    fetchPlatformTransaction();
+  }, [currentPage]);
 
   const fetchPlatformTransaction = async () => {
     try {
