@@ -280,12 +280,16 @@ const InstructorDashboard = () => {
                   <td className="px-6 py-4 text-center">{a?.createName}</td>
                   <td
                     className={`px-6 py-4 text-end font-bold ${
-                      a.transactionType === "Withdraw"
+                      a.transactionType === "Withdraw" ||
+                      a.transactionType === "Platform fee"
                         ? "text-red-500"
                         : "text-green-500"
                     }`}
                   >
-                    {a.transactionType === "Withdraw" ? "-" : "+"}
+                    {a.transactionType === "Withdraw" ||
+                    a.transactionType === "Platform fee"
+                      ? "-"
+                      : "+"}
                     {a.amount.toLocaleString("vi-VN")}đ
                   </td>
                   <td

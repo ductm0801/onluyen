@@ -55,10 +55,6 @@ const ResultDetail = () => {
     } catch (e: any) {
       setLoading(false);
       console.log(e);
-      if (e.response.data.message === "Không tìm thấy bàì làm với ID.") {
-        router.replace(`/404`);
-        return;
-      }
     } finally {
       setLoading(false);
     }
