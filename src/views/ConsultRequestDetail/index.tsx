@@ -8,15 +8,15 @@ import { useLoading } from "@/providers/loadingProvider";
 import {
   getConsultantRequestChat,
   getConsultRequestDetail,
+  getStudentExamDetail,
   getStudentExamHistory,
   sendConsultantRequestMessage,
   updateConsultRequest,
 } from "@/services";
-import { Form, Input, Modal, Popover, Select, Tooltip } from "antd";
+import { Form, Input, Modal, Popover, Tooltip } from "antd";
 import { Chart, registerables } from "chart.js/auto";
 import { collection, onSnapshot } from "firebase/firestore";
-import { set } from "lodash";
-import { GitCompare } from "lucide-react";
+import { Check, Equal, GitCompare, MoveDown, MoveUp, X } from "lucide-react";
 import moment from "moment";
 import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
@@ -72,6 +72,28 @@ const cols = [
   },
 ];
 
+const renderDiff = (diff: number) => {
+  if (diff > 0) {
+    return (
+      <span className="text-green-600 font-medium flex items-center justify-center gap-1">
+        <MoveUp /> {diff}
+      </span>
+    );
+  } else if (diff < 0) {
+    return (
+      <span className="text-red-600 font-medium flex items-center justify-center gap-1">
+        <MoveDown /> {Math.abs(diff)}
+      </span>
+    );
+  } else {
+    return (
+      <span className="text-gray-500 flex items-center justify-center gap-1">
+        <Equal />
+      </span>
+    );
+  }
+};
+
 const ConsultRequestDetail = () => {
   const { setLoading } = useLoading();
   const [data, setData] = useState<IConsultRequest | undefined>(undefined);
@@ -116,6 +138,18 @@ const ConsultRequestDetail = () => {
   useEffect(() => {
     fetchData();
   }, [params.id]);
+
+  const getSubjectByName = (scores: any, name: string) =>
+    scores.find((s: any) => s.subjectName === name);
+
+  const allSubjects = Array.from(
+    new Set([
+      ...(data?.testAttemptInfo.subjectScores ?? []).map(
+        (s: any) => s.subjectName
+      ),
+      ...(examCompare?.subjectScores ?? []).map((s: any) => s.subjectName),
+    ])
+  );
   const handleUpdateRequest = async (status: number) => {
     try {
       setLoading(true);
@@ -261,11 +295,23 @@ const ConsultRequestDetail = () => {
       setLoading(false);
     }
   };
+  const getExamDetail = async (id: string) => {
+    try {
+      setLoading(true);
+      const res = await getStudentExamDetail(id);
+      setExamCompare(res.data);
+    } catch (e: any) {
+      toast.error(e?.response?.data.message);
+    } finally {
+      setLoading(false);
+    }
+  };
   const handleOpenCompare = (item: any) => {
     setOpenCompare(true);
     setOpenPopup(false);
-    setExamCompare(item);
+    getExamDetail(item.testAttemptId);
   };
+  console.log(examCompare);
   const handleCloseCompare = () => {
     setOpenCompare(false);
     setOpenPopup(false);
@@ -663,6 +709,184 @@ const ConsultRequestDetail = () => {
                 </Popover>
               </div>
             ))}
+        </Modal>
+      )}
+      {openCompare && examCompare && (
+        <Modal
+          open={openCompare}
+          onCancel={handleCloseCompare}
+          width={800}
+          footer={null}
+          centered
+          title="So sánh kết quả hai lần thi"
+          className="rounded-2xl "
+        >
+          {" "}
+          <div className="p-4 overflow-y-auto max-h-[600px]">
+            {/* Thông tin chung */}
+            <div className="mb-6">
+              <h3 className="text-lg font-semibold mb-2">Thông tin chung</h3>
+              <table className="w-full border border-gray-300 text-sm">
+                <thead>
+                  <tr className="bg-gray-100">
+                    <th className="border px-2 py-1 text-left">Thông tin</th>
+                    <th className="border px-2 py-1">Lần 1</th>
+                    <th className="border px-2 py-1">Lần 2</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td className="border px-2 py-1">Ngày thi</td>
+                    <td className="border px-2 py-1">
+                      {data.testAttemptInfo.attemptDate
+                        ? moment(data.testAttemptInfo.attemptDate).format(
+                            "DD/MM/YYYY HH:mm"
+                          )
+                        : ""}
+                    </td>
+                    <td className="border px-2 py-1">
+                      {examCompare.attemptDate
+                        ? moment(examCompare.attemptDate).format(
+                            "DD/MM/YYYY HH:mm"
+                          )
+                        : ""}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="border px-2 py-1">Điểm</td>
+                    <td className="border px-2 py-1">
+                      {data.testAttemptInfo.grade}
+                    </td>
+                    <td className="border px-2 py-1">{examCompare.grade}</td>
+                  </tr>
+                  <tr>
+                    <td className="border px-2 py-1">Tổng điểm</td>
+                    <td className="border px-2 py-1">
+                      {data.testAttemptInfo.testTotalGrade}
+                    </td>
+                    <td className="border px-2 py-1">
+                      {examCompare.testTotalGrade}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="border px-2 py-1">Kết quả</td>
+                    <td className="border px-2 py-1">
+                      {data.testAttemptInfo.isPass ? (
+                        <div className="flex items-center gap-1 text-green-500">
+                          <Check /> Đậu
+                        </div>
+                      ) : (
+                        <div className="flex items-center gap-1 text-red-500">
+                          <X />
+                          Không đậu
+                        </div>
+                      )}
+                    </td>
+                    <td className="border px-2 py-1">
+                      {examCompare.isPass ? (
+                        <div className="flex items-center gap-1 text-green-500">
+                          <Check /> Đậu
+                        </div>
+                      ) : (
+                        <div className="flex items-center gap-1 text-red-500">
+                          <X />
+                          Không đậu
+                        </div>
+                      )}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            {/* So sánh môn học */}
+            <div>
+              <h3 className="text-lg font-semibold mb-2">
+                So sánh theo môn học
+              </h3>
+              <table className="min-w-full table-auto border border-collapse">
+                <thead className="bg-gray-100">
+                  <tr>
+                    <th className="border px-2 py-1">Môn</th>
+                    <th className="border px-2 py-1">Độ khó</th>
+                    <th className="border px-2 py-1">Lần 1</th>
+                    <th className="border px-2 py-1">Lần 2</th>
+                    <th className="border px-2 py-1">Chênh lệch</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {allSubjects.map((subjectName) => {
+                    const s1 = getSubjectByName(
+                      data.testAttemptInfo.subjectScores,
+                      subjectName
+                    );
+                    const s2 = getSubjectByName(
+                      examCompare.subjectScores,
+                      subjectName
+                    );
+
+                    if (!s1 || !s2) return null;
+
+                    const total1 = s1.totalStudentCorrectAnswers;
+                    const total2 = s2.totalStudentCorrectAnswers;
+                    const totalQuestions = s1.totalAmountOfQuestions;
+
+                    return (
+                      <React.Fragment key={subjectName}>
+                        <tr className="bg-gray-50 font-semibold">
+                          <td className="border px-2 py-1">{subjectName}</td>
+                          <td className="border px-2 py-1 text-center">-</td>
+                          <td className="border px-2 py-1 text-center">
+                            {total1} / {totalQuestions}
+                          </td>
+                          <td className="border px-2 py-1 text-center">
+                            {total2} / {s2.totalAmountOfQuestions}
+                          </td>
+                          <td className="border px-2 py-1 text-center">
+                            {renderDiff(total2 - total1)}
+                          </td>
+                        </tr>
+
+                        {s1.difficulties.map((d1: any, idx: number) => {
+                          const d2 = s2.difficulties.find(
+                            (d: any) => d.difficulty === d1.difficulty
+                          );
+                          if (!d2) return null;
+
+                          return (
+                            <tr key={idx}>
+                              <td className="border px-2 py-1"></td>
+                              <td className="border px-2 py-1">
+                                {
+                                  difficultyEnum[
+                                    d1.difficulty as keyof typeof difficultyEnum
+                                  ]
+                                }
+                              </td>
+                              <td className="border px-2 py-1 text-center">
+                                {d1.studentCorrectAnswers} /{" "}
+                                {d1.amountOfQuestions}
+                              </td>
+                              <td className="border px-2 py-1 text-center">
+                                {d2.studentCorrectAnswers} /{" "}
+                                {d2.amountOfQuestions}
+                              </td>
+                              <td className="border px-2 py-1 text-center">
+                                {renderDiff(
+                                  d2.studentCorrectAnswers -
+                                    d1.studentCorrectAnswers
+                                )}
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </React.Fragment>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </div>
         </Modal>
       )}
     </div>

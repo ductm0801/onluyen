@@ -967,3 +967,9 @@ export const getStudentExamHistory = async (
   });
   return res.data;
 };
+export const getStudentExamDetail = async (id: string) => {
+  const res = await axiosClient.get(
+    `/api/consultRequest/testAttemptDetail/${id}`
+  );
+  return res.data;
+};
