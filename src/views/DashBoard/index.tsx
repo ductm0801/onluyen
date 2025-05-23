@@ -1,6 +1,6 @@
 "use client";
 import Paging from "@/components/Paging";
-import { statusEnum } from "@/constants/enum";
+import { paymentTypeEnum, statusEnum } from "@/constants/enum";
 import { IMAGES } from "@/constants/images";
 import { useLoading } from "@/providers/loadingProvider";
 import {
@@ -9,7 +9,7 @@ import {
   getPlatformFee,
   sentFormtoMail,
 } from "@/services";
-import { Button, Rate } from "antd";
+import { Button, Rate, Select } from "antd";
 import axios from "axios";
 import { Chart, registerables } from "chart.js/auto";
 import dayjs from "dayjs";
@@ -34,6 +34,11 @@ const cols = [
       "px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white rounded-s-lg",
   },
   {
+    name: "Loại giao dịch",
+    className:
+      "px-6 py-4 font-medium text-center text-gray-900 whitespace-nowrap dark:text-white",
+  },
+  {
     name: "Người thực hiện",
     className:
       "px-6 py-4 font-medium text-center text-gray-900 whitespace-nowrap dark:text-white",
@@ -43,11 +48,11 @@ const cols = [
     className:
       "px-6 py-4 font-medium text-end text-gray-900 whitespace-nowrap dark:text-white",
   },
-  {
-    name: "Trạng thái",
-    className:
-      "px-6 py-4 font-medium text-center text-gray-900 whitespace-nowrap dark:text-white",
-  },
+  // {
+  //   name: "Trạng thái",
+  //   className:
+  //     "px-6 py-4 font-medium text-center text-gray-900 whitespace-nowrap dark:text-white",
+  // },
   {
     name: "Ngày thực hiện",
     className:
@@ -83,6 +88,7 @@ const DashBoard = () => {
   const [pageSize, setPageSize] = useState(10);
   const [totalItems, setTotalItems] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
+  const [tableFilter, setTableFilter] = useState(undefined);
   const fetchData = async () => {
     setLoading(true);
     try {
@@ -284,14 +290,11 @@ const DashBoard = () => {
   useEffect(() => {
     fetchGgChart();
   }, []);
-  useEffect(() => {
-    fetchPlatformTransaction();
-  }, [currentPage]);
 
   const fetchPlatformTransaction = async () => {
     try {
       setLoading(true);
-      const res = await getPlatformFee(currentPage, pageSize);
+      const res = await getPlatformFee(currentPage, pageSize, tableFilter);
       setTransaction(res.data.items);
       setTotalItems(res.data.totalItemsCount);
       setTotalPages(res.data.totalPageCount);
@@ -302,6 +305,9 @@ const DashBoard = () => {
       setLoading(false);
     }
   };
+  useEffect(() => {
+    fetchPlatformTransaction();
+  }, [currentPage, tableFilter]);
   return (
     <div>
       <div className="flex flex-col gap-4">
@@ -418,31 +424,22 @@ const DashBoard = () => {
       <Bar options={options} data={data} />
       <div className="relative overflow-x-auto">
         <div className="flex justify-between items-center  flex-column flex-wrap md:flex-row space-y-4 md:space-y-0 pb-4">
-          {/* <div className="relative">
-            <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-              <svg
-                className="w-4 h-4 text-gray-500 dark:text-gray-400"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 20 20"
-              >
-                <path
-                  stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
-                />
-              </svg>
-            </div>
-            <input
-              type="text"
-              id="table-search-users"
-              className="block p-2 ps-10 text-sm focus:ring-0 focus:outline-none text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white "
-              placeholder="Tìm kiếm"
-            />
-          </div> */}
+          <Select
+            options={[
+              { label: "Phí nền tảng", value: "Platform fee" },
+              { label: "Rút tiền", value: "Withdraw" },
+              { label: "Mã thi", value: "Exam" },
+              { label: "Khóa học", value: "Course" },
+            ]}
+            onChange={(value) => {
+              setTableFilter(value);
+              setCurrentPage(0);
+            }}
+            value={tableFilter}
+            className="w-1/2 md:w-1/4"
+            placeholder="Chọn loại giao dịch"
+            allowClear
+          />
         </div>
         <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
           <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
@@ -469,18 +466,19 @@ const DashBoard = () => {
                       {a?.transactionName}
                     </div>
                   </th>
-                  <td className="px-6 py-4 text-center">{a?.fullName}</td>
+                  <td className="px-6 py-4 text-center">
+                    {paymentTypeEnum[a?.type as keyof typeof paymentTypeEnum]}
+                  </td>
+                  <td className="px-6 py-4 text-center">{a?.userName}</td>
                   <td
                     className={`px-6 py-4 text-end font-bold ${
-                      a.transactionType === "Withdraw"
-                        ? "text-red-500"
-                        : "text-green-500"
+                      a.type === "Withdraw" ? "text-red-500" : "text-green-500"
                     }`}
                   >
-                    {a.transactionType === "Withdraw" ? "-" : "+"}
+                    {a.type === "Withdraw" ? "-" : "+"}
                     {a.amount.toLocaleString("vi-VN")}đ
                   </td>
-                  <td
+                  {/* <td
                     className={`p-2 text-sm leading-normal text-center align-middle shadow-transparent`}
                   >
                     <span
@@ -491,7 +489,7 @@ const DashBoard = () => {
                       {statusEnum[a.status as keyof typeof statusEnum] ||
                         "Unknown Status"}
                     </span>
-                  </td>
+                  </td> */}
                   <td className="px-6 py-4 flex flex-col  items-center">
                     <p>{dayjs(a.transactionDate).format("DD/MM/YYYY")}</p>
                     <p className="text-xs">

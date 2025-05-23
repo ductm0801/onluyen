@@ -119,3 +119,9 @@ export const LearningSlotStatusEnum = {
   1: "Hoàn thành",
   2: "Đã hủy",
 };
+export const paymentTypeEnum = {
+  "Platform fee": "Phí nền tảng",
+  Withdraw: "Rút tiền",
+  Exam: "Mã thi",
+  Course: "Khóa học",
+};

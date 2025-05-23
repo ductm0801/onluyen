@@ -948,11 +948,21 @@ export const getFeedback = async (pageIndex: number, pageSize: number) => {
   });
   return res.data;
 };
-export const getPlatformFee = async (pageIndex: number, pageSize: number) => {
+export const getPlatformFee = async (
+  pageIndex: number,
+  pageSize: number,
+  PaymentType?: string
+) => {
   const res = await axiosClient.get(
-    `/api/instructor_transaction/get_list_fee_platform`,
+    `/api/instructor_transaction/get_all_detail_transaction`,
     {
-      params: { pageIndex, pageSize, SortBy: "string", SortAscending: false },
+      params: {
+        pageIndex,
+        pageSize,
+        SortBy: "string",
+        SortAscending: false,
+        PaymentType,
+      },
     }
   );
   return res.data;
