@@ -463,7 +463,7 @@ const DashBoard = () => {
                     className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white"
                   >
                     <div className="text-base font-semibold">
-                      {a?.transactionName}
+                      {a?.additionalDetail}
                     </div>
                   </th>
                   <td className="px-6 py-4 text-center">
