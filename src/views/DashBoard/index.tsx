@@ -426,7 +426,7 @@ const DashBoard = () => {
         <div className="flex justify-between items-center  flex-column flex-wrap md:flex-row space-y-4 md:space-y-0 pb-4">
           <Select
             options={[
-              { label: "Phí nền tảng", value: "Platform fee" },
+              { label: "Phí nền tảng", value: "Platformfee" },
               { label: "Rút tiền", value: "Withdraw" },
               { label: "Mã thi", value: "Exam" },
               { label: "Khóa học", value: "Course" },
