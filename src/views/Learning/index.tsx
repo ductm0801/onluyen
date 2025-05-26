@@ -71,6 +71,36 @@ const Learning = () => {
     }
   };
 
+  useEffect(() => {
+    const blockDevTools = (e: KeyboardEvent) => {
+      // F12
+      if (e.key === "F12") {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      // Ctrl+Shift+I/J/C/U
+      if (
+        (e.ctrlKey && e.shiftKey && ["I", "J", "C", "U"].includes(e.key)) ||
+        (e.ctrlKey && e.key === "U")
+      ) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+    };
+
+    const blockContextMenu = (e: MouseEvent) => {
+      e.preventDefault();
+    };
+
+    window.addEventListener("keydown", blockDevTools, true);
+    window.addEventListener("contextmenu", blockContextMenu, true);
+
+    return () => {
+      window.removeEventListener("keydown", blockDevTools, true);
+      window.removeEventListener("contextmenu", blockContextMenu, true);
+    };
+  }, []);
+
   if (!course) return null;
 
   return (

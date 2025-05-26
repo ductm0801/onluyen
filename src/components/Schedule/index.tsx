@@ -275,6 +275,7 @@ const Schedule: FC<Props> = ({ data, fetchData }) => {
                                 </Tooltip>
                               )}
                         </div>
+
                         {/* <p>
                           {" "}
                           {user?.Role === "Instructor"
