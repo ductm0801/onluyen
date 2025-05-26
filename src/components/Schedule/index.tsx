@@ -264,10 +264,11 @@ const Schedule: FC<Props> = ({ data, fetchData }) => {
                                 </Popover>
                               )
                             : slot.slotDate &&
-                              moment(slot.slotDate).isSame(moment(), "day") && (
+                              moment(slot.slotDate).isSame(moment(), "day") &&
+                              slot.status === 0 && (
                                 <Tooltip title="Đi đến lớp học" placement="top">
                                   <img
-                                    className="cursor-pointer bg-[#1244A2] rounded-full mt-1 p-0.5  hover:scale-110 transition-all duration-200"
+                                    className="cursor-pointer bg-[#1244A2] rounded-full ml-auto mt-1 p-0.5  hover:scale-110 transition-all duration-200"
                                     onClick={() => handleGetMeetLink(slot)}
                                     src={IMAGES.arrowRightWhite}
                                   />
