@@ -179,12 +179,10 @@ const CourseDetail = () => {
             </h2>
 
             <Select
-              options={schedule
-                .filter((s: any) => s.available)
-                .map((s: any) => ({
-                  label: s.note,
-                  value: s.scheduleId,
-                }))}
+              options={schedule.map((s: any) => ({
+                label: s.note,
+                value: s.scheduleId,
+              }))}
               placeholder="🕐 Chọn lịch học phù hợp"
               onChange={(e) => setSelectedTime(e)}
               value={selectedTime}
