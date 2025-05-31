@@ -635,51 +635,51 @@ const ConsultRequestDetail = () => {
           className="rounded-2xl overflow-y-auto max-h-[600px]"
         >
           {studentHistory &&
-            studentHistory.testHistory
-              .filter(
-                (a: any) =>
-                  a.testAttemptId !== data.testAttemptInfo.testAttemptId
-              )
-              .map((item: any, index: number) => (
-                <div
-                  key={index}
-                  className="border-b p-4 mb-4 flex items-center gap-3"
-                >
-                  <div className="flex-shrink-0 w-[90%]">
-                    <p className="flex items-center justify-between">
-                      Điểm thi lần {studentHistory.totalItemsCount - index}:{" "}
-                      <span
-                        className={`font-bold ${
-                          item.isPass ? "text-[#17B26A]" : "text-[#F04438]"
-                        } `}
-                      >
-                        {Math.round(item.grade)} /{item.testTotalGrade} điểm
-                      </span>
-                    </p>
-                    <div className="flex items-center justify-between">
-                      Thời gian thi:{" "}
-                      <p className="font-bold">
-                        {moment(item.publishedDate).diff(
-                          moment(item.attemptDate),
-                          "seconds"
-                        ) >
-                        item.testLength * 60
-                          ? `${item.testLength} phút`
-                          : `${moment(item.publishedDate).diff(
+            studentHistory.testHistory.map((item: any, index: number) => (
+              <div
+                key={index}
+                className={`${
+                  item.testAttemptId === data.testAttemptInfo.testAttemptId &&
+                  "bg-[#E5F2FF] border-[#1244A2]"
+                } border-b p-4 mb-4 flex items-center gap-3`}
+              >
+                <div className="flex-shrink-0 w-[90%]">
+                  <p className="flex items-center justify-between">
+                    Điểm thi lần {studentHistory.totalItemsCount - index}:{" "}
+                    <span
+                      className={`font-bold ${
+                        item.isPass ? "text-[#17B26A]" : "text-[#F04438]"
+                      } `}
+                    >
+                      {Math.round(item.grade)} /{item.testTotalGrade} điểm
+                    </span>
+                  </p>
+                  <div className="flex items-center justify-between">
+                    Thời gian thi:{" "}
+                    <p className="font-bold">
+                      {moment(item.publishedDate).diff(
+                        moment(item.attemptDate),
+                        "seconds"
+                      ) >
+                      item.testLength * 60
+                        ? `${item.testLength} phút`
+                        : `${moment(item.publishedDate).diff(
+                            moment(item.attemptDate),
+                            "minutes"
+                          )} phút ${
+                            moment(item.publishedDate).diff(
                               moment(item.attemptDate),
-                              "minutes"
-                            )} phút ${
-                              moment(item.publishedDate).diff(
-                                moment(item.attemptDate),
-                                "seconds"
-                              ) % 60
-                            } giây`}
-                      </p>
-                    </div>
+                              "seconds"
+                            ) % 60
+                          } giây`}
+                    </p>
                   </div>
-                  <Popover
-                    content={
-                      <div className="flex flex-col gap-2">
+                </div>
+                <Popover
+                  content={
+                    <div className="flex flex-col gap-2">
+                      {item.testAttemptId !==
+                        data.testAttemptInfo.testAttemptId && (
                         <div
                           className="flex items-center gap-2 cursor-pointer"
                           onClick={() => handleOpenCompare(item)}
@@ -687,33 +687,34 @@ const ConsultRequestDetail = () => {
                           So sánh{" "}
                           <GitCompare color="#3b82f6" className="ml-auto" />
                         </div>
-                        <div
-                          className="flex items-center gap-2  cursor-pointer"
-                          onClick={() =>
-                            router.push(
-                              `/consultant/result-detail/${item.testAttemptId}`
-                            )
-                          }
-                        >
-                          Xem bài làm
-                          <img
-                            src={IMAGES.eyeShow}
-                            alt="detail"
-                            className="w-[20px]"
-                          />
-                        </div>
+                      )}
+                      <div
+                        className="flex items-center gap-2  cursor-pointer"
+                        onClick={() =>
+                          router.push(
+                            `/consultant/result-detail/${item.testAttemptId}`
+                          )
+                        }
+                      >
+                        Xem bài làm
+                        <img
+                          src={IMAGES.eyeShow}
+                          alt="detail"
+                          className="w-[20px]"
+                        />
                       </div>
-                    }
-                    placement="top"
-                  >
-                    <img
-                      src={IMAGES.threeDotsBlack}
-                      alt="icon"
-                      className="w-4 h-4 cursor-pointer mt-2"
-                    />
-                  </Popover>
-                </div>
-              ))}
+                    </div>
+                  }
+                  placement="top"
+                >
+                  <img
+                    src={IMAGES.threeDotsBlack}
+                    alt="icon"
+                    className="w-4 h-4 cursor-pointer mt-2"
+                  />
+                </Popover>
+              </div>
+            ))}
         </Modal>
       )}
       {openCompare && examCompare && (
