@@ -114,6 +114,7 @@ export type IQuestion = {
   answerText?: string;
   answers: IAnswers[];
   subjectName: string;
+  isCorrect: boolean;
 };
 
 export type IQuestionBank = {

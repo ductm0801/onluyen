@@ -99,7 +99,10 @@ const ResultDetail = () => {
   const currentQuestion = filteredQuestions[currentQuestionIndex];
 
   const selectedQuestionIds = exam.questions
-    .filter((q) => q.answers.some((a) => a.isSelected))
+    .filter((q) => q.answers.some((a) => a.isSelected && q.isCorrect))
+    .map((q) => q.id);
+  const wrongselectedQuestionIds = exam.questions
+    .filter((q) => q.answers.some((a) => a.isSelected && !q.isCorrect))
     .map((q) => q.id);
   return (
     <div className="bg-white h-[80vh] flex flex-col w-full rounded-[10px] shadow-[0px_0px_5px_rgba(0, 0, 0, 0.1)]">
@@ -254,8 +257,10 @@ const ResultDetail = () => {
             ${
               index === currentQuestionIndex ? "border-2 border-[#273d30]" : ""
             } ${
-                selectedQuestionIds.includes(q.id)
-                  ? "bg-[#1244A2] text-white"
+                wrongselectedQuestionIds.includes(q.id)
+                  ? "bg-[#FEE4E2] "
+                  : selectedQuestionIds.includes(q.id)
+                  ? "bg-[#DBFAE6] "
                   : "bg-white text-black"
               }
            `}
