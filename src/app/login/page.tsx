@@ -148,7 +148,7 @@ const Login = () => {
               </div>
             </Form.Item>
             <div
-              className="text-[#ffc022] font-bold cursor-pointer  pb-3 text-end"
+              className="text-[#ffc022] font-bold cursor-pointer w-fit  pb-3 justify-self-end"
               onClick={() => setIsForgotPassword(true)}
             >
               Quên mật khẩu

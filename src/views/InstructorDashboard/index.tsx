@@ -9,11 +9,12 @@ import {
 import React, { useEffect, useState } from "react";
 import { Chart, registerables } from "chart.js/auto";
 import { Bar } from "react-chartjs-2";
-import { Form, Input, InputNumber, Modal } from "antd";
+import { Form, Input, InputNumber, Modal, Tooltip } from "antd";
 import { toast } from "react-toastify";
 import Paging from "@/components/Paging";
 import { statusEnum } from "@/constants/enum";
 import dayjs from "dayjs";
+import { Info } from "lucide-react";
 Chart.register(...registerables);
 
 const money = [
@@ -198,12 +199,20 @@ const InstructorDashboard = () => {
             {user?.instructor?.pendingBalance.toLocaleString("vi-VN")}đ
           </h4>
         </div>
-        <div
+        <button
+          disabled={
+            Date.now() <
+              new Date(dayjs().year(), dayjs().month(), 1).getTime() ||
+            Date.now() > new Date(dayjs().year(), dayjs().month(), 5).getTime()
+          }
           onClick={() => setOpen(true)}
-          className="bg-blue-500 rounded-xl px-3 py-2 text-white cursor-pointer ml-auto"
+          className="bg-blue-500 flex items-center gap-2 rounded-xl px-3 py-2 text-white cursor-pointer ml-auto"
         >
-          Rút tiền
-        </div>
+          Rút tiền{" "}
+          <Tooltip title="Chỉ có thể rút tiền vào ngày 1 tới ngày 5 hàng tháng">
+            <Info />
+          </Tooltip>
+        </button>
       </div>
       <div className="flex gap-4 mt-4 justify-end ">
         <button
