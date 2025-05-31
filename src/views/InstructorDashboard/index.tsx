@@ -206,7 +206,13 @@ const InstructorDashboard = () => {
             Date.now() > new Date(dayjs().year(), dayjs().month(), 5).getTime()
           }
           onClick={() => setOpen(true)}
-          className="bg-blue-500 flex items-center gap-2 rounded-xl px-3 py-2 text-white cursor-pointer ml-auto"
+          className={`${
+            Date.now() <
+              new Date(dayjs().year(), dayjs().month(), 1).getTime() ||
+            Date.now() > new Date(dayjs().year(), dayjs().month(), 5).getTime()
+              ? " opacity-50 cursor-not-allowed"
+              : "cursor-pointer "
+          } bg-blue-500  flex items-center gap-2 rounded-xl px-3 py-2 text-white  ml-auto`}
         >
           Rút tiền{" "}
           <Tooltip title="Chỉ có thể rút tiền vào ngày 1 tới ngày 5 hàng tháng">
