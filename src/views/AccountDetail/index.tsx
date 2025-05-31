@@ -15,9 +15,9 @@ const tab = [
   { key: "bank", value: "Tài khoản ngân hàng" },
 ];
 const rateOptions = [
-  { label: "0.7", value: "0.7" },
-  { label: "0.8", value: "0.8" },
-  { label: "0.9", value: "0.9" },
+  { label: "30%", value: 0.7 },
+  { label: "20%", value: 0.8 },
+  { label: "10%", value: 0.9 },
 ];
 export const renderBgColorStatus = (status: keyof typeof statusEnum) => {
   switch (status) {
@@ -64,7 +64,10 @@ const AccountDetail = () => {
   const onFinish = async (values: any) => {
     try {
       setLoading(true);
-      await updateInstructorRate(user?.instructor.id || "", values.rate);
+      await updateInstructorRate(
+        user?.instructor.id || "",
+        String(values.rate)
+      );
       toast.success("Cập nhật thành công");
       setEdit(false);
       fetchUser();
@@ -184,7 +187,10 @@ const AccountDetail = () => {
                     Hoa hồng:
                   </p>
                   <p className="font-semibold text-lg m-0 flex items-center gap-2">
-                    {user?.instructor.commissionRate || "\u2014"}{" "}
+                    {user?.instructor?.commissionRate !== undefined
+                      ? Math.round((1 - user.instructor.commissionRate) * 100) +
+                        "%"
+                      : "\u2014"}{" "}
                     <Tooltip title="Chỉnh sửa hoa hồng">
                       <div
                         className="bg-blue-500 w-8 text-center py-1 cursor-pointer aspect-square rounded-xl text-white"
