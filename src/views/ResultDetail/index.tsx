@@ -20,8 +20,11 @@ const ResultDetail = () => {
   const params = useParams();
   const router = useRouter();
   const [activeSubjcet, setActiveSubject] = useState<string | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [startX, setStartX] = useState(0);
+  const [scrollLeft, setScrollLeft] = useState(0);
 
-  const listRef = useRef<HTMLUListElement>(null);
+  const listRef = useRef<any>(null);
   const itemRefs = useRef<(HTMLLIElement | null)[]>([]);
   const subRefs = useRef<(HTMLDivElement | null)[]>([]);
 
@@ -34,6 +37,7 @@ const ResultDetail = () => {
       });
     }
   }, [currentQuestionIndex]);
+
   useEffect(() => {
     const subjectIndex = activeSubjcet
       ? subjectNames.indexOf(activeSubjcet)
@@ -50,7 +54,7 @@ const ResultDetail = () => {
   const fetchResult = async () => {
     try {
       setLoading(true);
-      const res = await examResult(params.id, 0, 100);
+      const res = await examResult(params.id, 0, 200);
       setExam(res.data);
     } catch (e: any) {
       setLoading(false);
@@ -62,6 +66,28 @@ const ResultDetail = () => {
   useEffect(() => {
     fetchResult();
   }, []);
+
+  const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
+    setIsDragging(true);
+    setStartX(e.pageX - listRef.current!.offsetLeft);
+    setScrollLeft(listRef.current!.scrollLeft);
+  };
+
+  const handleMouseLeave = () => {
+    setIsDragging(false);
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  };
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!isDragging) return;
+    e.preventDefault();
+    const x = e.pageX - listRef.current!.offsetLeft;
+    const walk = (x - startX) * 2;
+    listRef.current!.scrollLeft = scrollLeft - walk;
+  };
 
   if (!exam) return;
   const groupedQuestions = _.groupBy(exam.questions, "subjectName");
@@ -210,9 +236,13 @@ const ResultDetail = () => {
         >
           Câu trước
         </button>
-        <ul
+        <div
           ref={listRef}
           className="flex items-center gap-6 w-[75%] overflow-x-auto p-[1px]"
+          onMouseDown={handleMouseDown}
+          onMouseLeave={handleMouseLeave}
+          onMouseUp={handleMouseUp}
+          onMouseMove={handleMouseMove}
         >
           {filteredQuestions.map((q, index) => (
             <li
@@ -234,7 +264,7 @@ const ResultDetail = () => {
               {index + 1}
             </li>
           ))}
-        </ul>
+        </div>
         <button
           className="py-1 px-4 flex-shrink-0 text-sm border border-[#273d30] text-[#273d30] rounded-xl"
           disabled={currentQuestionIndex === filteredQuestions.length - 1}

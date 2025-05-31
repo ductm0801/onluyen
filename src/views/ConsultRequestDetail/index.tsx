@@ -251,7 +251,7 @@ const ConsultRequestDetail = () => {
     switch (status) {
       case 0:
         return (
-          <div>
+          <div className="flex items-center gap-4">
             <button
               className="bg-green-500 text-white font-bold py-2 px-4 rounded-full"
               onClick={() => handleUpdateRequest(1)}
@@ -287,7 +287,7 @@ const ConsultRequestDetail = () => {
     try {
       setLoading(true);
       setOpenPopup(true);
-      const res = await getStudentExamHistory(0, 20, params.id);
+      const res = await getStudentExamHistory(0, 100, params.id);
       setStudentHistory(res.data);
     } catch (e) {
       console.log(e);

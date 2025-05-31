@@ -25,7 +25,10 @@ const TakeExam = () => {
   >({});
   const router = useRouter();
   const [activeSubjcet, setActiveSubject] = useState<string | null>(null);
-  const listRef = useRef<HTMLUListElement>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [startX, setStartX] = useState(0);
+  const [scrollLeft, setScrollLeft] = useState(0);
+  const listRef = useRef<any>(null);
   const itemRefs = useRef<(HTMLLIElement | null)[]>([]);
   const subRefs = useRef<(HTMLDivElement | null)[]>([]);
   useEffect(() => {
@@ -207,6 +210,28 @@ const TakeExam = () => {
     };
   }, [params.id, setExamId]);
 
+  const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
+    setIsDragging(true);
+    setStartX(e.pageX - listRef.current!.offsetLeft);
+    setScrollLeft(listRef.current!.scrollLeft);
+  };
+
+  const handleMouseLeave = () => {
+    setIsDragging(false);
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  };
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!isDragging) return;
+    e.preventDefault();
+    const x = e.pageX - listRef.current!.offsetLeft;
+    const walk = (x - startX) * 2;
+    listRef.current!.scrollLeft = scrollLeft - walk;
+  };
+
   if (!exam) return <></>;
   const groupedQuestions = _.groupBy(exam.questions, "subjectName");
   const subjectNames = Object.keys(groupedQuestions);
@@ -370,9 +395,13 @@ const TakeExam = () => {
         >
           Câu trước
         </button>
-        <ul
+        <div
           ref={listRef}
           className="flex items-center gap-6 w-[75%] overflow-x-auto p-[1px]"
+          onMouseDown={handleMouseDown}
+          onMouseLeave={handleMouseLeave}
+          onMouseUp={handleMouseUp}
+          onMouseMove={handleMouseMove}
         >
           {filteredQuestions.map((q, index) => (
             <li
@@ -396,7 +425,7 @@ const TakeExam = () => {
               {index + 1}
             </li>
           ))}
-        </ul>
+        </div>
         <button
           className="py-1 px-4 flex-shrink-0 text-sm border border-[#273d30] text-[#273d30] rounded-xl"
           disabled={currentQuestionIndex === filteredQuestions.length - 1}
