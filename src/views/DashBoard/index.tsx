@@ -9,10 +9,11 @@ import {
   getPlatformFee,
   sentFormtoMail,
 } from "@/services";
-import { Button, Rate, Select } from "antd";
+import { Button, Rate, Select, Tooltip } from "antd";
 import axios from "axios";
 import { Chart, registerables } from "chart.js/auto";
 import dayjs from "dayjs";
+import { Info } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Bar, Pie } from "react-chartjs-2";
 import { toast } from "react-toastify";
@@ -161,7 +162,7 @@ const DashBoard = () => {
         backgroundColor: "rgba(153, 102, 255, 0.3)",
       },
       {
-        label: "Hoa hồng giảng viên",
+        label: "Số tiền giảng viên nhận",
         data: analyzeData?.map((a: any) => a.withdrawAmount),
         borderColor: "rgba(255, 205, 86, 1)",
         backgroundColor: "rgba(255, 205, 86, 0.3)",
@@ -371,17 +372,35 @@ const DashBoard = () => {
           </div>
         </div>
       </div>
-      <div className="grid grid-cols-5 mt-4 gap-4">
+      <div className="grid grid-cols-4 mt-4 gap-4">
         <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
           <h4 className="font-bold text-center text-gray-800 text-title-sm dark:text-white/90">
             Doanh thu <br />{" "}
             {revenueData?.totalBalance?.toLocaleString("vi-VN") || 0}đ
           </h4>
         </div>
-        <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
+        <div className="rounded-2xl relative border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
           <h4 className="font-bold text-center text-gray-800 text-title-sm dark:text-white/90">
             Số dư khả dụng <br />
             {revenueData?.totalCurrentBalance?.toLocaleString("vi-VN") || 0}đ
+            <Tooltip
+              title={
+                <div>
+                  Tổng Doanh thu - (Số tiền giảng viên nhận + Phí nền tảng) = Số
+                  dư khả dụng <br />{" "}
+                  {revenueData?.totalBalance?.toLocaleString("vi-VN") || 0}đ - (
+                  {revenueData?.withdrawBalance?.toLocaleString("vi-VN") || 0}đ
+                  +{" "}
+                  {revenueData?.toltalFeePlatform?.toLocaleString("vi-VN") || 0}
+                  đ) ={" "}
+                  {revenueData?.totalCurrentBalance?.toLocaleString("vi-VN") ||
+                    0}
+                  đ
+                </div>
+              }
+            >
+              <Info className="absolute top-2 right-2" />
+            </Tooltip>
           </h4>
         </div>
         <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
@@ -396,12 +415,12 @@ const DashBoard = () => {
             {revenueData?.examBalance?.toLocaleString("vi-VN") || 0}đ
           </h4>
         </div>
-        <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
+        {/* <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
           <h4 className="font-bold text-center text-gray-800 text-title-sm dark:text-white/90">
             Hoa hồng đã rút <br />
             {revenueData?.withdrawBalance?.toLocaleString("vi-VN") || 0}đ
           </h4>
-        </div>
+        </div> */}
       </div>
       <div className="flex gap-4 mt-4 justify-end ">
         <button
@@ -427,7 +446,7 @@ const DashBoard = () => {
           <Select
             options={[
               { label: "Phí nền tảng", value: "Platformfee" },
-              { label: "Rút tiền", value: "Withdraw" },
+              { label: "Số tiền giảng viên nhận", value: "Withdraw" },
               { label: "Mã thi", value: "Exam" },
               { label: "Khóa học", value: "Course" },
             ]}

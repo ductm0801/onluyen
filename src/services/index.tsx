@@ -829,7 +829,7 @@ export const getUserDetail = async (id: string | string[]) => {
 };
 export const updateInstructorRate = async (
   id: string | string[],
-  rate: number
+  rate: string
 ) => {
   const res = await axiosClient.put(`/api/instructors/update_instructor_rate`, {
     id,
