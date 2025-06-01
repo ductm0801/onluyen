@@ -462,12 +462,12 @@ const InstructorDashboard = () => {
                 disabled
                 value={
                   selectAmount === "another"
-                    ? Math.ceil(
+                    ? Math.round(
                         (amount ?? 0) *
                           (1 - (user?.instructor?.commissionRate ?? 0.7))
                       )
                     : typeof selectAmount === "number"
-                    ? Math.ceil(
+                    ? Math.round(
                         selectAmount *
                           (1 - (user?.instructor?.commissionRate ?? 0.7))
                       )
