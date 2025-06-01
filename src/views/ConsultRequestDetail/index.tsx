@@ -736,8 +736,8 @@ const ConsultRequestDetail = () => {
                 <thead>
                   <tr className="bg-gray-100">
                     <th className="border px-2 py-1 text-left">Thông tin</th>
-                    <th className="border px-2 py-1">Lần 1</th>
-                    <th className="border px-2 py-1">Lần 2</th>
+                    <th className="border px-2 py-1">Hiện tại</th>
+                    <th className="border px-2 py-1">Bài cần so sánh</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -815,8 +815,8 @@ const ConsultRequestDetail = () => {
                   <tr>
                     <th className="border px-2 py-1">Môn</th>
                     <th className="border px-2 py-1">Độ khó</th>
-                    <th className="border px-2 py-1">Lần 1</th>
-                    <th className="border px-2 py-1">Lần 2</th>
+                    <th className="border px-2 py-1">Hiện tại</th>
+                    <th className="border px-2 py-1">Bài cần so sánh</th>
                     <th className="border px-2 py-1">Chênh lệch</th>
                   </tr>
                 </thead>
@@ -849,7 +849,7 @@ const ConsultRequestDetail = () => {
                             {total2} / {s2.totalAmountOfQuestions}
                           </td>
                           <td className="border px-2 py-1 text-center">
-                            {renderDiff(total2 - total1)}
+                            {renderDiff(total1 - total2)}
                           </td>
                         </tr>
 
@@ -879,8 +879,8 @@ const ConsultRequestDetail = () => {
                               </td>
                               <td className="border px-2 py-1 text-center">
                                 {renderDiff(
-                                  d2.studentCorrectAnswers -
-                                    d1.studentCorrectAnswers
+                                  d1.studentCorrectAnswers -
+                                    d2.studentCorrectAnswers
                                 )}
                               </td>
                             </tr>
