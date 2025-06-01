@@ -96,7 +96,7 @@ const Schedule: FC<Props> = ({ data, fetchData }) => {
               endTime: dayjs(slot.endTime, "HH:mm:ss").format("HH:mm"),
               courseTitle: scheduleItem.courseTitle,
               courseId: scheduleItem.courseId,
-              instructorName: scheduleItem.instructor.user.fullName,
+              instructorName: scheduleItem?.instructor?.user?.fullName,
             });
           }
         });
