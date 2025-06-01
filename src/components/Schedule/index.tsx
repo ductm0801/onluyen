@@ -276,12 +276,12 @@ const Schedule: FC<Props> = ({ data, fetchData }) => {
                               )}
                         </div>
 
-                        {/* <p>
+                        <div className="text-[11px]">
                           {" "}
                           {user?.Role === "Instructor"
                             ? slot.studentName
                             : slot.instructorName}
-                        </p> */}
+                        </div>
 
                         <div className="text-[11px]">{slot.note}</div>
                         <div className="font-semibold text-[12px]">

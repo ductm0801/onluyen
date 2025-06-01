@@ -193,10 +193,8 @@ const Dashboard = () => {
     labels: analyzeData?.monthlyStatistics?.map((a: any) => a.month),
     datasets: [
       {
-        label: "Số học sinh làm bài kiểm tra",
-        data: analyzeData?.monthlyStatistics?.map(
-          (a: any) => a.newStudentTakeExam
-        ),
+        label: "Số lần làm bài kiểm tra",
+        data: analyzeData?.monthlyStatistics?.map((a: any) => a.testsTaken),
         borderColor: "rgb(255, 99, 132)",
         backgroundColor: "rgba(255, 99, 132, 0.5)",
       },
@@ -378,17 +376,17 @@ const Dashboard = () => {
               <div className="flex items-center gap-1">
                 <span
                   className={`${
-                    analyzeData?.totalTestsTakenChangePercent > 0
+                    analyzeData?.totalStudentTakeExam > 0
                       ? "text-green-500"
                       : "text-red-500"
                   } inline-flex items-center px-2.5 py-0.5 justify-center gap-1 rounded-full font-medium text-theme-xs bg-success-50 text-success-600 dark:bg-success-500/15 dark:text-success-500`}
                 >
                   <span className="text-xl">
-                    {analyzeData?.totalTestsTakenChangePercent > 0
+                    {analyzeData?.totalStudentTakeExam > 0
                       ? "\u2191"
                       : "\u2193"}{" "}
                   </span>
-                  {analyzeData?.totalTestsTakenChangePercent}%
+                  {analyzeData?.totalStudentTakeExam}%
                 </span>
                 {/* <span className="text-gray-500 text-theme-xs dark:text-gray-400">
                 năm trước
